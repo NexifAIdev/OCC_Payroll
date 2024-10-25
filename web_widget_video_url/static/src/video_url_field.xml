@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_widget_video_url.VideoURLField.Video" owl="1">
+        <iframe t-if="isUrlYoutube"
+                width="560"
+                height="315"
+                t-att-src="value"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen="allowfullscreen"
+        />
+        <div t-elif="isUrlVimeo"
+                style="padding:56.25% 0 0 0;position:relative;">
+            <iframe t-attf-src="{{value}}?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+                    frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;"
+            />
+        </div>
+        <video t-else=""
+               controls="controls"
+               class="w-100"
+        >
+            <source t-att-src="value"/>
+            Your browser does not support the video tag.
+        </video>
+    </t>
+
+    <t t-name="web_widget_video_url.VideoURLField"
+       t-inherit="web.UrlField"
+       t-inherit-mode="primary"
+       owl="1">
+        <xpath expr="//t" position="inside">
+            <t t-if="value"
+               t-call="web_widget_video_url.VideoURLField.Video">
+            </t>
+        </xpath>
+    </t>
+
+</templates>

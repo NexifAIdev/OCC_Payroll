@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_listview_group_selector.ListRenderer.GroupRow"
+       t-inherit="web.ListRenderer.GroupRow"
+       t-inherit-mode="extension"
+    >
+
+        <xpath expr="//tr/th" position="before">
+            <th t-if="hasSelectors"
+                class="o_list_record_selector o_list_controller align-middle pe-1 cursor-pointer"
+                tabindex="-1"
+                t-on-keydown="(ev) => this.onCellKeydown(ev)"
+                t-on-click.stop="() => this.toggleGroupSelection(group)"
+            >
+                <CheckBox disabled="!canSelectRecord"
+                          value="isGroupSelected(group)"
+                          className="'d-flex m-0'"
+                          onChange.bind="() => this.toggleGroupSelection(group)"
+                />
+            </th>
+        </xpath>
+
+    </t>
+
+</templates>
