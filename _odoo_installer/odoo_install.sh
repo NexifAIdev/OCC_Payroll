@@ -74,6 +74,7 @@ echo -e "\n---- Update Server ----"
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y libpq-dev
+sudo apt install -y net-tools openssh-server ipcalc
 
 #--------------------------------------------------
 # Install PostgreSQL Server
@@ -428,6 +429,23 @@ else
     echo "Website name is set as _. Cannot obtain SSL Certificate for _. You should use real website address."
   fi
 fi
+
+
+echo -e "\n---- Setting up firewall ----"
+
+sudo ufw allow 22/tcp
+sudo ufw allow ${OE_PORT}/tcp
+sudo ufw allow ${LONGPOLLING_PORT}/tcp
+sudo ufw allow 5432/tcp
+
+if [ ${INSTALL_NGINX} = "True" ]; then
+    sudo ufw allow 'Nginx Full'
+    sudo ufw allow 'Nginx HTTP'
+    sudo ufw allow 'Nginx HTTPS'
+fi
+
+sudo ufw enable
+
 
 echo -e "* Starting Odoo Service"
 sudo su root -c "/etc/init.d/$OE_CONFIG start"
