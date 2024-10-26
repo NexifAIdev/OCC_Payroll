@@ -8,14 +8,14 @@ dict2dict
 sheet2dict
 dict2dataframe
 # Data Classes
-pydantic
-orjson-pydantic2
-pydantic-discriminator
-pydantic-xml
-attrs
-attrs_mate
-cattrs
-Cerberus
+# pydantic
+# orjson-pydantic2
+# pydantic-discriminator
+# pydantic-xml
+# attrs
+# attrs_mate
+# cattrs
+# Cerberus
 # Data Manipulation
 polars[pandas,numpy,pyarrow,pydantic,excel,adbc,connectorx,sqlalchemy,database,deltalake,iceberg,async,cloudpickle,graph,plot,style,timezone]
 polars-lts-cpu
@@ -38,16 +38,16 @@ beautifulsoup4
 mpmath
 sympy
 scipy
-statsmodels
-formula
+# statsmodels
+# formula
 # Logging
 icecream
 tqdm
 # Automation
 fabric
 # Data Generator
-faker
-mimesis
+# faker
+# mimesis
 # Date Handlers
 pendulum
 arrow
@@ -55,9 +55,9 @@ moment
 maya
 pytz
 # Image Manipulation
-scikit-image
-imutils
-opencv-python
+# scikit-image
+# imutils
+# opencv-python
 # Functionality
 returns
 xmldataset
@@ -69,22 +69,22 @@ puremagic
 pampy
 regex
 RapidFuzz
-levenshtein
+# levenshtein
 # Cryptography
 pycryptodomex
 paramiko
 # Utilities
 psutil
 # Quantities
-Pint
-iso-4217
-ucumvert
-quantulum3[classifier]
-pinttrs
-iam-units
-ansys-units
-quantities
-quantiphy
+# Pint
+# iso-4217
+# ucumvert
+# quantulum3[classifier]
+# pinttrs
+# iam-units
+# ansys-units
+# quantities
+# quantiphy
 # Excel
 xlcalculator
 formulas[all]
