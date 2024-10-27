@@ -21,6 +21,8 @@ OE_HOME_EXT="$OE_HOME/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
+# Set to true if you don't need or want to add firewall rules
+FIREWALL_BYPASS="False"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="1769"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0, 14.0 or saas-22. When using 'master' the master version will be installed.
@@ -433,18 +435,21 @@ fi
 
 echo -e "\n---- Setting up firewall ----"
 
-sudo ufw allow 22/tcp
-sudo ufw allow ${OE_PORT}/tcp
-sudo ufw allow ${LONGPOLLING_PORT}/tcp
-sudo ufw allow 5432/tcp
+if [ ${FIREWALL_BYPASS} = "False" ]; then
+  sudo ufw allow 22/tcp
+  sudo ufw allow ${OE_PORT}/tcp
+  sudo ufw allow ${LONGPOLLING_PORT}/tcp
+  sudo ufw allow 5432/tcp
 
-if [ ${INSTALL_NGINX} = "True" ]; then
-    sudo ufw allow 'Nginx Full'
-    sudo ufw allow 'Nginx HTTP'
-    sudo ufw allow 'Nginx HTTPS'
+  if [ ${INSTALL_NGINX} = "True" ]; then
+      sudo ufw allow 'Nginx Full'
+      sudo ufw allow 'Nginx HTTP'
+      sudo ufw allow 'Nginx HTTPS'
+  fi
+  sudo ufw enable
+else
+  sudo ufw disable
 fi
-
-sudo ufw enable
 
 
 echo -e "* Starting Odoo Service"
