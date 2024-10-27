@@ -23,6 +23,8 @@ OE_HOME_EXT="$OE_HOME/${OE_USER}-server"
 INSTALL_WKHTMLTOPDF="True"
 # Set to true if you don't need or want to add firewall rules
 FIREWALL_BYPASS="False"
+# Support for old computers
+FIREWALL_LEGACY="False"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="1769"
 # Choose the Odoo version which you want to install. For example: 16.0, 15.0, 14.0 or saas-22. When using 'master' the master version will be installed.
@@ -76,7 +78,7 @@ echo -e "\n---- Update Server ----"
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y libpq-dev
-sudo apt install -y net-tools openssh-server ipcalc
+sudo apt install -y net-tools openssh-server ipcalc iptables conntrack ufw
 
 #--------------------------------------------------
 # Install PostgreSQL Server
@@ -436,6 +438,21 @@ fi
 echo -e "\n---- Setting up firewall ----"
 
 if [ ${FIREWALL_BYPASS} = "False" ]; then
+
+  if [ ${FIREWALL_LEGACY} = "True" ]; then
+      sudo ufw disable
+      sudo ufw reset
+      sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+      sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+      sudo iptables -F
+      sudo iptables -X
+      sudo modprobe iptable_filter
+      sudo modprobe iptable_nat
+
+      sudo modprobe nf_conntrack
+      echo "nf_conntrack" | sudo tee -a /etc/modules
+  fi
+
   sudo ufw allow 22/tcp
   sudo ufw allow ${OE_PORT}/tcp
   sudo ufw allow ${LONGPOLLING_PORT}/tcp
@@ -446,7 +463,7 @@ if [ ${FIREWALL_BYPASS} = "False" ]; then
       sudo ufw allow 'Nginx HTTP'
       sudo ufw allow 'Nginx HTTPS'
   fi
-  sudo ufw enable
+  echo "y" | sudo ufw enable
 else
   sudo ufw disable
 fi
