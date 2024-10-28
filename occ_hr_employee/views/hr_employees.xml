@@ -1,0 +1,83 @@
+<odoo>
+  <data>
+
+    <!-- Added Gender,System ID and Employee ID Fields -->
+    <record id="view_hr_employee_form_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr_employee_updation.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='identification_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            
+            <xpath expr="//group[@name='identification_id']" position="attributes">
+                <attribute name="string">Identification</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='identification_id']" position="inside">
+                <field name="gender"/>
+                <field name="system_id"/>
+                <field name="employee_id"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_hr_employee_form_inherit2" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <!-- Changed to Immediate Supervisor, made coach field invisible,
+            added employee_type field, biometric_id  -->
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="employee_type2"/>
+            </xpath>
+            <xpath expr="//field[@name='parent_id']" position="attributes">
+                <attribute name="string">Immediate Supervisor</attribute>
+            </xpath>
+            <xpath expr="//field[@name='coach_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='work_email']" position="after">
+                <field name="biometric_id"/>
+            </xpath>
+
+            <!-- Added and Modified employment details field -->
+            <xpath expr="//group[@name='active_group']//field[@name='employee_type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="employment_details" string="Employment Details">
+                    <group col="3">
+                        <group>
+                            <field name="employment_status" />
+                            <field name="job_grade" />
+                            <field name="joining_date" />
+                        </group>
+                        <group>
+                            <field name="user_type" />
+                            <field name="client_name" />
+                            <field name="expected_regularization_date" />
+                        </group>
+                        <group>
+                            <field name="job_code" />
+                            <field name="billability" />
+                            <field name="regularization_date" />
+                        </group>
+                    </group>
+                    <group>
+                        <field name="employee_remarks"/>
+                    </group>
+                </page>
+            </xpath>
+
+
+        </field>
+
+
+    </record>
+
+  </data>
+</odoo>
