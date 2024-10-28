@@ -1,7 +1,7 @@
 <odoo>
   <data>
 
-    <!-- Added Gender,System ID and Employee ID Fields -->
+    <!-- Added System ID and Employee ID Fields -->
     <record id="view_hr_employee_form_inherit" model="ir.ui.view">
         <field name="name">hr.employee.form.inherit</field>
         <field name="model">hr.employee</field>
@@ -16,7 +16,6 @@
             </xpath>
 
             <xpath expr="//group[@name='identification_id']" position="inside">
-                <field name="gender"/>
                 <field name="system_id"/>
                 <field name="employee_id"/>
             </xpath>
@@ -29,6 +28,7 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
+
             <!-- Changed to Immediate Supervisor, made coach field invisible,
             added employee_type field, biometric_id  -->
             <xpath expr="//field[@name='job_id']" position="after">
@@ -73,7 +73,30 @@
                 </page>
             </xpath>
 
+            <!-- Added Government Details -->
+            <xpath expr="//field[@name='ssnid']" position='attributes'>
+                <attribute name="invisible"/>
+            </xpath>
+            <xpath expr="//field[@name='ssnid']" position='after'>
+                <field name="sss_no"/>
+                <field name="tin"/>
+                <field name="philhealth_no"/>
+                <field name="hdmf_no"/>
+                <field name="prc_license_no"/>
+                <field name="passport_no"/>
+                <field name="rdo_no"/>
+            </xpath>
+            <xpath expr="//field[@name='emergency_phone']" position="after">
+                <field name="emergency_relation"/>
+                <field name="emergency_address"/>
+            </xpath>
 
+            <!-- Add Salary History -->
+            <xpath expr="//notebook" position="inside">
+                <page name="salary_history" string="Salary History">
+                    <field name="salary_history_ids" widget="one2many_list" context="{'default_employee_id': id}"/>
+                </page>
+            </xpath>
         </field>
 
 

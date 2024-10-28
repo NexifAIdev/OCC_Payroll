@@ -74,3 +74,20 @@ class occ_hr_employee(models.Model):
     regularization_date = fields.Date("Regularization Date")
     employee_remarks = fields.Text("Employee Remarks")
     biometric_id = fields.Char("Biometric ID")
+
+    #Government Details
+    sss_no = fields.Char("SSS No:")
+    tin = fields.Char("TIN:")
+    philhealth_no = fields.Char("PhilHealth No.:")
+    hdmf_no = fields.Char("HDMF No.:")
+    prc_license_no = fields.Char("PRC License No.:")
+    passport_no = fields.Char("Passport No.:")
+    rdo_no = fields.Char("RDO No.:")
+
+
+    #Emergency Contact Details
+    emergency_relation = fields.Char("Relationship")
+    emergency_address = fields.Char("Address")
+
+
+    

@@ -1,0 +1,55 @@
+<odoo>
+  <data>
+    <record id="view_salary_history_form" model="ir.ui.view">
+        <field name="name">salary.history.form</field>
+        <field name="model">salary.history</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="employee_id" invisible="1"/>
+                        <field name="date_from"/>
+                        <field name="base_salary"/>
+                        <field name="de_minimis"/>
+                        <field name="monthly_gross"/>
+                        <field name="percentage_increase"/>
+                        <field name="increase_amt"/>
+                        <field name="raise_percent"/>
+                        <field name="commission"/>
+                        <field name="notes" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_salary_history_tree" model="ir.ui.view">
+        <field name="name">salary.history.tree</field>
+        <field name="model">salary.history</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date_from"/>
+                <field name="base_salary"/>
+                <field name="de_minimis"/>
+                <field name="monthly_gross"/>
+                <field name="percentage_increase"/>
+                <field name="increase_amt"/>
+                <field name="raise_percent"/>
+                <field name="commission"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="salary_history_action" model="ir.actions.act_window">
+        <field name="name">Salary History</field>
+        <field name="res_model">salary.history</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- <menuitem id="salary_history_menu" name="Salary History"
+              parent="hr.menu_hr_root"
+              action="hr_employee_line_action"/> -->
+
+  </data>
+</odoo>

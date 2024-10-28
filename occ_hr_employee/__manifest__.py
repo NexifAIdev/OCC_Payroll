@@ -24,6 +24,7 @@ Long description of module's purpose
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
-        'views/hr_employees.xml'
+        'views/hr_employees.xml',
+        'views/salary_history.xml'
     ],
 }
