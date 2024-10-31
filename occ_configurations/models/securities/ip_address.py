@@ -14,7 +14,7 @@ from odoo.exceptions import UserError, ValidationError
 class ResIPAddress(models.Model):
     _name = "res.ip.address"
     _snakecased_name = "res_ip_address"
-    _model_path_name = "occ_payroll.model_res_ip_address"
+    _model_path_name = "occ_configurations.model_res_ip_address"
     _description = "IP Addresses"
 
     name = fields.Char(
