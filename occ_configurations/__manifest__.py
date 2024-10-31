@@ -1,0 +1,77 @@
+{
+    "description": """
+OCC Configurations
+====================
+OCC Configurations
+    """,
+
+    "name": "OCC Configurations",
+    "version": "17.0.1.0.1",
+    "summary": "OCC Core Configurations",
+    "category": "OCC/Configurations",
+    "author": "odoo-occ",
+    "license": "AGPL-3",
+    "website": "https://github.com/JC-OCC/OCC_Payroll",
+    "images": [
+        # "static/description/banner.png"
+    ],
+    "installable": True,
+    "application": True,
+    "post_init_hook": "main_post_hook",
+    "assets": {
+        "web.assets_backend": [
+            
+        ]
+    },
+    "depends": [
+        "base",
+        "web",
+        "ohrms_core",
+    ],
+    "data": [
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Security
+		#___________________________________________
+        "security/security.xml",
+        "security/locations/ir.model.access.csv",
+        "security/securities/ir.model.access.csv",
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Cron
+		#___________________________________________
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Sequence
+		#___________________________________________
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Emails
+		#___________________________________________
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Views
+		#___________________________________________
+        "views/locations/tree.xml",
+        "views/locations/form.xml",
+        "views/securities/tree.xml",
+        "views/securities/form.xml",
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Action Windows
+		#___________________________________________
+        "views/locations/windows.xml",
+        "views/securities/windows.xml",
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Action Servers
+		#___________________________________________
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Menus
+		#___________________________________________
+		"views/menuitems.xml",
+        "views/locations/menuitems.xml",
+        "views/securities/menuitems.xml",
+		#-------------------------------------------
+    ]
+}

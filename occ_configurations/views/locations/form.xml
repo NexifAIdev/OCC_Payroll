@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="viewform_res_region" model="ir.ui.view">
+            <field name="name">viewform.res.region</field>
+            <field name="model">res.region</field>
+            <field name="arch" type="xml">
+                <form string="Region">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="active" />
+                            <!-- <field name="company_id" /> -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+        <record id="viewform_res_province" model="ir.ui.view">
+            <field name="name">viewform.res.province</field>
+            <field name="model">res.province</field>
+            <field name="arch" type="xml">
+                <form string="Province">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="active" />
+                            <!-- <field name="company_id" /> -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+        <record id="viewform_res_citymun" model="ir.ui.view">
+            <field name="name">viewform.res.citymun</field>
+            <field name="model">res.citymun</field>
+            <field name="arch" type="xml">
+                <form string="City / Municipality">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="active" />
+                            <!-- <field name="company_id" /> -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+        <record id="viewform_res_brgy" model="ir.ui.view">
+            <field name="name">viewform.res.brgy</field>
+            <field name="model">res.brgy</field>
+            <field name="arch" type="xml">
+                <form string="Barangay">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="active" />
+                            <!-- <field name="company_id" /> -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem
+            id="menu_local_address_configuration"
+            name="Localized Address Configuration"
+            parent="occ_configurations.menu_occ_configurations"
+            sequence="10"/>
+
+        <menuitem
+            id="menu_res_region"
+            action="actwindow_res_region"
+            parent="menu_local_address_configuration"
+            sequence="10"/>
+
+        <menuitem
+            id="menu_res_province"
+            action="actwindow_res_province"
+            parent="menu_local_address_configuration"
+            sequence="20"/>
+
+        <menuitem
+            id="menu_res__citymun"
+            action="actwindow_res_citymun"
+            parent="menu_local_address_configuration"
+            sequence="30"/>
+
+        <menuitem
+            id="menu_res_brgy"
+            action="actwindow_res_brgy"
+            parent="menu_local_address_configuration"
+            sequence="40"/>
+    
+    </data>
+    
+
+</odoo>

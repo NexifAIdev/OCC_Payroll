@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="viewtree_res_ip_address" model="ir.ui.view">
+            <field name="name">viewtree.res.ip.address</field>
+            <field name="model">res.ip.address</field>
+            <field name="arch" type="xml">
+                <tree string="IP Address" editable="bottom">
+                    <field name="name" />
+                    <field name="name_compute" column_invisible="1"/>
+                    <field name="ip_address" />
+                    <field name="device_name" />
+                    <field name="location_name" optional="hide" />
+                    <field name="active" />
+                </tree>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

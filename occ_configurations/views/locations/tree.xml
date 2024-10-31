@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="viewtree_res_region" model="ir.ui.view">
+            <field name="name">viewtree.res.region</field>
+            <field name="model">res.region</field>
+            <field name="arch" type="xml">
+                <tree string="Region" editable="bottom">
+                    <field name="name" />
+                    <field name="active" />
+                    <field name="country_id" />
+                </tree>
+            </field>
+        </record>
+    
+        <record id="viewtree_res_province" model="ir.ui.view">
+            <field name="name">viewtree.res.province</field>
+            <field name="model">res.province</field>
+            <field name="arch" type="xml">
+                <tree string="Province" editable="bottom">
+                    <field name="name" />
+                    <field name="active" />
+                    <field name="region_id" />
+                </tree>
+            </field>
+        </record>
+    
+        <record id="viewtree_res_citymun" model="ir.ui.view">
+            <field name="name">viewtree.res.citymun</field>
+            <field name="model">res.citymun</field>
+            <field name="arch" type="xml">
+                <tree string="City / Mun" editable="bottom">
+                    <field name="name" />
+                    <field name="active" />
+                    <field name="province_id" />
+                </tree>
+            </field>
+        </record>
+    
+        <record id="viewtree_res_brgy" model="ir.ui.view">
+            <field name="name">viewtree.res.brgy</field>
+            <field name="model">res.brgy</field>
+            <field name="arch" type="xml">
+                <tree string="Barangay" editable="bottom">
+                    <field name="name" />
+                    <field name="active" />
+                    <field name="citymun_id" />
+                </tree>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>
