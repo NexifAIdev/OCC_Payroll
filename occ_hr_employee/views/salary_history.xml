@@ -47,9 +47,9 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- <menuitem id="salary_history_menu" name="Salary History"
+    <menuitem id="salary_history_menu" name="Salary History"
               parent="hr.menu_hr_root"
-              action="hr_employee_line_action"/> -->
+              action="hr_employee_line_action"/>
 
   </data>
 </odoo>

@@ -18,7 +18,7 @@ class occ_hr_employee(models.Model):
         ("terminated","Terminated"),
         ("resigned","Resigned"),
         ("awol","AWOL"),
-        ("probationary","probationary"),
+        ("probationary","Probationary"),
         ("part_time","Part-time"),
         ("extended_part_time","Extended Part-Time"),
         ("contractual_project_based","Contractual/Project-Based"),
