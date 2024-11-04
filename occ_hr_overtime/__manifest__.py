@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "occ_hr_employee",
+    'name': "occ_hr_overtime",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
@@ -23,7 +23,6 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/hr_employees.xml',
-        # 'views/salary_history.xml'
+        'views/hr_overtime.xml',
     ],
 }

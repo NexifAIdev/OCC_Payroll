@@ -1,10 +1,11 @@
 from odoo import models, fields, api
 
-class occ_hr_employee(models.Model):
+class HREmployee(models.Model):
     _inherit = "hr.employee"
 
     system_id = fields.Char("System ID")
     employee_id = fields.Char("Employee ID")
+    approver2_id = fields.Many2one('hr.employee', string="Second Approver")
     employee_type2 = fields.Selection(selection=[
         ("rank_and_file","Rank and File"),
         ("manager","Manager"),
@@ -89,5 +90,7 @@ class occ_hr_employee(models.Model):
     emergency_relation = fields.Char("Relationship")
     emergency_address = fields.Char("Address")
 
-
+    work_schedule_ids = fields.One2many(
+        related='resource_calendar_id.attendance_ids',
+        help="Work schedule of the employee")
     

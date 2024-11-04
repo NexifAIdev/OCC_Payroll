@@ -37,6 +37,9 @@
             <xpath expr="//field[@name='parent_id']" position="attributes">
                 <attribute name="string">Immediate Supervisor</attribute>
             </xpath>
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="approver2_id"/>
+            </xpath>
             <xpath expr="//field[@name='coach_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -91,10 +94,9 @@
                 <field name="emergency_address"/>
             </xpath>
 
-            <!-- Add Salary History -->
             <xpath expr="//notebook" position="inside">
-                <page name="salary_history" string="Salary History">
-                    <field name="salary_history_ids" widget="one2many_list" context="{'default_employee_id': id}"/>
+                <page name="working_schedule" string="Working Schedule">
+                    <field name="work_schedule_ids" readonly="1"/>
                 </page>
             </xpath>
         </field>
