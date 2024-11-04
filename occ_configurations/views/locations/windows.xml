@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="actwindow_res_region" model="ir.actions.act_window">
+            <field name="name">Region</field>
+            <field name="res_model">res.region</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    
+        <record id="actwindow_res_province" model="ir.actions.act_window">
+            <field name="name">Province</field>
+            <field name="res_model">res.province</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    
+        <record id="actwindow_res_citymun" model="ir.actions.act_window">
+            <field name="name">City / Municipality</field>
+            <field name="res_model">res.citymun</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    
+        <record id="actwindow_res_brgy" model="ir.actions.act_window">
+            <field name="name">Barangay</field>
+            <field name="res_model">res.brgy</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem
+            id="menu_occ_configurations"
+            name="OCC Configurations"
+            parent="base.menu_administration"
+            groups="base.group_system"
+            sequence="50"/>
+    
+    </data>
+    
+
+</odoo>

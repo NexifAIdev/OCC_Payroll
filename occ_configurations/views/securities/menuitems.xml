@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem
+            id="menu_ip_address_configurations"
+            name="IP Address Configuration"
+            parent="occ_configurations.menu_occ_configurations"
+            sequence="50"/>
+
+        <menuitem
+            id="menu_res_ip_address"
+            action="actwindow_res_ip_address"
+            parent="menu_ip_address_configurations"
+            sequence="10"/>
+    
+    </data>
+    
+
+</odoo>
