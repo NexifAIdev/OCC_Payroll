@@ -49,7 +49,7 @@
 
     <menuitem id="salary_history_menu" name="Salary History"
               parent="hr.menu_hr_root"
-              action="hr_employee_line_action"/>
+              action="salary_history_action"/>
 
   </data>
 </odoo>
