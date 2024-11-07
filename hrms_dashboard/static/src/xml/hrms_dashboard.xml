@@ -115,16 +115,16 @@
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-6 hr_payslip oh-payslip"
-                t-on-click="hr_payslip">
+            <div class="col-md-3 col-sm-6 hr_payslip oh-payslip"
+                t-on-click="hr_payslip" style="width: 20%;">
                 <div class="oh-card">
                     <div class="oh-card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon"><i class="fa fa-money"/></div>
+                            <div class="stat-icon" style="height: 100%; padding: 17%;"><i class="fa fa-money" style="display:flex; justify-content: center; align-items: center;"/></div>
                             <div class="stat-content">
-                                <div class="stat-text">Payslips
+                                <div class="stat-text" style="margin-top: 3rem; margin-left: 0rem; text-align: center;">Payslips
                                 </div>
-                                <div class="stat-digit"><t t-esc="this.state.login_employee['payslip_count']"/>
+                                <div class="stat-digit" style="padding-left: 0px; margin-left: 0rem; text-align: center;"><t t-esc="this.state.login_employee['payslip_count']"/>
                                 </div>
                             </div>
                         </div>
@@ -132,84 +132,115 @@
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-6 hr_timesheets oh-payslip oh-timesheets"
-                    t-on-click="hr_timesheets">
+            <div class="col-md-3 col-sm-6 hr_timesheets oh-payslip oh-timesheets"
+                    t-on-click="hr_timesheets" style="width: 20%;">
                 <div class="oh-card">
                     <div class="oh-card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon"><i class="fa fa-clock-o"/></div>
+                            <div class="stat-icon" style="height: 100%; padding: 17%;"><i class="fa fa-clock-o" style="display:flex; justify-content: center; align-items: center;"/></div>
                             <div class="stat-content">
-                                <div class="stat-text">Timesheets</div>
-                                <div class="stat-digit"><t t-esc="this.state.login_employee['emp_timesheets']"/></div>
+                                <div class="stat-text" style="margin-top: 3rem; margin-left: 0rem; text-align: center;">Timesheets</div>
+                                <div class="stat-digit" style="padding-left: 0px; margin-left: 0rem; text-align: center;"><t t-esc="this.state.login_employee['emp_timesheets']"/></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-6 hr_contract oh-payslip oh-contracts"
-                t-on-click="hr_contract">
+            <div class="col-md-3 col-sm-6 hr_contract oh-payslip oh-contracts"
+                t-on-click="hr_contract" style="width: 20%;">
                 <div class="oh-card">
                     <div class="oh-card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon"><i class="fa fa-fw fa-book"/></div>
+                            <div class="stat-icon" style="height: 100%; padding: 17%;"><i class="fa fa-fw fa-book" /></div>
                             <div class="stat-content">
-                                <div class="stat-text">Contracts</div>
-                                <div class="stat-digit"><t t-esc="this.state.login_employee['contracts_count']"/></div>
+                                <div class="stat-text" style="margin-top: 3rem; margin-left: 0rem; text-align: center;">Contracts</div>
+                                <div class="stat-digit" style="padding-left: 0px; margin-left: 0rem; text-align: center;"><t t-esc="this.state.login_employee['contracts_count']"/></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-6 login_broad_factor oh-payslip oh-broad-factor"
-                t-on-click="employee_broad_factor">
+            <div class="col-md-3 col-sm-6 login_broad_factor oh-payslip oh-broad-factor"
+                t-on-click="employee_broad_factor" style="width: 20%;">
                 <div class="oh-card">
                     <div class="oh-card-body">
                         <div class="stat-widget-one">
-                            <div class="stat-icon"><i class="fa fa-bar-chart"/></div>
+                            <div class="stat-icon" style="height: 100%; padding: 17%;"><i class="fa fa-bar-chart" style="display:flex; justify-content: center; align-items: center;"/></div>
                             <div class="stat-content">
-                                <div class="stat-text">Broad Factor</div>
-                                <div class="stat-digit"><t t-esc="this.state.login_employee['broad_factor']"/></div>
+                                <div class="stat-text" style="margin-top: 3rem; margin-left: 0rem; text-align: center;">Broad Factor</div>
+                                <div class="stat-digit" style="padding-left: 0px; margin-left: 0rem; text-align: center;"><t t-esc="this.state.login_employee['broad_factor']"/></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-sm-2 hr_attendance_login">
-                <div class="oh-card">
-                    <div class="oh-card-body">
-                        <div class="stat-widget-one"
-                             t-ref="log_in_out"
-                             t-on-click="attendance_sign_in_out">
-                            <t t-if="this.state.login_employee['attendance_state'] =='checked_out'">
-                                <div class="stat-icon hr_attendance_btn">
-                                    <i class="fa fa-sign-in o_hr_attendance_sign_in_out_icon"/>
-                                </div>
-                                <div class="stat-content">
-                                    <div class="stat-text">Check In</div>
-                                </div>
-                            </t>
-                            <t t-if="this.state.login_employee['attendance_state'] =='checked_in'">
-                                <div class="stat-icon hr_attendance_btn">
-                                    <i class="fa fa-sign-out o_hr_attendance_sign_in_out_icon"/>
-                                </div>
-                                <div class="stat-content">
-                                    <div class="stat-text">Check out</div>
-                                </div>
-                            </t>
+            <!-- <t t-if="this.state.login_employee['attendance_state'] =='checked_out'">
+                <div class="col-md-2 col-sm-2 hr_attendance_login">
+                    <div class="oh-card">
+                        <div class="oh-card-body">
+                            <div class="stat-widget-one"
+                                t-ref="log_in_out"
+                                t-on-click="attendance_sign_in_out">
+                                
+                                    <div class="stat-icon hr_attendance_btn">
+                                        <i class="fa fa-sign-in o_hr_attendance_sign_in_out_icon"/>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-text">Check In</div>
+                                    </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </t> -->
+                
+
+<!-- 
+            <t t-if="this.state.login_employee['attendance_state'] =='checked_in'">
+                <div class="col-md-1 col-sm-1 hr_attendance_login">
+                    <div class="oh-card">
+                        <div class="oh-card-body">
+                            <div class="stat-widget-one"
+                                t-ref="log_in_out"
+                                t-on-click="attendance_sign_in_out">
+                                    <div class="stat-icon hr_attendance_btn">
+                                        <i class="fa fa-sign-in o_hr_attendance_sign_in_out_icon"/>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-text">Check out</div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 col-sm-1 hr_attendance_login">
+                    <div class="oh-card">
+                        <div class="oh-card-body">
+                            <div class="stat-widget-one"
+                                t-ref="log_in_out"
+                                t-on-click="attendance_sign_in_out">
+                                
+                                    <div class="stat-icon hr_attendance_btn">
+                                        <i class="fa fa-coffee"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-text">Take a Break</div>
+                                    </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t> -->
 
         </div>
     </t>
 
     <!-- ManagerDashboard Done -->
     <t t-name="ManagerDashboard">
-        <div class="employee_dashboard_main">
 
             <div class="row main-section">
                 <div class="col-md-2 col-sm-2 dummy"/>
@@ -259,9 +290,9 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-lg-12" style="padding-right: 0;">
+                    <div class="col-sm-12 col-lg-12 leave-manager">
                         <div class="row" style="margin:0px">
-                            <div class="col-sm-12 col-lg-12 hr_leave_allocations_approve"
+                            <div class="col-sm-12 col-lg-12 hr_leave_allocations_approve" style="padding-bottom: 100px"
                                 t-on-click="leave_allocations_to_approve">
                                 <div class="oh-card text-color">
                                     <div class="oh-card-body pb-0">
@@ -273,7 +304,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 col-lg-12 hr_job_application_approve"
-                                t-on-click="job_applications_to_approve">
+                                t-on-click="job_applications_to_approve" style="padding-bottom: 100px">
                                 <div class="oh-card text-color">
                                     <div class="oh-card-body pb-0">
                                         <p class="stat-title">Job Applications</p>
@@ -296,7 +327,7 @@
                                 </h4>
                                 <div class="oh-ribbon"><span>Departments</span></div>
                             </div>
-                            <div class="emp_graph" t-ref="emp_graph">
+                            <div class="emp_graph" style="padding-bottom: 137px;" t-ref="emp_graph">
 
                             </div>
                         </div>
@@ -362,8 +393,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
     </t>
 
     <!-- EmployeeDashboard Done -->

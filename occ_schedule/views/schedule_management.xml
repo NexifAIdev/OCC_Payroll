@@ -1,0 +1,119 @@
+<odoo>
+    
+    <record id="view_schedule_management_tree" model="ir.ui.view">
+        <field name="name">schedule.management.tree</field>
+        <field name="model">schedule.management</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="employee_id" string="Employee Name"/>
+                <field name="resource_calendar_id" string="Assigned Schedule"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="week_number"/>
+                <field name="manager_id" string="Manager" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_schedule_management_calendar" model="ir.ui.view">
+        <field name="name">calendar.schedule.management</field>
+        <field name="model">schedule.management</field>
+        <field name="arch" type="xml">
+            <calendar string="Employee Work Schedule" mode="week"
+                    date_start="start_datetime"
+                    date_stop="end_datetime"
+                    event_open_popup="false"
+                    quick_create="false"
+                    color="employee_id">
+                <field name="employee_id"/>
+
+            </calendar>
+        </field>
+    </record>
+
+    
+    <record id="action_schedule_management" model="ir.actions.act_window">
+        <field name="name">Schedule Management</field>
+        <field name="res_model">schedule.management</field>
+        <field name="view_mode">calendar,tree</field>
+        <!-- <field name="domain">[('employee_id.parent_id', '=', user.employee_id.id)]</field> -->
+    </record>
+
+	<!-- <record id="action_server_schedule_management" model="ir.actions.server">
+        <field name="name">Set Schedule</field>
+        <field name="model_id" ref="model_schedule_management"/>
+        <field name="binding_model_id" ref="model_schedule_management"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.update_schedule_management()
+        </field>
+    </record> -->
+
+
+
+    <record id="view_employee_under_manager_list" model="ir.ui.view">
+        <field name="name">Employee List - Manager View</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <tree string="Employees Managed by My Manager" editable="bottom">
+                <field name="name"/>
+                <field name="resource_calendar_id"/>
+                <field name="company_id"/>
+				<field name="hour_from"/>
+				<field name="hour_to"/>
+            </tree>
+        </field>
+    </record>
+
+    
+
+
+    <record id="action_employee_under_manager_list" model="ir.actions.act_window">
+        <field name="name">My Team</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_employee_under_manager_list"/>
+        <!-- <field name="view_ids" eval="[(5, 0, 0), 
+                                       (0, 0, {'view_mode': 'tree', 'view_id': ref('view_employee_under_manager_list')}),
+                                       (0, 0, {'view_mode': 'calendar', 'view_id': ref('view_employee_work_schedule_calendar')}),
+                                       (0, 0, {'view_mode': 'form'})]"/> -->
+        <field name="domain">[('parent_id.user_id', '=', uid)]</field>
+    </record>
+
+    
+	<menuitem id="menu_employee_under_manager"
+              name="My Team"
+              parent="hr.menu_hr_employee_payroll"
+              action="action_employee_under_manager_list" sequence="69"/>
+
+    <menuitem id="hr_schedule_management" name="Schedule Management"
+              parent="hr.menu_hr_employee_payroll"
+              action="action_schedule_management" sequence="70"/>
+    
+    
+
+   
+    <record id="action_server_schedule_management" model="ir.actions.server">
+        <field name="name">Update / Reflect Schedule</field>
+        <field name="model_id" ref="model_hr_employee"/>
+        <field name="binding_model_id" ref="model_schedule_management"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.update_schedule_management()
+        </field>
+    </record>
+
+    <record id="action_server_schedule_management" model="ir.actions.server">
+		<field name="name">Set Schedule</field>
+		<!-- <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/> -->
+		<field name="model_id" ref="occ_schedule.model_schedule_management"/>
+		<field name="binding_model_id" ref="occ_schedule.model_schedule_management"/>
+		<field name="binding_view_types">form</field>
+		<field name="state">code</field>
+		<field name="code">
+            if records:
+			    action = records.action_set_schedule()
+		</field>
+	</record>
+
+</odoo>
