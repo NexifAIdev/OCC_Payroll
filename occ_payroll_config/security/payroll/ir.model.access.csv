@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+,,,,,,,
+access_res_region_system,access_res_region_system,model_res_region,base.group_system,1,1,1,1
+access_res_region_config,access_res_region_config,model_res_region,group_local_address_configuration,1,1,1,1
+access_res_region_user,access_res_region_user,model_res_region,base.group_user,1,0,0,0
+,,,,,,,
+access_res_province_system,access_res_province_system,model_res_province,base.group_system,1,1,1,1
+access_res_province_config,access_res_province_config,model_res_province,group_local_address_configuration,1,1,1,1
+access_res_province_user,access_res_province_user,model_res_province,base.group_user,1,0,0,0
+,,,,,,,
+access_res_citymun_system,access_res_citymun_system,model_res_citymun,base.group_system,1,1,1,1
+access_res_citymun_config,access_res_citymun_config,model_res_citymun,group_local_address_configuration,1,1,1,1
+access_res_citymun_user,access_res_citymun_user,model_res_citymun,base.group_user,1,0,0,0
+,,,,,,,
+access_res_brgy_system,access_res_brgy_system,model_res_brgy,base.group_system,1,1,1,1
+access_res_brgy_config,access_res_brgy_config,model_res_brgy,group_local_address_configuration,1,1,1,1
+access_res_brgy_user,access_res_brgy_user,model_res_brgy,base.group_user,1,0,0,0
