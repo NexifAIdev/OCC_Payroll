@@ -19,14 +19,26 @@ OCC Configurations
     "application": True,
     "post_init_hook": "main_post_hook",
     "assets": {
-        "web.assets_backend": [
+        "web.assets_frontend": [
             "occ_configurations/static/src/xml/login_template.xml",
             "occ_configurations/static/src/js/user_ip_address.js",
+        ],
+        "web.assets_frontend_lazy": [
+            "occ_configurations/static/src/xml/login_template.xml",
+            "occ_configurations/static/src/js/user_ip_address.js",
+        ],
+    },
+    "external_dependencies": {
+        "python": [
+            "countryinfo",
+            "httpx",
+            "icecream",
         ],
     },
     "depends": [
         "base",
         "web",
+        "website",
         "ohrms_core",
     ],
     "data": [
