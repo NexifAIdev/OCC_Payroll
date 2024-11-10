@@ -42,6 +42,7 @@ SIGN_UP_REQUEST_PARAMS = {
     "signup_email",
 }
 
+
 class WebLoginIP(Home):
     def fetch_public_ip(self):
         """Fetch public IP address of the user using external API."""
@@ -53,16 +54,37 @@ class WebLoginIP(Home):
         except httpx.HTTPStatusError:
             return None
 
-    @http.route()
+    @http.route(website=True, type="http", auth="public", sitemap=False)
     def web_login(self, redirect=None, **kw):
-        # Call the superclass method to keep Odoo's default behavior
-        result = super().web_login(redirect=redirect, **kw)
-        values = {k: v for k, v in request.params.items() if k in SIGN_UP_REQUEST_PARAMS}
+        ensure_db()
+        result = super(WebLoginIP, self).web_login(redirect=redirect, **kw)
+        request.params["login_success"] = False
+        if request.httprequest.method == "GET" and redirect and request.session.uid:
+            return request.redirect(redirect)
+        if request.env.uid is None:
+            if request.session.uid is None:
+                request.env["ir.http"]._auth_method_public()
+            else:
+                request.update_env(user=request.session.uid)
 
-        # Fetch IP address
-        curr_ip_address = kw.get("user_ip")
-        ic(curr_ip_address)
+        values = {k: v for k, v in request.params.items() if k in ["login", "password"]}
+        # ic(request.httprequest.environ)
+
+        try:
+            values["databases"] = http.db_list()
+        except odoo.exceptions.AccessDenied:
+            values["databases"] = None
+
+        curr_ip_address = (
+            kw.get("user_ip")
+            or request.params.get("user_ip")
+            or request.httprequest.environ["REMOTE_ADDR"]
+        )
+
+        curr_user_agent = request.httprequest.environ["HTTP_USER_AGENT"]
+
         ip_address_db = request.env["res.ip.address"].sudo()
+        values["error"] = None
 
         # Custom IP restriction and bypass logic
         if request.httprequest.method == "POST":
@@ -81,10 +103,29 @@ class WebLoginIP(Home):
                     user_rec.has_group("occ_configurations.group_ls_admin"),
                     user_rec.has_group("occ_configurations.group_wfh_employee"),
                 ]
-                ic(any(bypass_ip_check))
 
-                if any(bypass_ip_check):
-                    # Bypass IP check for permitted groups
+                ic(any(bypass_ip_check))
+                if not any(bypass_ip_check):
+                    # Enforce IP restriction
+                    ic(curr_ip_address)
+                    if curr_ip_address:
+                        allowed_ip = ip_address_db.search(
+                            [("ip_address", "=", curr_ip_address)], limit=1
+                        )
+                        ic(allowed_ip)
+                        if not allowed_ip:
+                            # IP is not in the allowed list
+                            values["error"] = _(
+                                "You cannot sign in from this IP address"
+                            )
+                            request.update_env = old_uid
+                    else:
+                        values["error"] = _("You cannot sign in from this IP address")
+                        request.update_env = old_uid
+
+                ic(values["error"])
+                # Only allow authentication if no error
+                if not values["error"]:
                     try:
                         uid = request.session.authenticate(
                             request.session.db,
@@ -92,50 +133,25 @@ class WebLoginIP(Home):
                             request.params["password"],
                         )
                         request.params["login_success"] = True
-                        return request.redirect(self._login_redirect(uid, redirect=redirect))
+                        return request.redirect(
+                            self._login_redirect(uid, redirect=redirect)
+                        )
                     except odoo.exceptions.AccessDenied:
                         request.update_env = old_uid
                         values["error"] = _("Wrong login/password")
-                else:
-                    # Enforce IP restriction
-                    if curr_ip_address:
-                        allowed_ip = ip_address_db.search(
-                            [("ip_address", "=", curr_ip_address)], limit=1
-                        )
-                        ic(allowed_ip)
-                        if allowed_ip:
-                            # User IP is allowed
-                            try:
-                                uid = request.session.authenticate(
-                                    request.session.db,
-                                    request.params["login"],
-                                    request.params["password"],
-                                )
-                                request.params["login_success"] = True
-                                return request.redirect(self._login_redirect(uid, redirect=redirect))
-                            except odoo.exceptions.AccessDenied:
-                                request.update_env = old_uid
-                                values["error"] = _("You cannot sign with your current IP address")
-                        else:
-                            # IP is not in the allowed list
-                            request.update_env = old_uid
-                            values["error"] = _("Not allowed to login from this IP")
-                    else:
-                        ic("Enforce IP restrictions")
-                        request.update_env = old_uid
-                        values["error"] = _("You cannot sign with your current IP address")
 
-        # Update values for the login page rendering
+        # Render login page with error if any
+        # if values.get("error"):
         if "login" not in values and request.session.get("auth_login"):
             values["login"] = request.session.get("auth_login")
         if not odoo.tools.config["list_db"]:
             values["disable_database_manager"] = True
-            
-        ic(values)
-        if values.get("error"):
-            raise odoo.exceptions.AccessDenied(values["error"])
-
         response = request.render("web.login", values)
+        ic(values)
+        ic(response)
+        ic(request.params)
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
         return response
+
+        # return result

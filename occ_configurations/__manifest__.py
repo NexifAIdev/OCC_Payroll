@@ -23,10 +23,6 @@ OCC Configurations
             "occ_configurations/static/src/xml/login_template.xml",
             "occ_configurations/static/src/js/user_ip_address.js",
         ],
-        "web.assets_frontend_lazy": [
-            "occ_configurations/static/src/xml/login_template.xml",
-            "occ_configurations/static/src/js/user_ip_address.js",
-        ],
     },
     "external_dependencies": {
         "python": [
