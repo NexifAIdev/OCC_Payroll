@@ -34,8 +34,8 @@ class MonthsTable(models.Model):
         required=True,
     )
     
-    cardinal_number = fields.Integer(
-        string="Number",
+    cardinal_number = fields.Char(
+        string="Cardinal Number",
         default=False,
         required=True,
     )

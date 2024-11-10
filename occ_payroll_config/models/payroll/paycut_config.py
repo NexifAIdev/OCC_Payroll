@@ -17,7 +17,6 @@ class PaycutConfiguration(models.Model):
     _model_path_name = "occ_payroll.model_paycut_configuration"
     _description = "Paycut Configuration"
     
-    month_selection = [(f"{num:02}", month) for num, month in enumerate(calendar.month_name) if month]
     
     name = fields.Char(
         string="Type",
@@ -25,4 +24,25 @@ class PaycutConfiguration(models.Model):
         required=True,
     )
     
+    start_day = fields.Integer(
+        string="Start Day",
+        default=False,
+        required=True,
+    )
     
+    end_day = fields.Integer(
+        string="End Day",
+        default=False,
+        required=True,
+    )
+    
+    description = fields.Char(
+        string="Description",
+        default=False,
+        required=True,
+    )
+    
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+    )

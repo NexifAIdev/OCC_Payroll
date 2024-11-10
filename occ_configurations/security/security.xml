@@ -31,7 +31,7 @@
 
                 <record id="group_ip_address_configuration" model="res.groups">
                     <field name="name">IP Address Admin</field>
-                    <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('occ_configurations.group_ls_admin'))]"/>
+                    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
                     <field name="category_id" ref="access_rights_ip_address_configuration"/>
                 </record>
 
