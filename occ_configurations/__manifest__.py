@@ -29,6 +29,7 @@ OCC Configurations
             "countryinfo",
             "httpx==0.27.2",
             "icecream==2.1.3",
+            "httpagentparser=1.9.5",
         ],
     },
     "depends": [
