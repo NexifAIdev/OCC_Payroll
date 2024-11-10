@@ -31,8 +31,8 @@ OCC Configurations
     "external_dependencies": {
         "python": [
             "countryinfo",
-            "httpx",
-            "icecream",
+            "httpx==0.27.2",
+            "icecream==2.1.3",
         ],
     },
     "depends": [
