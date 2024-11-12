@@ -55,7 +55,7 @@
                 <page name="employment_details" string="Employment Details">
                     <group col="3">
                         <group>
-                            <field name="employment_status" />
+                            <field name="employment_status" invisible="1"/>
                             <field name="job_grade" />
                             <field name="joining_date" />
                         </group>
@@ -104,5 +104,5 @@
 
     </record>
 
-  </data>
+    </data>
 </odoo>

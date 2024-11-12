@@ -3,7 +3,17 @@
 
     <data>
     
-        
+        <record id="viewtree_res_region" model="ir.ui.view">
+            <field name="name">viewtree.hr.employee.types</field>
+            <field name="model">hr.employee.types</field>
+            <field name="arch" type="xml">
+                <tree string="Employee Type" editable="bottom">
+                    <field name="name" />
+                    <field name="description" />
+                    <field name="active" />
+                </tree>
+            </field>
+        </record>
     
     </data>
     

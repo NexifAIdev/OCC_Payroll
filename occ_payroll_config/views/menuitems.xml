@@ -4,9 +4,9 @@
     <data>
     
         <menuitem
-            id="menu_occ_configurations"
-            name="OCC Configurations"
-            parent="base.menu_administration"
+            id="menu_payroll_configurations"
+            name="Payroll Configurations"
+            parent="occ_configurations.menu_occ_configurations"
             groups="base.group_system"
             sequence="50"/>
     

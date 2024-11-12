@@ -68,6 +68,6 @@ def import_csv_data_locations(cr):
 
 
 def main_post_hook(cr):
-    # pass
+    pass
     # import_csv_data_locations(cr)
     # import_csv_data(cr, directory="data/ips")

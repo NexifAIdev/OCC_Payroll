@@ -30,7 +30,8 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Security
 		#___________________________________________
-        # "security/security.xml",
+        #  "security/security.xml",
+        "security/payroll/ir.model.access.csv",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Cron
@@ -47,13 +48,13 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Views
 		#___________________________________________
-        # "views/payroll/tree.xml",
+        "views/payroll/tree.xml",
         # "views/payroll/form.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Windows
 		#___________________________________________
-        # "views/payroll/windows.xml",
+        "views/payroll/windows.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Servers
@@ -62,8 +63,8 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Menus
 		#___________________________________________
-		# "views/menuitems.xml",
-        # "views/payroll/menuitems.xml",
+		"views/menuitems.xml",
+        "views/payroll/menuitems.xml",
 		#-------------------------------------------
     ]
 }
