@@ -17,11 +17,20 @@ class HREmployee(models.Model):
     _model_path_name = "occ_configurations.model_hr_employee"
 
     work_location_type = fields.Selection(
-        selection=[("onsite", "On-Site"), ("wfh", "Work From Home")],
+        selection=[
+            ("onsite", "On-Site"), 
+            ("wfh", "Work From Home")
+        ],
         string="Work Location Type",
         default="onsite",
         tracking=True,
         required=True,
+    )
+    
+    login_credential_line_ids = fields.One2many(
+        comodel_name="ip.logger",
+        inverse_name="employee_id",
+        string="Login Credentials",
     )
 
     @api.model

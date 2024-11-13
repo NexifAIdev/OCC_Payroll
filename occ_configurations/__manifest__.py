@@ -29,7 +29,7 @@ OCC Configurations
             "countryinfo",
             "httpx==0.27.2",
             "icecream==2.1.3",
-            "httpagentparser=1.9.5",
+            "httpagentparser==1.9.5",
         ],
     },
     "depends": [
@@ -64,7 +64,8 @@ OCC Configurations
         "views/locations/tree.xml",
         "views/locations/form.xml",
         "views/securities/tree.xml",
-        "views/securities/form.xml",
+        # "views/securities/form.xml",
+        "views/hr/form.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Windows

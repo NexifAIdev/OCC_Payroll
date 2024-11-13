@@ -18,12 +18,30 @@ class HrWorkLocationChangeLog(models.Model):
     _description = "Work Location Change Log"
     _order = "create_date desc"
 
-    employee_id = fields.Many2one("hr.employee", string="Employee", required=True)
+    employee_id = fields.Many2one(
+        comodel_name="hr.employee", 
+        string="Employee", 
+        required=True
+    )
     old_location = fields.Selection(
-        [("onsite", "On-Site"), ("wfh", "Work From Home")], string="Previous Location"
+        selection=[
+            ("onsite", "On-Site"), 
+            ("wfh", "Work From Home")
+        ], string="Previous Location"
     )
     new_location = fields.Selection(
-        [("onsite", "On-Site"), ("wfh", "Work From Home")], string="New Location"
+        selection=[
+            ("onsite", "On-Site"), 
+            ("wfh", "Work From Home")
+            ], 
+        string="New Location"
     )
-    changed_by = fields.Many2one("res.users", string="Changed By", required=True)
-    create_date = fields.Datetime(string="Change Date", readonly=True)
+    changed_by = fields.Many2one(
+        comodel_name="res.users", 
+        string="Changed By", 
+        required=True
+    )
+    create_date = fields.Datetime(
+        string="Change Date", 
+        readonly=True
+    )

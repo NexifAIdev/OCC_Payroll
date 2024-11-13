@@ -9,6 +9,19 @@
             <field name="parent_id" eval="False"/>
         </record>
 
+            <record model="ir.module.category" id="access_rights_occ_core_developers">
+                <field name="name">Module Developer</field>
+                <field name="parent_id" ref="category_occ_main"/>
+                <field name="sequence">1</field>
+                <field name="description">Module Developers</field>
+            </record>
+
+                <record id="group_occ_core_developers" model="res.groups">
+                    <field name="name">Core Developers</field>
+                    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+                    <field name="category_id" ref="access_rights_occ_core_developers"/>
+                </record>
+
             <record model="ir.module.category" id="access_rights_local_address_configuration">
                 <field name="name">Address Localization</field>
                 <field name="parent_id" ref="category_occ_main"/>
@@ -31,6 +44,12 @@
 
                 <record id="group_ip_address_configuration" model="res.groups">
                     <field name="name">IP Address Admin</field>
+                    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+                    <field name="category_id" ref="access_rights_ip_address_configuration"/>
+                </record>
+
+                <record id="group_ip_logger_configuration" model="res.groups">
+                    <field name="name">IP Logger Admin</field>
                     <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
                     <field name="category_id" ref="access_rights_ip_address_configuration"/>
                 </record>

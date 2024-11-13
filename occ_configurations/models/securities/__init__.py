@@ -1,3 +1,2 @@
 from . import ip_address
-from . import hr_employee
-from . import hr_work_location_changelog
+from . import ip_logger
