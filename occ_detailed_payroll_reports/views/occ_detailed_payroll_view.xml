@@ -6,8 +6,8 @@
         <field name="arch" type="xml">
             <form string="Occ Detailed Payroll Report">
                 <group class="oe_title">
-                    <field name="select_date"/>
                     <field name="multi_company_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
+                    <field name="select_date"/>
                     <field name="employee_type_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
                     <field name="date_from"/>
                     <field name="date_to"/>

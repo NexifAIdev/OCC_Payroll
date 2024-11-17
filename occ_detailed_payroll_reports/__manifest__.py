@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "occ_hr_employee",
+    'name': "OCC Detailed Payroll",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
