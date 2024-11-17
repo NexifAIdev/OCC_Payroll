@@ -10,30 +10,33 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
-class HDMFContribution(models.Model):
-    _name = "phic.contribution"
-    _snakecased_name = "phic_contribution"
-    _model_path_name = "occ_payroll.model_phic_contribution"
-    _description = "HDMF Contribution"
-    
+
+class MonthsTable(models.Model):
+    _name = "months.table"
+    _snakecased_name = "months_table"
+    _model_path_name = "occ_payroll.model_months_table"
+    _description = "Months Table"
+
     name = fields.Char(
         string="Type",
         default=False,
         required=True,
     )
-    
-    date = fields.Date(
-        string="Date",
+
+    short_name = fields.Char(
+        string="Short Name",
         default=False,
         required=True,
     )
-    
-    ee_amount = fields.Float(
-        string="EE",
+
+    ordinal_number = fields.Integer(
+        string="Number",
         default=False,
+        required=True,
     )
-    
-    er_amount = fields.Float(
-        string="ER",
+
+    cardinal_number = fields.Char(
+        string="Cardinal Number",
         default=False,
+        required=True,
     )

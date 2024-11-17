@@ -1,0 +1,11 @@
+id,name,active
+rate_type_config_ordinary_day,Ordinary Day,True
+rate_type_config_rest_day,Rest Day,True
+rate_type_config_special_day,Special Day,True
+rate_type_config_special_day_rest_day,Special Day falling on rest day,True
+rate_type_config_regular_holiday,Regular Holiday,True
+rate_type_config_regular_holiday_rest_day,Regular Holiday falling on rest day,True
+rate_type_config_double_holiday,Double Holiday,True
+rate_type_config_double_holiday_rest_day,Double Holiday falling on rest day,True
+rate_type_config_night_shift,Night Shift,True
+rate_type_config_overtime,Overtime,True

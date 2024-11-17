@@ -10,24 +10,27 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
-class EmployeeTypes(models.Model):
-    _name = "hr.employee.types"
-    _snakecased_name = "hr_employee_types"
-    _model_path_name = "occ_payroll.model_hr_employee_types"
-    _description = "Employee Types"
+
+class DeductionType(models.Model):
+    _name = "deduction.type"
+    _snakecased_name = "deduction_type"
+    _model_path_name = "occ_payroll.model_deduction_type"
+    _description = "Deduction Type"
 
     name = fields.Char(
-        string="Types",
+        string="Name of Deduction",
         default=False,
         required=True,
     )
-    
+
+    sequence = fields.Integer()
+
     description = fields.Char(
         string="Description",
         default=False,
         required=True,
     )
-    
+
     active = fields.Boolean(
         string="Active",
         default=True,

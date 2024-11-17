@@ -6,6 +6,7 @@ from typing import List
 # Local python modules
 
 # Custom python modules
+from icecream import ic
 
 # Odoo modules
 from odoo import tools
@@ -33,7 +34,7 @@ def import_csv_data(cr, directory: str, manual_exclusions: List[str] = None):
     module_path = os.path.abspath(module_path)
 
     for filename in os.listdir(module_path):
-        print(filename)
+        ic(filename)
         cond = all(
             [
                 filename.endswith(".csv"),
@@ -46,7 +47,7 @@ def import_csv_data(cr, directory: str, manual_exclusions: List[str] = None):
             file_path = os.path.join(directory, filename)
             tools.convert_file(
                 cr,
-                "occ_configurations",
+                "occ_payroll_config",
                 file_path,
                 None,
                 mode="init",
@@ -55,11 +56,35 @@ def import_csv_data(cr, directory: str, manual_exclusions: List[str] = None):
             )
 
 
-def import_csv_data_locations(cr):
+def import_csv_data_payslip(cr):
+    idref = {}
+    
     tools.convert_file(
         cr,
-        "occ_configurations",
-        "data/locations/res.region.csv",
+        "occ_payroll_config",
+        "data/payslip/rate.type.config.csv",
+        idref,
+        mode="init",
+        noupdate=True,
+        kind="init",
+    )
+    
+    tools.convert_file(
+        cr,
+        "occ_payroll_config",
+        "data/payslip/rate.type.list.csv",
+        idref,
+        mode="init",
+        noupdate=True,
+        kind="init",
+    )
+    
+
+def import_csv_data_payroll(cr):
+    tools.convert_file(
+        cr,
+        "occ_payroll_config",
+        "data/payroll/paycut.configuration.csv",
         None,
         mode="init",
         noupdate=True,
@@ -68,6 +93,7 @@ def import_csv_data_locations(cr):
 
 
 def main_post_hook(cr):
-    pass
-    # import_csv_data_locations(cr)
-    # import_csv_data(cr, directory="data/ips")
+    import_csv_data(cr, directory="data/configs")
+    import_csv_data_payslip(cr)
+    import_csv_data_payroll(cr)
+    

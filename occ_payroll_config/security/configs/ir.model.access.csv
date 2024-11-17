@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+,,,,,,,
+access_days_table,access_days_table,model_days_table,base.group_user,1,0,0,0
+access_months_table,access_months_table,model_months_table,base.group_user,1,0,0,0

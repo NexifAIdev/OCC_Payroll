@@ -9,6 +9,7 @@
             parent="menu_payroll_configurations"
             action="actwindow_employee_types"
             sequence="50"/>
+            
     </data>
     
 

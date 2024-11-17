@@ -31,7 +31,9 @@ OCC Payroll Configurations
 		# Security
 		#___________________________________________
         #  "security/security.xml",
-        "security/payroll/ir.model.access.csv",
+        "security/configs/ir.model.access.csv",
+        "security/hr/ir.model.access.csv",
+        "security/payslip/ir.model.access.csv",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Cron

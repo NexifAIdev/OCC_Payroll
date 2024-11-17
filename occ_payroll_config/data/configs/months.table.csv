@@ -1,0 +1,13 @@
+id,name,short_name,ordinal_number,cardinal_number
+month_january,January,Jan,1,First
+month_february,February,Feb,2,Second
+month_march,March,Mar,3,Third
+month_april,April,Apr,4,Fourth
+month_may,May,May,5,Fifth
+month_june,June,Jun,6,Sixth
+month_july,July,Jul,7,Seventh
+month_august,August,Aug,8,Eighth
+month_september,September,Sep,9,Ninth
+month_october,October,Oct,10,Tenth
+month_november,November,Nov,11,Eleventh
+month_december,December,Dec,12,Twelfth

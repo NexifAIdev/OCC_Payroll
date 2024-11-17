@@ -15,3 +15,14 @@ class EmployeeTypesCategory(models.Model):
     _snakecased_name = "hr_employee_types_category"
     _model_path_name = "occ_payroll.model_hr_employee_types_category"
     _description = "Employee Types Category"
+    
+    name = fields.Char(
+        string="Types",
+        default=False,
+        required=True,
+    )
+    
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+    )

@@ -1,1 +1,1 @@
-from . import employee_type
+from . import paycut_config
