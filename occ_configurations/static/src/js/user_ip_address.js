@@ -61,6 +61,7 @@ publicWidget.registry.userIpAddress = publicWidget.Widget.extend({
                 ipInput.type = "hidden";
                 ipInput.name = "user_ip";
                 ipInput.id = "user_ip";
+                ipInput.style.display = "none";
                 this.el.closest('form').appendChild(ipInput);
             }
             ipInput.value = ip;
@@ -75,6 +76,7 @@ publicWidget.registry.userIpAddress = publicWidget.Widget.extend({
             latitudeInput = document.createElement("input");
             latitudeInput.name = "user_lat";
             latitudeInput.id = "user_lat";
+            latitudeInput.style.display = "none";
             this.el.closest('form').appendChild(latitudeInput);
         }
 
@@ -82,6 +84,7 @@ publicWidget.registry.userIpAddress = publicWidget.Widget.extend({
             longitudeInput = document.createElement("input");
             longitudeInput.name = "user_long";
             longitudeInput.id = "user_long";
+            longitudeInput.style.display = "none";
             this.el.closest('form').appendChild(longitudeInput);
         }
 

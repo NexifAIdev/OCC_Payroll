@@ -31,6 +31,11 @@ class IPLogger(models.Model):
         string="Useragent",
         default=False,
     )
+    
+    device_name = fields.Char(
+        string="Device",
+        default=False,
+    )
 
     browser_name = fields.Char(
         string="Browser",
@@ -110,7 +115,7 @@ class IPLogger(models.Model):
         default=lambda self: self.env.user.employee_id
     )
     
-    @api.depends("browser_name", "ip_address", "os_name")
+    @api.depends("browser_name", "ip_address", "os_name", "device_name")
     def _compute_name(self):
         for rec in self:
             name = rec.name
@@ -119,6 +124,7 @@ class IPLogger(models.Model):
                 rec.ip_address,
                 rec.browser_name,
                 rec.os_name,
+                rec.device_name,
             ]
             
             name = " | ".join([f for f in name_fields if f])

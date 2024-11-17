@@ -8,6 +8,7 @@ import httpx
 from countryinfo import CountryInfo
 from icecream import ic
 import httpagentparser
+from user_agents import parse
 from datetime import datetime, timezone as tzone
 from zoneinfo import ZoneInfo
 
@@ -99,11 +100,11 @@ class WebLoginIP(Home):
                         break
 
             except httpx.RequestError as e:
-                print(f"Request to {api['url']} failed: {e}")
+                ic(f"Request to {api['url']} failed: {e}")
             except httpx.HTTPStatusError as e:
-                print(f"HTTP error from {api['url']}: {e}")
+                ic(f"HTTP error from {api['url']}: {e}")
             except Exception as e:
-                print(f"Unexpected error from {api['url']}: {e}")
+                ic(f"Unexpected error from {api['url']}: {e}")
 
         return ip_info
 
@@ -111,8 +112,8 @@ class WebLoginIP(Home):
     def web_login(self, redirect=None, **kw):
         ensure_db()
         
-        # print(f"{kw=}")
-        # print(f"{request.params=}")
+        # ic(f"{kw=}")
+        # ic(f"{request.params=}")
 
         # Initialize values and params
         values = {k: v for k, v in request.params.items() if k in ["login", "password"]}
@@ -132,7 +133,14 @@ class WebLoginIP(Home):
         # Check if this is a POST request (login attempt)
         if request.httprequest.method == "POST" and request.params.get("login"):
             # Fetch IP address and user agent before authentication
-            print(request.geoip)
+            # ic(request.geoip.city.name)
+            # ic(request.geoip.country.name)
+            # ic(request.geoip.continent.name)
+            # ic(request.geoip.location.latitude)
+            # ic(request.geoip.location.longitude)
+            # ic(request.geoip.ip)
+            # ic(request.httprequest.user_agent.browser)
+            # ic(request.httprequest.user_agent)
             curr_ip_address = (
                 kw.get("user_ip")
                 or request.params.get("user_ip")
@@ -142,11 +150,25 @@ class WebLoginIP(Home):
             ip_info = self.fetch_public_ip_info(curr_ip_address)
             ip_address_db = request.env["res.ip.address"].sudo()
             # Collect Login Info
-            agent_details = httpagentparser.detect(
-                request.httprequest.environ.get("HTTP_USER_AGENT")
+            useragent_string = request.httprequest.environ.get("HTTP_USER_AGENT")
+            agent_details = httpagentparser.detect(useragent_string)
+            user_agent = parse(useragent_string)
+            
+            device_type = user_agent.device.family
+            if user_agent.is_mobile:
+                device_type = "Phone"
+            elif user_agent.is_tablet:
+                device_type = "Tablet"
+            elif user_agent.is_pc:
+                device_type = "Desktop"
+            else:
+                device_type = "Unknown"
+            
+            user_os = user_agent.os.family or agent_details.get("os", {}).get("name", "Unknown")
+            browser_name = user_agent.browser.family or agent_details.get("browser", {}).get(
+                "name", "Unknown"
             )
-            user_os = agent_details.get("os", {}).get("name", "Unknown")
-            browser_name = agent_details.get("browser", {}).get(
+            device_name = device_type or agent_details.get("platform", {}).get(
                 "name", "Unknown"
             )
             lat = (
@@ -199,6 +221,12 @@ class WebLoginIP(Home):
                 user_rec.has_group("occ_configurations.group_wfh_employee"),
             ]
             
+            block_access_platforms = [
+                user_agent.is_mobile,
+                user_agent.is_tablet,
+                user_agent.is_bot,
+            ]
+            
             ip_logger_user = request.env["ip.logger"]
             user_time = datetime.now()
             # user_time = current_time_utc.astimezone(ZoneInfo(timezone))
@@ -222,6 +250,7 @@ class WebLoginIP(Home):
                     "ip_address": curr_ip_address,
                     "browser_name": browser_name,
                     "os_name": user_os,
+                    "device_name": device_name,
                     "lattitude": lat,
                     "longitude": lon,
                     "location_name": " | ".join([f for f in location_fields if f]),
@@ -239,7 +268,7 @@ class WebLoginIP(Home):
             
 
             # Validate IP if necessary
-            if not any(bypass_ip_check) and curr_ip_address:
+            if not any(bypass_ip_check) and curr_ip_address and not any(block_access_platforms):
                 allowed_ip = ip_address_db.search(
                     [("ip_address", "=", curr_ip_address)], limit=1
                 )
