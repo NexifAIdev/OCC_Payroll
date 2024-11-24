@@ -44,6 +44,7 @@ OCC Configurations
 		# Security
 		#___________________________________________
         "security/security.xml",
+        "security/configs/ir.model.access.csv",
         "security/locations/ir.model.access.csv",
         "security/securities/ir.model.access.csv",
 		#-------------------------------------------
@@ -62,6 +63,7 @@ OCC Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Views
 		#___________________________________________
+        "views/configs/tree.xml",
         "views/locations/tree.xml",
         "views/locations/form.xml",
         "views/securities/tree.xml",
@@ -71,6 +73,7 @@ OCC Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Windows
 		#___________________________________________
+        "views/configs/windows.xml",
         "views/locations/windows.xml",
         "views/securities/windows.xml",
 		#-------------------------------------------
@@ -82,6 +85,7 @@ OCC Configurations
 		# Menus
 		#___________________________________________
 		"views/menuitems.xml",
+        "views/configs/menuitems.xml",
         "views/locations/menuitems.xml",
         "views/securities/menuitems.xml",
 		#-------------------------------------------

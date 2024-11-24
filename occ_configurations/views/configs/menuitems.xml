@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem
+            id="menu_payroll_extended_configurations"
+            name="Payroll Configuration"
+            parent="occ_configurations.menu_occ_configurations"
+            sequence="100"/>
+
+        <menuitem
+            id="menu_paycut_configuration"
+            action="actwindow_paycut_configuration"
+            parent="menu_payroll_extended_configurations"
+            sequence="10"/>
+    
+    </data>
+    
+
+</odoo>

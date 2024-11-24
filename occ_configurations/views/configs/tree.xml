@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="viewtree_paycut_configuration" model="ir.ui.view">
+            <field name="name">viewtree.paycut.configuration</field>
+            <field name="model">paycut.configuration</field>
+            <field name="arch" type="xml">
+                <tree string="IP Address" editable="bottom">
+                    <field name="name" />
+                    <field name="start_day" />
+                    <field name="end_day" />
+                    <field name="description" />
+                    <field name="active" optional="show"/>
+                </tree>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>
