@@ -24,5 +24,6 @@
     'data': [
         'security/ir.model.access.csv',
         'views/occ_detailed_payroll_view.xml',
+        'views/sss_report.xml',
     ],
 }

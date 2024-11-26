@@ -78,7 +78,7 @@
 
             <!-- Added Government Details -->
             <xpath expr="//field[@name='ssnid']" position='attributes'>
-                <attribute name="invisible"/>
+                <attribute name="invisible">True</attribute>
             </xpath>
             <xpath expr="//field[@name='ssnid']" position='after'>
                 <field name="sss_no"/>

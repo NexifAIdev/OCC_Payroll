@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="custom_sss_report" model="ir.ui.view">
+        <field name="name">SSS Summary Report</field>
+        <field name="model">sss.report</field>
+        <field name="arch" type="xml">
+            <form string="SSS Summary Report">
+                <group class="oe_title">
+                    <field name="multi_company_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
+                    <field name="select_date"/>
+                    <field name="paysched_compute" invisible="True"/>
+                    <field name="dates_compute" invisible="True"/>
+                    <field name="employee_type_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
+                    <field name="year" required="True" readonly="False" />
+                    <field name="month" required="True" readonly="False" />
+                    <field name="paycut_period_domain" 
+                        options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"
+                        invisible="True"
+                        />
+                    <field name="paycut_period" 
+                        readonly="year == False or month == False"
+                        required="True"
+                        options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"
+                        />
+                    <field name="date_from" readonly="True"/>
+                    <field name="date_to" readonly="True"/>
+                </group>
+                <hr/>
+                <footer>
+                    <button name="print_sss_report" string="Print XLS" type="object" class="oe_highlight" />
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+        <!-- Define an action for the wizard -->
+        <record id="action_attendance_view_custom_wizard_sss_report" model="ir.actions.act_window">
+            <field name="name">SSS Summary Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sss.report</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="custom_sss_report"/>
+        </record>
+
+        <menuitem action="action_attendance_view_custom_wizard_sss_report"
+              id="menu_attendance_view_custom_wizard_sss_report"
+              parent="menu_department_main"
+              sequence="2"
+              />
+</odoo>

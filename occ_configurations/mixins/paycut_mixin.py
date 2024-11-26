@@ -16,7 +16,7 @@ class PaycutMixin(models.AbstractModel):
     _name = "paycut.mixin"
     _description = "Paycut Mixin"
     
-    def get_last_day_of_month(year, month):
+    def get_last_day_of_month(self, year, month):
         if month < 1 or month > 12:
             raise ValueError("Month must be between 1 and 12.")
         if year < 1:
@@ -52,6 +52,6 @@ class PaycutMixin(models.AbstractModel):
         )
         
         return {
-            "first_half": paycut_first_half if paycut_first_half else False,
-            "second_half": paycut_second_half if paycut_second_half else False,
+            "first_half": paycut_first_half.id if paycut_first_half else False,
+            "second_half": paycut_second_half.id if paycut_second_half else False,
         }

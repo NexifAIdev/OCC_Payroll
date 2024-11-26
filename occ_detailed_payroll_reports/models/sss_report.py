@@ -12,26 +12,47 @@ import io
 import xlsxwriter, base64
 
 
-class InheritHrEmployee(models.Model):
-    _inherit = 'hr.employee'
-    
-    employee_type_id = fields.Many2one(
-    comodel_name='hr.employee.types',
-    string='Employee Type',
-    )
-
-
-class OccDetailedPayrollReport(models.TransientModel):
-    _name = 'occ.detailed.payroll.report'
-    _description = 'Occ Detailed Payroll Report'
+class SSSReport(models.TransientModel):
+    _name = 'sss.report'
+    _inherit = ['paycut.mixin']
+    _description = 'SSS Summary Report'
 
     excel_file = fields.Binary("Excel File")
     select_date = fields.Selection(
         string="Pay Schedule:",
         selection=[("first", "Payroll of 1-15"), ("second", "Payroll of 16-30")]
     )
-    date_from = fields.Date(string="Date From")
-    date_to = fields.Date(string="Date to")
+    
+    paysched_compute = fields.Datetime(
+        compute="_compute_paysched",
+    )
+    
+    dates_compute = fields.Datetime(
+        compute="_compute_dates",
+    )
+    
+    year = fields.Integer(
+        string="Year",
+    )
+    
+    month = fields.Selection(
+        selection=lambda self: [(i, f"{i:02}") for i in range(1,13,1)],
+        string="Month",
+    )
+    
+    paycut_period_domain = fields.Many2many(
+        comodel_name="paycut.configuration",
+        string="Pay Schedule Domain"
+    )
+    
+    paycut_period = fields.Many2one(
+        comodel_name="paycut.configuration",
+        string="Pay Schedule",
+        domain="[('id', '=', paycut_period_domain)]",
+    )
+    
+    date_from = fields.Date(string="Date From", readonly=True)
+    date_to = fields.Date(string="Date to", readonly=True)
     
     multi_company_id = fields.Many2one(
     comodel_name='res.company',
@@ -42,6 +63,66 @@ class OccDetailedPayrollReport(models.TransientModel):
     comodel_name='hr.employee.types',
     string='Employee Type',
     )
+    
+    @api.depends("year", "month")
+    def _compute_paysched(self):
+        for rec in self:
+            year = rec.year
+            month = rec.month
+            
+            paycut = False
+            if year and month:
+                pay_sched_ids = rec._get_paycut_period(year, int(month))
+                
+                paycut = self.env["paycut.configuration"].search(
+                    domain=[
+                        ("id", "in", [v for k,v in pay_sched_ids.items() if v])
+                    ]
+                )
+                print(paycut)
+            
+            rec.paycut_period_domain = [(6, 0, paycut.ids)] if paycut else [(5, 0, 0)]
+            print(rec.paycut_period_domain)
+            
+            rec.paysched_compute = fields.Datetime.now()
+            
+            
+    @api.depends("paycut_period")
+    def _compute_dates(self):
+        for rec in self:
+            date_from = rec.date_from
+            date_to = rec.date_to
+            pay_sched = rec.paycut_period
+            year = rec.year
+            month = rec.month
+            
+            print(pay_sched)
+            
+            if pay_sched and year and month:
+                first = pay_sched.start_day
+                last = pay_sched.end_day
+                
+                print(first)
+                print(last)
+                
+                date_from = datetime.strptime(
+                    f"{year}-{month}-{first}",
+                    "%Y-%m-%d",
+                ).date()
+                
+                date_to = datetime.strptime(
+                    f"{year}-{month}-{last}",
+                    "%Y-%m-%d",
+                ).date()
+                
+                print(date_from)
+                print(date_to)
+                
+            rec.date_from = date_from
+            rec.date_to = date_to
+            
+            rec.dates_compute = fields.Datetime.now()
+            
 
     @api.onchange("date_from", "date_to")
     def _check_date_range(self):
@@ -68,7 +149,7 @@ class OccDetailedPayrollReport(models.TransientModel):
             date_to = self.date_to.strftime("%B %-d, %Y")
             return f"{date_from} - {date_to}"
 
-    def print_occ_detailed_payroll_report(self):
+    def print_sss_report(self):
 
         output = io.BytesIO()
         row = 0
@@ -244,7 +325,7 @@ class OccDetailedPayrollReport(models.TransientModel):
 
         # Header Main
         is_details.write('B1', "One Contact Center Inc.", headerformatbold)
-        is_details.write('B2', f"{emp_type} Payroll", headerformatbold)     
+        is_details.write('B2', f"{emp_type} SSS Summary Report", headerformatbold)     
         is_details.write('B3', f"Attendance: {date_range}", headerformat) 
         is_details.write('B4', current_datetime, dateformat)            
         
@@ -253,107 +334,49 @@ class OccDetailedPayrollReport(models.TransientModel):
                 (" ", headerdetailbold),
                 ("NAME", headerdetailbold),
                 ("CAMPAIGN", headerdetailbold),
+                ("SSS NO.", headerdetailbold),
                 ("HIRE DATE", headerdetailbold),
-                ("BASIC SALARY", headerdetailbold),
-                ("ABSENCES/ LATE/ UNDERTIME", headerdetailbold),
-                ("OVERTIME", headerdetailbold),
-                ("OTHER TAXABLE INCOME", headerdetailbold),
-                ("DE MENIMIS", headerdetailbold),
-                ("RETENTION BONUS", headerdetailboldnet),
-                ("OTHER NON TAXABLE INCOME", headerdetailboldnet),
-                ("GROSS INCOME", headerdetailbold),
                 ("SSS", headerdetailbold),
                 ("SSS WISP", headerdetailbold),
-                ("PHIC", headerdetailbold),
-                ("HDMF", headerdetailbold),
-                ("Additional HDMF", headerdetailbold),
-                ("WTAX", headerdetailbold),
-                ("TOTAL DEDUCTIONS", headerdetailbold),
-                ("NET PAY", headerdetailboldnet),
                 ("SSS EC SHARE", headerdetailbold),
                 ("SSS ER SHARE", headerdetailbold),
-                ("SSS WISPER", headerdetailbold),
-                ("PHIC ER SHARE", headerdetailbold),
-                ("HDMF ER SHARE", headerdetailbold)
+                ("SSS WISPER", headerdetailbold)
             ]
         elif emp_type == "Consultant":
             headers = [
                 (" ", headerdetailbold),
                 ("EMPLOYEE ID", headerdetailbold),
                 ("NAME", headerdetailbold),
+                ("SSS NO.", headerdetailbold),
                 ("HIRE DATE", headerdetailbold),
-                ("BASIC SALARY", headerdetailbold),
-                ("Allowance & Reimbursable Allowance ABSENCES / LATE / UNDERTIME", headerdetailbold),
-                ("OVERTIME", headerdetailbold),
-                ("OTHER TAXABLE INCOME", headerdetailbold),
-                ("DE MENIMIS", headerdetailbold),
-                ("DAILY ALLOWANCE", headerdetailboldnet),
-                ("OTHER NON TAXABLE INCOME", headerdetailboldnet),
-                ("GROSS INCOME", headerdetailbold),
                 ("SSS", headerdetailbold),
-                ("SSS WISP", headerdetailbold),
-                ("PHIC", headerdetailbold),
-                ("HDMF", headerdetailbold),
-                ("Additional HDMF", headerdetailbold),
-                ("WTAX", headerdetailbold),
-                ("TOTAL DEDUCTIONS", headerdetailbold),
-                ("NET PAY", headerdetailboldnet)
+                ("SSS WISP", headerdetailbold)
             ]
         elif emp_type == "Probitionary":
             headers = [
                 (" ", headerdetailbold),
                 ("NAME", headerdetailbold),
                 ("CAMPAIGN", headerdetailbold),
+                ("SSS NO.", headerdetailbold),
                 ("HIRE DATE", headerdetailbold),
-                ("BASIC SALARY", headerdetailbold),
-                ("ABSENCES/ LATE/ UNDERTIME", headerdetailbold),
-                ("OVERTIME", headerdetailbold),
-                ("OTHER TAXABLE INCOME", headerdetailbold),
-                ("DE MENIMIS", headerdetailbold),
-                ("RETENTION BONUS", headerdetailboldnet),
-                ("OTHER NON TAXABLE INCOME", headerdetailboldnet),
-                ("GROSS INCOME", headerdetailbold),
                 ("SSS", headerdetailbold),
                 ("SSS WISP", headerdetailbold),
-                ("PHIC", headerdetailbold),
-                ("HDMF", headerdetailbold),
-                ("Additional HDMF", headerdetailbold),
-                ("WTAX", headerdetailbold),
-                ("TOTAL DEDUCTIONS", headerdetailbold),
-                ("NET PAY", headerdetailboldnet),
                 ("SSS EC SHARE", headerdetailbold),
                 ("SSS ER SHARE", headerdetailbold),
-                ("SSS WISPER", headerdetailbold),
-                ("PHIC ER SHARE", headerdetailbold),
-                ("HDMF ER SHARE", headerdetailbold)
+                ("SSS WISPER", headerdetailbold)
             ]            
         else:
             headers = [
                 (" ", headerdetailbold),
                 ("NAME", headerdetailbold),
                 ("DEPARTMENT", headerdetailbold),
+                ("SSS NO.", headerdetailbold),
                 ("HIRE DATE", headerdetailbold),
-                ("BASIC SALARY", headerdetailbold),
-                ("ABSENCES/ LATE/ UNDERTIME", headerdetailbold),
-                ("OVERTIME", headerdetailbold),
-                ("OTHER TAXABLE INCOME", headerdetailbold),
-                ("DE MENIMIS", headerdetailbold),
-                ("RETENTION BONUS", headerdetailboldnet),
-                ("OTHER NON TAXABLE INCOME", headerdetailboldnet),
-                ("GROSS INCOME", headerdetailbold),
                 ("SSS", headerdetailbold),
                 ("SSS WISP", headerdetailbold),
-                ("PHIC", headerdetailbold),
-                ("HDMF", headerdetailbold),
-                ("Additional HDMF", headerdetailbold),
-                ("WTAX", headerdetailbold),
-                ("TOTAL DEDUCTIONS", headerdetailbold),
-                ("NET PAY", headerdetailboldnet),
                 ("SSS EC SHARE", headerdetailbold),
                 ("SSS ER SHARE", headerdetailbold),
-                ("SSS WISPER", headerdetailbold),
-                ("PHIC ER SHARE", headerdetailbold),
-                ("HDMF ER SHARE", headerdetailbold)
+                ("SSS WISPER", headerdetailbold)
             ]
 
         # Write headers starting from B6
@@ -377,28 +400,12 @@ class OccDetailedPayrollReport(models.TransientModel):
                 TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                 het.name AS emp_type,                                          -- 4
                 rc.name AS company,                                            -- 5
-                (hc.wage / 2)::NUMERIC AS basic_sal,                           -- 6
-                SUM(hp_wages_cte.wages)::NUMERIC AS wages,                     -- 7
-                0.00 AS absent_late_undertime,								   -- 8
-                0.00 AS overtime,											   -- 9
-                0.00 AS other_tax_income,									   -- 10
-                0.00 AS de_menimis,											   -- 11
-                0.00 AS retention_bonus,									   -- 12
-                0.00 AS other_non_tax_income,								   -- 13
-                0.00 AS gross_income,										   -- 14
-                0.00 AS sss,												   -- 15
-                0.00 AS sss_wisp,											   -- 16
-                0.00 AS phic,												   -- 17
-                200.00 AS hdmf,												   -- 18
-                0.00 AS addnl_hdmf,											   -- 19
-                0.00 AS wtx,												   -- 20
-                0.00 AS total_deduction,									   -- 21
-                0.00 AS net_pay,											   -- 22
-                30.00 AS sss_ec_share,										   -- 23
-                0.00 AS sss_er_share,										   -- 24
-                0.00 AS sss_whisper,										   -- 25
-                0.00 AS phic_er_share,										   -- 26
-                200.00 AS hdmf_er_share										   -- 27
+                0.00 AS sss,												   -- 6
+                0.00 AS sss_wisp,											   -- 7
+                30.00 AS sss_ec_share,										   -- 8
+                0.00 AS sss_er_share,										   -- 8
+                0.00 AS sss_whisper, 										   -- 10
+                he.sss_no AS sss_no      									   -- 11
 
             FROM hr_payslip hp 
             LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -421,8 +428,6 @@ class OccDetailedPayrollReport(models.TransientModel):
             AND he.employee_type_id = {self.employee_type_id.id}
             AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
 
-            GROUP BY 
-                he.name, hd.name, he.joining_date, het.name, rc.name, hc.wage;
             """
             params = (self.multi_company_id.id, self.employee_type_id.id, self.date_from, self.date_to)
         
@@ -439,28 +444,13 @@ class OccDetailedPayrollReport(models.TransientModel):
                 TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                 het.name AS emp_type,                                          -- 4
                 rc.name AS company,                                            -- 5
-                (hc.wage / 2)::NUMERIC AS basic_sal,                           -- 6
-                SUM(hp_wages_cte.wages)::NUMERIC AS wages,                     -- 7
-                0.00 AS absent_late_undertime,								   -- 8
-                0.00 AS overtime,											   -- 9
-                0.00 AS other_tax_income,									   -- 10
-                0.00 AS de_menimis,											   -- 11
-                0.00 AS retention_bonus,									   -- 12
-                0.00 AS other_non_tax_income,								   -- 13
-                0.00 AS gross_income,										   -- 14
-                0.00 AS sss,												   -- 15
-                0.00 AS sss_wisp,											   -- 16
-                0.00 AS phic,												   -- 17
-                200.00 AS hdmf,												   -- 18
-                0.00 AS addnl_hdmf,											   -- 19
-                0.00 AS wtx,												   -- 20
-                0.00 AS total_deduction,									   -- 21
-                0.00 AS net_pay,											   -- 22
-                30.00 AS sss_ec_share,										   -- 23
-                0.00 AS sss_er_share,										   -- 24
-                0.00 AS sss_whisper,										   -- 25
-                0.00 AS phic_er_share,										   -- 26
-                200.00 AS hdmf_er_share										   -- 27
+                250.00 AS sss,												   -- 6
+                0.00 AS sss_wisp,											   -- 7
+                30.00 AS sss_ec_share,										   -- 8
+                0.00 AS sss_er_share,										   -- 9
+                0.00 AS sss_whisper, 										   -- 10
+                he.sss_no AS sss_no,      									   -- 11
+                he.employee_id AS emp_id                                       -- 12
 
             FROM hr_payslip hp 
             LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -482,9 +472,7 @@ class OccDetailedPayrollReport(models.TransientModel):
             AND rc.id = {self.multi_company_id.id}
             AND he.employee_type_id = {self.employee_type_id.id}
             AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
-
-            GROUP BY 
-                he.name, hd.name, he.joining_date, het.name, rc.name, hc.wage;
+            
             """
             params = (self.multi_company_id.id, self.employee_type_id.id, self.date_from, self.date_to)
         
@@ -501,28 +489,12 @@ class OccDetailedPayrollReport(models.TransientModel):
                 TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                 het.name AS emp_type,                                          -- 4
                 rc.name AS company,                                            -- 5
-                (hc.wage / 2)::NUMERIC AS basic_sal,                           -- 6
-                SUM(hp_wages_cte.wages)::NUMERIC AS wages,                     -- 7
-                0.00 AS absent_late_undertime,								   -- 8
-                0.00 AS overtime,											   -- 9
-                0.00 AS other_tax_income,									   -- 10
-                0.00 AS de_menimis,											   -- 11
-                0.00 AS retention_bonus,									   -- 12
-                0.00 AS other_non_tax_income,								   -- 13
-                0.00 AS gross_income,										   -- 14
-                0.00 AS sss,												   -- 15
-                0.00 AS sss_wisp,											   -- 16
-                0.00 AS phic,												   -- 17
-                200.00 AS hdmf,												   -- 18
-                0.00 AS addnl_hdmf,											   -- 19
-                0.00 AS wtx,												   -- 20
-                0.00 AS total_deduction,									   -- 21
-                0.00 AS net_pay,											   -- 22
-                30.00 AS sss_ec_share,										   -- 23
-                0.00 AS sss_er_share,										   -- 24
-                0.00 AS sss_whisper,										   -- 25
-                0.00 AS phic_er_share,										   -- 26
-                200.00 AS hdmf_er_share										   -- 27
+                0.00 AS sss,												   -- 6
+                0.00 AS sss_wisp,											   -- 7
+                30.00 AS sss_ec_share,										   -- 8
+                0.00 AS sss_er_share,										   -- 8
+                0.00 AS sss_whisper, 										   -- 10
+                he.sss_no AS sss_no      									   -- 11
 
             FROM hr_payslip hp 
             LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -545,8 +517,6 @@ class OccDetailedPayrollReport(models.TransientModel):
             AND he.employee_type_id = {self.employee_type_id.id}
             AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
 
-            GROUP BY 
-                he.name, hd.name, he.joining_date, het.name, rc.name, hc.wage;
             """
             params = (self.multi_company_id.id, self.employee_type_id.id, self.date_from, self.date_to)
         
@@ -563,28 +533,12 @@ class OccDetailedPayrollReport(models.TransientModel):
                 TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                 het.name AS emp_type,                                          -- 4
                 rc.name AS company,                                            -- 5
-                (hc.wage / 2)::NUMERIC AS basic_sal,                           -- 6
-                SUM(hp_wages_cte.wages)::NUMERIC AS wages,                     -- 7
-                0.00 AS absent_late_undertime,								   -- 8
-                0.00 AS overtime,											   -- 9
-                0.00 AS other_tax_income,									   -- 10
-                0.00 AS de_menimis,											   -- 11
-                0.00 AS retention_bonus,									   -- 12
-                0.00 AS other_non_tax_income,								   -- 13
-                0.00 AS gross_income,										   -- 14
-                0.00 AS sss,												   -- 15
-                0.00 AS sss_wisp,											   -- 16
-                0.00 AS phic,												   -- 17
-                200.00 AS hdmf,												   -- 18
-                0.00 AS addnl_hdmf,											   -- 19
-                0.00 AS wtx,												   -- 20
-                0.00 AS total_deduction,									   -- 21
-                0.00 AS net_pay,											   -- 22
-                30.00 AS sss_ec_share,										   -- 23
-                0.00 AS sss_er_share,										   -- 24
-                0.00 AS sss_whisper,										   -- 25
-                0.00 AS phic_er_share,										   -- 26
-                200.00 AS hdmf_er_share										   -- 27
+                0.00 AS sss,												   -- 6
+                0.00 AS sss_wisp,											   -- 7
+                30.00 AS sss_ec_share,										   -- 8
+                0.00 AS sss_er_share,										   -- 8
+                0.00 AS sss_whisper, 										   -- 10
+                he.sss_no AS sss_no      									   -- 11
 
             FROM hr_payslip hp 
             LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -607,8 +561,6 @@ class OccDetailedPayrollReport(models.TransientModel):
             AND he.employee_type_id = {self.employee_type_id.id}
             AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
 
-            GROUP BY 
-                he.name, hd.name, he.joining_date, het.name, rc.name, hc.wage;
             """
             params = (self.multi_company_id.id, self.employee_type_id.id, self.date_from, self.date_to)
             
@@ -631,52 +583,19 @@ class OccDetailedPayrollReport(models.TransientModel):
                 col += 1
                 is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                 col += 1
+                is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                col += 1
                 is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                 col += 1
-                # Round the Basic Salary to 2 decimal places before writing it to the cell
-                basic_salary = round(detail_body[6], 2)
-                is_details.write(row, col, basic_salary, bodydetailboldnetcurrency)  # Basic Salary
+                is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
                 col += 1
-                
-                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # Absent Late Undertime
+                is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
                 col += 1
-                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # Overtime
+                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
                 col += 1
-                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # Other Tax Income
+                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # SSS ER Share
                 col += 1
-                is_details.write(row, col, detail_body[11], bodydetailnormalnetcurrency)  # De Minimis
-                col += 1
-                is_details.write(row, col, detail_body[12], bodydetailnormalnetcurrency)  # Retention Bonus
-                col += 1
-                is_details.write(row, col, detail_body[13], bodydetailboldnetcurrency)  # Other Non-Tax Income
-                col += 1
-                is_details.write(row, col, detail_body[14], bodydetailnormalnetcurrency)  # Gross Income
-                col += 1
-                is_details.write(row, col, detail_body[15], bodydetailnormalnetcurrency)  # SSS
-                col += 1
-                is_details.write(row, col, detail_body[16], bodydetailnormalnetcurrency)  # SSS WISP
-                col += 1
-                is_details.write(row, col, detail_body[17], bodydetailnormalnetcurrency)  # PHIC
-                col += 1
-                is_details.write(row, col, detail_body[18], bodydetailnormalnetcurrency)  # HDMF
-                col += 1
-                is_details.write(row, col, detail_body[19], bodydetailnormalnetcurrency)  # Additional HDMF
-                col += 1
-                is_details.write(row, col, detail_body[20], bodydetailnormalnetcurrency)  # WTX
-                col += 1
-                is_details.write(row, col, detail_body[21], bodydetailnormalnetcurrency)  # Total Deduction
-                col += 1
-                is_details.write(row, col, detail_body[22], bodydetailboldnetcurrency)  # Net Pay
-                col += 1
-                is_details.write(row, col, detail_body[23], bodydetailnormalnetcurrency)  # SSS EC Share
-                col += 1
-                is_details.write(row, col, detail_body[24], bodydetailnormalnetcurrency)  # SSS ER Share
-                col += 1
-                is_details.write(row, col, detail_body[25], bodydetailnormalnetcurrency)  # SSS Whisper
-                col += 1
-                is_details.write(row, col, detail_body[26], bodydetailnormalnetcurrency)  # PHIC ER Share
-                col += 1
-                is_details.write(row, col, detail_body[27], bodydetailnormalnetcurrency)  # HDMF ER Share
+                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
                 col += 1
                 
                 # Increment row for the next employee
@@ -686,9 +605,10 @@ class OccDetailedPayrollReport(models.TransientModel):
             is_details.write_blank(row, 0, None, bodydetailbold)  # Column A
             is_details.write_blank(row, 1, None, bodydetailbold)  # Column B
             is_details.write_blank(row, 2, None, bodydetailbold)  # Column C
-            is_details.write(row, 3, "TOTAL", bodydetailbold)  # Column D (index 3)
-            total_wages = sum(row[7] for row in detail_body_row)  # Sum of wages
-            is_details.write(row, 4, round(total_wages, 2), bodydetailboldnetcurrency)
+            is_details.write_blank(row, 3, None, bodydetailbold)  # Column C
+            is_details.write(row, 4, "TOTAL", bodydetailbold)  # Column D (index 3)
+            total_wages = sum(row[6] for row in detail_body_row)  # Sum of wages
+            is_details.write(row, 5, round(total_wages, 2), bodydetailboldnetcurrency)
             
         elif emp_type == "Consultant":
             for detail_body in detail_body_row:
@@ -702,52 +622,13 @@ class OccDetailedPayrollReport(models.TransientModel):
                 col += 1
                 is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                 col += 1
+                is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                col += 1
                 is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                 col += 1
-                # Round the Basic Salary to 2 decimal places before writing it to the cell
-                basic_salary = round(detail_body[6], 2)
-                is_details.write(row, col, basic_salary, bodydetailboldnetcurrency)  # Basic Salary
+                is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
                 col += 1
-                
-                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # Absent Late Undertime
-                col += 1
-                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # Overtime
-                col += 1
-                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # Other Tax Income
-                col += 1
-                is_details.write(row, col, detail_body[11], bodydetailnormalnetcurrency)  # De Minimis
-                col += 1
-                is_details.write(row, col, detail_body[12], bodydetailnormalnetcurrency)  # Retention Bonus
-                col += 1
-                is_details.write(row, col, detail_body[13], bodydetailboldnetcurrency)  # Other Non-Tax Income
-                col += 1
-                is_details.write(row, col, detail_body[14], bodydetailnormalnetcurrency)  # Gross Income
-                col += 1
-                is_details.write(row, col, detail_body[15], bodydetailnormalnetcurrency)  # SSS
-                col += 1
-                is_details.write(row, col, detail_body[16], bodydetailnormalnetcurrency)  # SSS WISP
-                col += 1
-                is_details.write(row, col, detail_body[17], bodydetailnormalnetcurrency)  # PHIC
-                col += 1
-                is_details.write(row, col, detail_body[18], bodydetailnormalnetcurrency)  # HDMF
-                col += 1
-                is_details.write(row, col, detail_body[19], bodydetailnormalnetcurrency)  # Additional HDMF
-                col += 1
-                is_details.write(row, col, detail_body[20], bodydetailnormalnetcurrency)  # WTX
-                col += 1
-                is_details.write(row, col, detail_body[21], bodydetailnormalnetcurrency)  # Total Deduction
-                col += 1
-                is_details.write(row, col, detail_body[22], bodydetailboldnetcurrency)  # Net Pay
-                col += 1
-                is_details.write(row, col, detail_body[23], bodydetailnormalnetcurrency)  # SSS EC Share
-                col += 1
-                is_details.write(row, col, detail_body[24], bodydetailnormalnetcurrency)  # SSS ER Share
-                col += 1
-                is_details.write(row, col, detail_body[25], bodydetailnormalnetcurrency)  # SSS Whisper
-                col += 1
-                is_details.write(row, col, detail_body[26], bodydetailnormalnetcurrency)  # PHIC ER Share
-                col += 1
-                is_details.write(row, col, detail_body[27], bodydetailnormalnetcurrency)  # HDMF ER Share
+                is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
                 col += 1
                 
                 # Increment row for the next employee
@@ -757,9 +638,10 @@ class OccDetailedPayrollReport(models.TransientModel):
             is_details.write_blank(row, 0, None, bodydetailbold)  # Column A
             is_details.write_blank(row, 1, None, bodydetailbold)  # Column B
             is_details.write_blank(row, 2, None, bodydetailbold)  # Column C
-            is_details.write(row, 3, "TOTAL", bodydetailbold)  # Column D (index 3)
-            total_wages = sum(row[7] for row in detail_body_row)  # Sum of wages
-            is_details.write(row, 4, round(total_wages, 2), bodydetailboldnetcurrency)
+            is_details.write_blank(row, 3, None, bodydetailbold)  # Column C
+            is_details.write(row, 4, "TOTAL", bodydetailbold)  # Column D (index 3)
+            total_wages = sum(row[6] for row in detail_body_row)  # Sum of wages
+            is_details.write(row, 5, round(total_wages, 2), bodydetailboldnetcurrency)
             
         elif emp_type == "Probitionary":
             for detail_body in detail_body_row:
@@ -773,52 +655,19 @@ class OccDetailedPayrollReport(models.TransientModel):
                 col += 1
                 is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                 col += 1
+                is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                col += 1
                 is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                 col += 1
-                # Round the Basic Salary to 2 decimal places before writing it to the cell
-                basic_salary = round(detail_body[6], 2)
-                is_details.write(row, col, basic_salary, bodydetailboldnetcurrency)  # Basic Salary
+                is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
                 col += 1
-
-                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # Absent Late Undertime
+                is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
                 col += 1
-                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # Overtime
+                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
                 col += 1
-                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # Other Tax Income
+                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # SSS ER Share
                 col += 1
-                is_details.write(row, col, detail_body[11], bodydetailnormalnetcurrency)  # De Minimis
-                col += 1
-                is_details.write(row, col, detail_body[12], bodydetailnormalnetcurrency)  # Retention Bonus
-                col += 1
-                is_details.write(row, col, detail_body[13], bodydetailboldnetcurrency)  # Other Non-Tax Income
-                col += 1
-                is_details.write(row, col, detail_body[14], bodydetailnormalnetcurrency)  # Gross Income
-                col += 1
-                is_details.write(row, col, detail_body[15], bodydetailnormalnetcurrency)  # SSS
-                col += 1
-                is_details.write(row, col, detail_body[16], bodydetailnormalnetcurrency)  # SSS WISP
-                col += 1
-                is_details.write(row, col, detail_body[17], bodydetailnormalnetcurrency)  # PHIC
-                col += 1
-                is_details.write(row, col, detail_body[18], bodydetailnormalnetcurrency)  # HDMF
-                col += 1
-                is_details.write(row, col, detail_body[19], bodydetailnormalnetcurrency)  # Additional HDMF
-                col += 1
-                is_details.write(row, col, detail_body[20], bodydetailnormalnetcurrency)  # WTX
-                col += 1
-                is_details.write(row, col, detail_body[21], bodydetailnormalnetcurrency)  # Total Deduction
-                col += 1
-                is_details.write(row, col, detail_body[22], bodydetailboldnetcurrency)  # Net Pay
-                col += 1
-                is_details.write(row, col, detail_body[23], bodydetailnormalnetcurrency)  # SSS EC Share
-                col += 1
-                is_details.write(row, col, detail_body[24], bodydetailnormalnetcurrency)  # SSS ER Share
-                col += 1
-                is_details.write(row, col, detail_body[25], bodydetailnormalnetcurrency)  # SSS Whisper
-                col += 1
-                is_details.write(row, col, detail_body[26], bodydetailnormalnetcurrency)  # PHIC ER Share
-                col += 1
-                is_details.write(row, col, detail_body[27], bodydetailnormalnetcurrency)  # HDMF ER Share
+                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
                 col += 1
                 
                 # Increment row for the next employee
@@ -828,9 +677,10 @@ class OccDetailedPayrollReport(models.TransientModel):
             is_details.write_blank(row, 0, None, bodydetailbold)  # Column A
             is_details.write_blank(row, 1, None, bodydetailbold)  # Column B
             is_details.write_blank(row, 2, None, bodydetailbold)  # Column C
-            is_details.write(row, 3, "TOTAL", bodydetailbold)  # Column D (index 3)
-            total_wages = sum(row[7] for row in detail_body_row)  # Sum of wages
-            is_details.write(row, 4, round(total_wages, 2), bodydetailboldnetcurrency)
+            is_details.write_blank(row, 3, None, bodydetailbold)  # Column C
+            is_details.write(row, 4, "TOTAL", bodydetailbold)  # Column D (index 3)
+            total_wages = sum(row[6] for row in detail_body_row)  # Sum of wages
+            is_details.write(row, 5, round(total_wages, 2), bodydetailboldnetcurrency)
             
         else:    
             for detail_body in detail_body_row:
@@ -844,52 +694,19 @@ class OccDetailedPayrollReport(models.TransientModel):
                 col += 1
                 is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                 col += 1
+                is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                col += 1
                 is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                 col += 1
-                # Round the Basic Salary to 2 decimal places before writing it to the cell
-                basic_salary = round(detail_body[6], 2)
-                is_details.write(row, col, basic_salary, bodydetailboldnetcurrency)  # Basic Salary
+                is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
                 col += 1
-                
-                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # Absent Late Undertime
+                is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
                 col += 1
-                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # Overtime
+                is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
                 col += 1
-                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # Other Tax Income
+                is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # SSS ER Share
                 col += 1
-                is_details.write(row, col, detail_body[11], bodydetailnormalnetcurrency)  # De Minimis
-                col += 1
-                is_details.write(row, col, detail_body[12], bodydetailnormalnetcurrency)  # Retention Bonus
-                col += 1
-                is_details.write(row, col, detail_body[13], bodydetailboldnetcurrency)  # Other Non-Tax Income
-                col += 1
-                is_details.write(row, col, detail_body[14], bodydetailnormalnetcurrency)  # Gross Income
-                col += 1
-                is_details.write(row, col, detail_body[15], bodydetailnormalnetcurrency)  # SSS
-                col += 1
-                is_details.write(row, col, detail_body[16], bodydetailnormalnetcurrency)  # SSS WISP
-                col += 1
-                is_details.write(row, col, detail_body[17], bodydetailnormalnetcurrency)  # PHIC
-                col += 1
-                is_details.write(row, col, detail_body[18], bodydetailnormalnetcurrency)  # HDMF
-                col += 1
-                is_details.write(row, col, detail_body[19], bodydetailnormalnetcurrency)  # Additional HDMF
-                col += 1
-                is_details.write(row, col, detail_body[20], bodydetailnormalnetcurrency)  # WTX
-                col += 1
-                is_details.write(row, col, detail_body[21], bodydetailnormalnetcurrency)  # Total Deduction
-                col += 1
-                is_details.write(row, col, detail_body[22], bodydetailboldnetcurrency)  # Net Pay
-                col += 1
-                is_details.write(row, col, detail_body[23], bodydetailnormalnetcurrency)  # SSS EC Share
-                col += 1
-                is_details.write(row, col, detail_body[24], bodydetailnormalnetcurrency)  # SSS ER Share
-                col += 1
-                is_details.write(row, col, detail_body[25], bodydetailnormalnetcurrency)  # SSS Whisper
-                col += 1
-                is_details.write(row, col, detail_body[26], bodydetailnormalnetcurrency)  # PHIC ER Share
-                col += 1
-                is_details.write(row, col, detail_body[27], bodydetailnormalnetcurrency)  # HDMF ER Share
+                is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
                 col += 1
                 
                 # Increment row for the next employee
@@ -899,9 +716,10 @@ class OccDetailedPayrollReport(models.TransientModel):
             is_details.write_blank(row, 0, None, bodydetailbold)  # Column A
             is_details.write_blank(row, 1, None, bodydetailbold)  # Column B
             is_details.write_blank(row, 2, None, bodydetailbold)  # Column C
-            is_details.write(row, 3, "TOTAL", bodydetailbold)  # Column D (index 3)
-            total_wages = sum(row[7] for row in detail_body_row)  # Sum of wages
-            is_details.write(row, 4, round(total_wages, 2), bodydetailboldnetcurrency)                                    
+            is_details.write_blank(row, 3, None, bodydetailbold)  # Column C
+            is_details.write(row, 4, "TOTAL", bodydetailbold)  # Column D (index 3)
+            total_wages = sum(row[6] for row in detail_body_row)  # Sum of wages
+            is_details.write(row, 5, round(total_wages, 2), bodydetailboldnetcurrency)                               
             
         # Set row height (optional)
         is_details.set_row(row, 15)
@@ -913,20 +731,10 @@ class OccDetailedPayrollReport(models.TransientModel):
         
         file = base64.encodebytes(xy)  
         self.write({"excel_file": file})
-        filename = 'occ_detailed_payroll_report.xlsx'
+        filename = 'sss_summary_report.xlsx'
 
         return {
             "type": "ir.actions.act_url",
-            "url": f"/web/content/occ.detailed.payroll.report/{self.id}/excel_file/{filename}?download=true",
+            "url": f"/web/content/sss.report/{self.id}/excel_file/{filename}?download=true",
             "target": "self",
         }
-
-
-class InheritHrPayslip(models.Model):
-    _inherit = 'hr.payslip'
-
-    def action_print_detailed_payroll(self):
-        context = dict(self._context or {})
-        active_ids = (
-            str(context.get("active_ids", []) or []).replace("[", "(").replace("]", ")")
-        )
