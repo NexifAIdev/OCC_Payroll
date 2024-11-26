@@ -15,9 +15,9 @@ class Hrdependents(models.Model):
     _order = "d_birthday desc"
 
     employee_id = fields.Many2one(
-        comodel_name="hr.employee",
-        string="Employee ID",
-        ondelete="cascade",
+        comodel_name="hr.employee", 
+        string="Employee ID", 
+        ondelete="cascade"
     )
 
     d_first = fields.Char(

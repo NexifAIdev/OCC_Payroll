@@ -12,7 +12,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class WorkSchedAdjustment(models.Model):
     _name = "work.sched.adjustment"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "occ.payroll.cfg"]
 
     name = fields.Char(copy=False, default="New")
     status = fields.Selection(
@@ -27,11 +27,6 @@ class WorkSchedAdjustment(models.Model):
         track_visibility="onchange",
     )
 
-    def _get_default_requestor(self):
-        return (
-            self.env["hr.employee"].search([("user_id", "=", self.env.uid)], limit=1).id
-        )
-
     date_change = fields.Date(string="Date", track_visibility="onchange")
     planned_in = fields.Float(string="Planned In", track_visibility="onchange")
     planned_out = fields.Float(string="Planned Out", track_visibility="onchange")
@@ -40,7 +35,7 @@ class WorkSchedAdjustment(models.Model):
         "hr.employee",
         string="Employee",
         track_visibility="onchange",
-        default=_get_default_requestor,
+        default=lambda self: self._get_default_requestor(),
         readonly=True,
     )
     company_id = fields.Many2one(

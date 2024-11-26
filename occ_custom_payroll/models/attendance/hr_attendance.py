@@ -5,21 +5,27 @@ from datetime import datetime, date, time, timedelta
 # Local python modules
 
 # Custom python modules
+import pytz
 
 # Odoo modules
 from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
-
 class HRAttendance(models.Model):
     _inherit = "hr.attendance"
+    
+    def _occ_payroll_cfg(self):
+        occ_payroll = self.env["occ.payroll.cfg"]
+        return {
+            "tz": occ_payroll.manila_tz if occ_payroll else pytz.timezone("Asia/Manila"),
+        }
 
     def _get_check_in(self):
         for rec in self:
             rec.check_in_date = (
                 fields.Datetime.context_timestamp(rec, rec.check_in)
-                .astimezone(tz)
+                .astimezone(self._occ_payroll_cfg()["tz"])
                 .date()
             )
 
@@ -39,12 +45,12 @@ class HRAttendance(models.Model):
         atd_sheet_obj = self.env["hr.attendance.sheet"]
 
         # set the day of the week value
-        dow_int = int(datetime.now(tz).strftime("%w")) - 1
+        dow_int = int(datetime.now(self._occ_payroll_cfg()["tz"]).strftime("%w")) - 1
 
         if dow_int == -1:
             dow_int = 6
 
-        date_now = datetime.now(tz).strftime("%Y-%m-%d")
+        date_now = datetime.now(self._occ_payroll_cfg()["tz"]).strftime("%Y-%m-%d")
 
         # new! search for employee with active contract and returns employee_id and resource_calendar_id
         query = """
@@ -87,16 +93,16 @@ class HRAttendance(models.Model):
                 val = atd_sheet_obj.sudo().search(
                     [
                         ("employee_id", "=", x.get("employee_id")),
-                        ("date", "=", datetime.now(tz).strftime("%Y-%m-%d")),
+                        ("date", "=", datetime.now(self._occ_payroll_cfg()["tz"]).strftime("%Y-%m-%d")),
                     ]
                 )
 
                 if not val:
-                    work_sched = get_attendance_sched(
+                    work_sched = self.get_attendance_sched(
                         self,
                         date_now,
                         x.get("resource_calendar_id"),
-                        get_attendance_sched,
+                        self.get_attendance_sched,
                     )
                     value = {
                         "employee_id": x.get("employee_id"),

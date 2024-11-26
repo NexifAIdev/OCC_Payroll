@@ -5,6 +5,7 @@ from datetime import datetime, date, time, timedelta
 # Local python modules
 
 # Custom python modules
+from icecream import ic as ilog
 
 # Odoo modules
 from odoo import models, fields, api, _
@@ -14,6 +15,18 @@ from odoo.exceptions import UserError, ValidationError
 
 class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
+    
+    def temp_log(
+        self, output, variable: str = "Not Provided", prefix: str = "occ"
+        ):
+        self.env["cmd.utilities"].temp_log(output, variable, prefix)
+    
+    def _occ_payroll_cfg(self):
+        occ_payroll = self.env["occ.payroll.cfg"]
+        return {
+            "list_policy": occ_payroll.list_policy,
+            "list_approval": occ_payroll.list_approval
+        }
 
     # Attendance sheet
     default_ns_start = fields.Float(
@@ -25,23 +38,23 @@ class ResConfigSettings(models.TransientModel):
 
     # Overtime
     default_preot_policy = fields.Selection(
-        list_policy,
+        selection=lambda self: self._occ_payroll_cfg()["list_policy"],
         string="OT Policy",
         default="2",
         default_model="pre.overtime.request",
     )
     default_preapproval_process = fields.Selection(
-        list_approval,
+        selection=lambda self: self._occ_payroll_cfg()["list_approval"],
         string="Pre-OT Approval Process",
         default="4",
         default_model="pre.overtime.request",
     )
 
     default_ot_policy = fields.Selection(
-        list_policy, string="OT Policy", default="2", default_model="overtime.request"
+        selection=lambda self: self._occ_payroll_cfg()["list_policy"], string="OT Policy", default="2", default_model="overtime.request"
     )  # similar value with default_preot_policy
     default_approval_process = fields.Selection(
-        list_approval,
+        selection=lambda self: self._occ_payroll_cfg()["list_approval"],
         string="OT Approval Process",
         default="4",
         default_model="overtime.request",

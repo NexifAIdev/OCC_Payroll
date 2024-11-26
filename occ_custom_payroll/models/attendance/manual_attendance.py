@@ -12,12 +12,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class ManualAttendance(models.Model):
     _name = "manual.attendance"
-    _inherit = ["mail.thread"]
-
-    def _get_default_requestor(self):
-        return (
-            self.env["hr.employee"].search([("user_id", "=", self.env.uid)], limit=1).id
-        )
+    _inherit = ["mail.thread", "occ.payroll.cfg"]
 
     attendance_name = fields.Char(copy=False, default="New")
     status = fields.Selection(
@@ -46,7 +41,7 @@ class ManualAttendance(models.Model):
         "hr.employee",
         string="Employee",
         track_visibility="onchange",
-        default=_get_default_requestor,
+        default=lambda self: self._get_default_requestor(),
         readonly=True,
     )
     company_id = fields.Many2one(
@@ -65,7 +60,7 @@ class ManualAttendance(models.Model):
     requestor_id = fields.Many2one(
         "hr.employee",
         string="Employee Name",
-        default=_get_default_requestor,
+        default=lambda self: self._get_default_requestor(),
         readonly=True,
     )
     # # -------EMAIL NOTIFICATIONS - START ------

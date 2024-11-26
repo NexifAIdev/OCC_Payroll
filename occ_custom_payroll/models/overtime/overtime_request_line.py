@@ -11,83 +11,6 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
-list_policy = [
-    ("1", "Pre-approved OT request before Filing actual OT request"),
-    ("2", "OT Request only"),
-]
-
-list_approval = [
-    ("1", "Approver 1 and Approver 2 before it approves"),
-    ("2", "Approver 1 or Approver 2 before it approves"),
-    ("3", "Approver 1 only before it approves"),
-    ("4", "Approver 2 only before it approves"),
-]
-
-DEFAULT_SERVER_DATE_FORMAT = "%Y-%m-%d"
-state_list = [
-    ("draft", "Draft"),
-    ("submitted", "Submitted"),  # approver 1
-    ("subver", "Submitted"),  # approver 1 or approver 2
-    ("verified", "Verified"),  # approver 2
-    ("approved", "Approved"),
-    ("denied", "Denied"),
-    ("cancelled", "Cancel"),
-]
-state_list2 = [
-    ("draft", "Draft"),
-    ("submitted", "Submitted"),  # approver 1
-    ("subver", "Submitted"),  # approver 1 or approver 2
-    ("verified", "Verified"),  # approver 2
-    ("approved", "Done"),
-    ("denied", "Denied"),
-    ("cancelled", "Cancel"),
-]
-
-ratetype_list = [
-    ("0", "Ordinary Day"),
-    ("1", "Rest Day"),  # Sunday or Rest day
-    ("2", "Special Day"),
-    ("3", "Special day falling on rest day"),
-    ("4", "Regular Holiday"),
-    ("5", "Regular Holiday falling on rest day"),
-    ("6", "Double Holiday"),
-    ("7", "Double Holiday falling on rest day"),
-    ("8", "Ordinary Day, night shift"),
-    ("9", "Rest Day, night shift"),
-    ("10", "Special Day, night shift"),
-    ("11", "Special Day, rest day, night shift"),
-    ("12", "Regular Holiday, night shift"),
-    ("13", "Regular Holiday, rest day, night shift"),
-    ("14", "Double Holiday, night shift"),
-    ("15", "Double Holiday, rest day, night shift"),
-    ("16", "Ordinary day, overtime"),
-    ("17", "Rest day, overtime"),
-    ("18", "Special day, overtime"),
-    ("19", "Special day, rest day, overtime"),
-    ("20", "Regular Holiday, overtime"),
-    ("21", "Regular Holiday, rest day, overtime"),
-    ("22", "Double Holiday, overtime"),
-    ("23", "Double Holiday, rest day, overtime"),
-    ("24", "Ordinary Day, night shift, OT"),
-    ("25", "Rest Day, night shift, OT"),
-    ("26", "Special Day, night shift, OT"),
-    ("27", "Special Day, rest day, night shift, OT"),
-    ("28", "Regular Holiday, night shift, OT"),
-    ("29", "Regular Holiday, rest day, night shift, OT"),
-    ("30", "Double Holiday, night shift, OT"),
-    ("31", "Double Holiday, rest day, night shift, OT"),
-]
-
-odoo_dow_list = [
-    ("0", "Monday"),
-    ("1", "Tuesday"),
-    ("2", "Wednesday"),
-    ("3", "Thursday"),
-    ("4", "Friday"),
-    ("5", "Saturday"),
-    ("6", "Sunday"),
-]
-
 
 class OvertimeRequestLine(models.Model):
     _name = "overtime.request.line"
@@ -97,7 +20,7 @@ class OvertimeRequestLine(models.Model):
 
     actual_in = fields.Float(string="OT Start", help="Actual Start of OT time.")
     actual_out = fields.Float(string="OT End", help="Actual End of OT time.")
-    dayofweek = fields.Selection(odoo_dow_list, "Day of Week", index=True, default="0")
+    dayofweek = fields.Selection(selection=lambda self: self.odoo_dow_list, string="Day of Week", index=True, default="0")
     
     payslip_id = fields.Many2one("exhr.payslip", string="Payslip", store=True, index=True)
 
@@ -151,7 +74,7 @@ class OvertimeRequestLine(models.Model):
             ns_end = config.default_ns_end
 
             # rt = get_attedance_type(ln, ln.date, int(dayofWeek), ln.actual_in, ln.actual_out, att.ns_start, att.ns_end,ln.total_ot_hrs)
-            rt = get_attedance_type(
+            rt = self.get_attedance_type(
                 ln,
                 ln.date,
                 int(dayofWeek),
@@ -165,7 +88,7 @@ class OvertimeRequestLine(models.Model):
             ln.rate_type = str(rt)
 
     rate_type = fields.Selection(
-        ratetype_list, string="Type", store=True, compute="get_rate_type"
+        lambda self: self.ratetype_list, string="Type", store=True, compute="get_rate_type"
     )
 
     details = fields.Text()

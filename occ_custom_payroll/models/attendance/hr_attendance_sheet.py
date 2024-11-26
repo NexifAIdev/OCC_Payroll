@@ -14,6 +14,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class HRAttendanceSheet(models.Model):
     _name = "hr.attendance.sheet"
+    _inherit = ["occ.payroll.cfg"]
     _description = "Employee Attendance Sheet"
     _order = "date desc, employee_id asc"
     
@@ -24,7 +25,7 @@ class HRAttendanceSheet(models.Model):
     # manager_id = fields.Many2one(related='employee_id.parent_id', string='Manager', store=True, index=True)
 
     date = fields.Date(index=True)
-    dayofweek = fields.Selection(odoo_dow_list, "Day of Week", index=True, default="0")
+    dayofweek = fields.Selection(selection=lambda self: self.odoo_dow_list, string="Day of Week", index=True, default="0")
     planned_in = fields.Float(
         string="Planned Time In", help="Planned Start time of working."
     )
@@ -52,7 +53,7 @@ class HRAttendanceSheet(models.Model):
     holiday_amount_pay = fields.Float(string="Holiday Pay")  # FOR CHECKING
     holiday_rate = fields.Float(string="Holiday Rate")  # FOR CHECKING
 
-    rate_type = fields.Selection(ratetype_list, string="Type")
+    rate_type = fields.Selection(selection=lambda self: self.ratetype_list, string="Type")
     schedule_type_ids = fields.Many2many(
         "schedule.type",
         "attendance_sheet_type_rel",
@@ -209,7 +210,7 @@ class HRAttendanceSheet(models.Model):
             self.work_schedule_type = contract.work_schedule_type
 
             # Update Planned In and Planned Out - START
-            work_sched = get_attendance_sched(
+            work_sched = self.get_attendance_sched(
                 self,
                 self.date,
                 contract.resource_calendar_id,
@@ -231,7 +232,7 @@ class HRAttendanceSheet(models.Model):
 
             # Update Type
             self.rate_type = str(
-                get_attendance_type(
+                self.get_attendance_type(
                     self,
                     self.date,
                     int(self.dayofweek),
@@ -246,7 +247,7 @@ class HRAttendanceSheet(models.Model):
             )
 
             # Update Actual In and Actual Out
-            actual_att = get_attendance_actual(self)
+            actual_att = self.get_attendance_actual(self)
 
             # Update holiday amount pay - START //FOR CHECKING - should remove this? check first the computation in payslip
             if self.work_schedule_type == "regular" or self.work_schedule_type == "ww":
@@ -302,7 +303,7 @@ class HRAttendanceSheet(models.Model):
             self.schedule_type_ids = [(5, 0, 0)]  # new way to clear many2many
             work_hr = self.planned_out - self.planned_in - self.break_hours
             half_work_hr = work_hr / 2  # FOR CHECKING - can this be eliminated?
-            status = get_attendance_status(
+            status = self.get_attendance_status(
                 self,
                 self.date,
                 work_hr,
@@ -321,20 +322,20 @@ class HRAttendanceSheet(models.Model):
             # Update Status - END
 
             # Update Remarks
-            self.remarks = get_attendance_remarks(
+            self.remarks = self.get_attendance_remarks(
                 self, self.employee_id, self.date, self.date
             )
 
             # Update Tardiness (mins)
-            self.mins_for_late = get_mins_for_late(self)
+            self.mins_for_late = self.get_mins_for_late(self)
 
             # Update Undertime (mins)
-            self.mins_for_undertime = get_mins_for_undertime(
+            self.mins_for_undertime = self.get_mins_for_undertime(
                 self, work_hr, half_work_hr
             )
 
             # recompute the Planned In and Planned Out of Employees if Holiday
-            holiday_status = get_holiday_status(
+            holiday_status = self.get_holiday_status(
                 self, self.date, self.employee_id.exhr_work_location
             )
             if holiday_status.get("count") > 0:
@@ -358,7 +359,7 @@ class HRAttendanceSheet(models.Model):
                 self.work_schedule_type = exp_contract.work_schedule_type
 
                 # Update Planned In and Planned Out - START
-                work_sched = get_attendance_sched(
+                work_sched = self.get_attendance_sched(
                     self,
                     self.date,
                     exp_contract.resource_calendar_id,
@@ -380,7 +381,7 @@ class HRAttendanceSheet(models.Model):
 
                 # Update Type
                 self.rate_type = str(
-                    get_attendance_type(
+                    self.get_attendance_type(
                         self,
                         self.date,
                         int(self.dayofweek),
@@ -395,7 +396,7 @@ class HRAttendanceSheet(models.Model):
                 )
 
                 # Update Actual In and Actual Out
-                actual_att = get_attendance_actual(self)
+                actual_att = self.get_attendance_actual(self)
 
                 # Update holiday amount pay - START //FOR CHECKING - should remove this? check first the computation in payslip
                 if (
@@ -448,7 +449,7 @@ class HRAttendanceSheet(models.Model):
                 self.schedule_type_ids = [(5, 0, 0)]  # new way to clear many2many
                 work_hr = self.planned_out - self.planned_in - self.break_hours
                 half_work_hr = work_hr / 2  # FOR CHECKING - can this be eliminated?
-                status = get_attendance_status(
+                status = self.get_attendance_status(
                     self,
                     self.date,
                     work_hr,
@@ -467,15 +468,15 @@ class HRAttendanceSheet(models.Model):
                 # Update Status - END
 
                 # Update Remarks
-                self.remarks = get_attendance_remarks(
+                self.remarks = self.get_attendance_remarks(
                     self, self.employee_id, self.date, self.date
                 )
 
                 # Update Tardiness (mins)
-                self.mins_for_late = get_mins_for_late(self)
+                self.mins_for_late = self.get_mins_for_late(self)
 
                 # Update Undertime (mins)
-                self.mins_for_undertime = get_mins_for_undertime(
+                self.mins_for_undertime = self.get_mins_for_undertime(
                     self, work_hr, half_work_hr
                 )
 
@@ -500,7 +501,7 @@ class HRAttendanceSheet(models.Model):
                 # get updated work schedule
 
                 # recompute the Planned In and Planned Out of Employees if Holiday
-                holiday_status = get_holiday_status(
+                holiday_status = self.get_holiday_status(
                     self, self.date, self.employee_id.exhr_work_location
                 )
                 if holiday_status.get("count") > 0:

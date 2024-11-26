@@ -13,73 +13,6 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
-list_policy = [
-    ("1", "Pre-approved OT request before Filing actual OT request"),
-    ("2", "OT Request only"),
-]
-
-list_approval = [
-    ("1", "Approver 1 and Approver 2 before it approves"),
-    ("2", "Approver 1 or Approver 2 before it approves"),
-    ("3", "Approver 1 only before it approves"),
-    ("4", "Approver 2 only before it approves"),
-]
-
-DEFAULT_SERVER_DATE_FORMAT = "%Y-%m-%d"
-state_list = [
-    ("draft", "Draft"),
-    ("submitted", "Submitted"),  # approver 1
-    ("subver", "Submitted"),  # approver 1 or approver 2
-    ("verified", "Verified"),  # approver 2
-    ("approved", "Approved"),
-    ("denied", "Denied"),
-    ("cancelled", "Cancel"),
-]
-state_list2 = [
-    ("draft", "Draft"),
-    ("submitted", "Submitted"),  # approver 1
-    ("subver", "Submitted"),  # approver 1 or approver 2
-    ("verified", "Verified"),  # approver 2
-    ("approved", "Done"),
-    ("denied", "Denied"),
-    ("cancelled", "Cancel"),
-]
-
-ratetype_list = [
-    ("0", "Ordinary Day"),
-    ("1", "Rest Day"),  # Sunday or Rest day
-    ("2", "Special Day"),
-    ("3", "Special day falling on rest day"),
-    ("4", "Regular Holiday"),
-    ("5", "Regular Holiday falling on rest day"),
-    ("6", "Double Holiday"),
-    ("7", "Double Holiday falling on rest day"),
-    ("8", "Ordinary Day, night shift"),
-    ("9", "Rest Day, night shift"),
-    ("10", "Special Day, night shift"),
-    ("11", "Special Day, rest day, night shift"),
-    ("12", "Regular Holiday, night shift"),
-    ("13", "Regular Holiday, rest day, night shift"),
-    ("14", "Double Holiday, night shift"),
-    ("15", "Double Holiday, rest day, night shift"),
-    ("16", "Ordinary day, overtime"),
-    ("17", "Rest day, overtime"),
-    ("18", "Special day, overtime"),
-    ("19", "Special day, rest day, overtime"),
-    ("20", "Regular Holiday, overtime"),
-    ("21", "Regular Holiday, rest day, overtime"),
-    ("22", "Double Holiday, overtime"),
-    ("23", "Double Holiday, rest day, overtime"),
-    ("24", "Ordinary Day, night shift, OT"),
-    ("25", "Rest Day, night shift, OT"),
-    ("26", "Special Day, night shift, OT"),
-    ("27", "Special Day, rest day, night shift, OT"),
-    ("28", "Regular Holiday, night shift, OT"),
-    ("29", "Regular Holiday, rest day, night shift, OT"),
-    ("30", "Double Holiday, night shift, OT"),
-    ("31", "Double Holiday, rest day, night shift, OT"),
-]
-
 
 class PreOvertimeRequest(models.Model):
     _name = "pre.overtime.request"
@@ -92,7 +25,7 @@ class PreOvertimeRequest(models.Model):
         ].sudo().search([("user_id", "=", self.env.uid)], limit=1)
 
     state = fields.Selection(
-        state_list, default="draft", copy=False, track_visibility="onchange"
+        selection=lambda self: self.state_list, default="draft", copy=False, track_visibility="onchange"
     )
 
     name = fields.Char(copy=False, default="New")
@@ -122,9 +55,9 @@ class PreOvertimeRequest(models.Model):
         "res.company", related="employee_id.company_id", required=True
     )
     
-    preot_policy = fields.Selection(list_policy, string="OT Policy")
+    preot_policy = fields.Selection(selection=lambda self: self.list_policy, string="OT Policy")
     preapproval_process = fields.Selection(
-        list_approval, string="Pre-OT Approval Process"
+        selection=lambda self: self.list_approval, string="Pre-OT Approval Process"
     )
 
     def submit(self):
