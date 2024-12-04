@@ -34,3 +34,8 @@ access_hr_employee_employee_incident,hr.employee.employee.incident,model_employe
 access_hr_user_employee_incident,hr.user.employee.incident,model_employee_incident,hr.group_hr_user,1,0,0,0
 access_nature_discipline,access_nature_discipline,model_nature_discipline,base.group_user,1,1,1,1
 access_penalty_sanction,access_penalty_sanction,model_penalty_sanction,base.group_user,1,1,1,1
+,,,,,,,
+access_cash_allowance_contract_manager,cash.cash.contract.manager,model_cash_allowance,hr_contract.group_hr_contract_manager,1,1,1,1
+access_hr_contract_payroll_manager,hr.contract.payroll.manager,hr_contract.model_hr_contract,occ_custom_payroll.group_payroll_manager,1,0,0,0
+access_hr_contract_payroll_officer,hr.contract.payroll.officer,hr_contract.model_hr_contract,occ_custom_payroll.group_payroll_officer,1,0,0,0
+access_hr_contract_all,hr.contract.all,hr_contract.model_hr_contract,base.group_user,1,0,0,0

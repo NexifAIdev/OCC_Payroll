@@ -31,9 +31,14 @@ OCC Payroll Configurations
 		# Security
 		#___________________________________________
         #  "security/security.xml",
-        # "security/configs/ir.model.access.csv",
-        # "security/hr/ir.model.access.csv",
-        # "security/payslip/ir.model.access.csv",
+        "security/configs/ir.model.access.csv",
+        "security/account/ir.model.access.csv",
+        "security/attendance/ir.model.access.csv",
+        "security/overtime/ir.model.access.csv",
+        "security/hr/ir.model.access.csv",
+        "security/payslip/ir.model.access.csv",
+        "security/payroll/ir.model.access.csv",
+        "security/resource/ir.model.access.csv",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Cron
@@ -50,23 +55,59 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Views
 		#___________________________________________
+        # "views/configs/tree.xml",
+        # "views/account/tree.xml",
+        # "views/attendance/tree.xml",
+        # "views/overtime/tree.xml",
+        # "views/hr/tree.xml",
+        # "views/payslip/tree.xml",
         # "views/payroll/tree.xml",
-        # "views/payroll/form.xml",
+        # "views/resource/tree.xml",
+        # "views/configs/form.xml",
+		# "views/account/form.xml",
+		# "views/attendance/form.xml",
+		# "views/overtime/form.xml",
+		# "views/hr/form.xml",
+		# "views/payslip/form.xml",
+		# "views/payroll/form.xml",
+		# "views/resource/form.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Windows
 		#___________________________________________
+        # "views/configs/windows.xml",
+        # "views/account/windows.xml",
+        # "views/attendance/windows.xml",
+        # "views/overtime/windows.xml",
+        # "views/hr/windows.xml",
+        # "views/payslip/windows.xml",
         # "views/payroll/windows.xml",
+        # "views/resource/windows.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Servers
 		#___________________________________________
+		# "views/configs/server.xml",
+		# "views/account/server.xml",
+		# "views/attendance/server.xml",
+		# "views/overtime/server.xml",
+		# "views/hr/server.xml",
+		# "views/payslip/server.xml",
+		# "views/payroll/server.xml",
+		# "views/resource/server.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Menus
 		#___________________________________________
 		# "views/menuitems.xml",
+        # "views/configs/menuitems.xml",
+        # "views/account/menuitems.xml",
+        # "views/attendance/menuitems.xml",
+        # "views/overtime/menuitems.xml",
+        # "views/hr/menuitems.xml",
+        # "views/payslip/menuitems.xml",
         # "views/payroll/menuitems.xml",
+        # "views/resource/menuitems.xml",
 		#-------------------------------------------
     ]
 }
