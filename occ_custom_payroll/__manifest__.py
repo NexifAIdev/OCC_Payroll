@@ -31,7 +31,7 @@ OCC Payroll Configurations
 		# Security
 		#___________________________________________
         #  "security/security.xml",
-        "security/configs/ir.model.access.csv",
+        "security/config/ir.model.access.csv",
         "security/account/ir.model.access.csv",
         "security/attendance/ir.model.access.csv",
         "security/overtime/ir.model.access.csv",
@@ -55,7 +55,7 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Views
 		#___________________________________________
-        # "views/configs/tree.xml",
+        # "views/config/tree.xml",
         # "views/account/tree.xml",
         # "views/attendance/tree.xml",
         # "views/overtime/tree.xml",
@@ -63,7 +63,7 @@ OCC Payroll Configurations
         # "views/payslip/tree.xml",
         # "views/payroll/tree.xml",
         # "views/resource/tree.xml",
-        # "views/configs/form.xml",
+        # "views/config/form.xml",
 		# "views/account/form.xml",
 		# "views/attendance/form.xml",
 		# "views/overtime/form.xml",
@@ -75,7 +75,7 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Windows
 		#___________________________________________
-        # "views/configs/windows.xml",
+        # "views/config/windows.xml",
         # "views/account/windows.xml",
         # "views/attendance/windows.xml",
         # "views/overtime/windows.xml",
@@ -87,7 +87,7 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Servers
 		#___________________________________________
-		# "views/configs/server.xml",
+		# "views/config/server.xml",
 		# "views/account/server.xml",
 		# "views/attendance/server.xml",
 		# "views/overtime/server.xml",
@@ -100,7 +100,7 @@ OCC Payroll Configurations
 		# Menus
 		#___________________________________________
 		# "views/menuitems.xml",
-        # "views/configs/menuitems.xml",
+        # "views/config/menuitems.xml",
         # "views/account/menuitems.xml",
         # "views/attendance/menuitems.xml",
         # "views/overtime/menuitems.xml",
