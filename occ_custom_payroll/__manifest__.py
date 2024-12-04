@@ -24,13 +24,15 @@ OCC Payroll Configurations
         ]
     },
     "depends": [
+        "ohrms_core",
+        "hr_appraisal",
         "occ_configurations",
     ],
     "data": [
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Security
 		#___________________________________________
-        #  "security/security.xml",
+		"security/security.xml",
         "security/config/ir.model.access.csv",
         "security/account/ir.model.access.csv",
         "security/attendance/ir.model.access.csv",
