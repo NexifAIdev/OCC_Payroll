@@ -173,6 +173,17 @@
             </field>
         </record>
 
+        <record id="tree_payroll_type" model="ir.ui.view">
+            <field name="name">Payroll Type</field>
+            <field name="model">payroll.type</field>
+            <field name="arch" type="xml">
+                <tree string="Payroll Type" editable="top">
+                    <field name="name"/>
+                    <field name="sequence"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- Loan Type Configuration -->
         <record id="tree_loan_type" model="ir.ui.view">
             <field name="name">Loan Type</field>

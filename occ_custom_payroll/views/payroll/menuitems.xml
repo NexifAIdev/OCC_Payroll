@@ -73,6 +73,13 @@
             parent="menu_exhr_configurations"
             />
 
+        <!-- Action Window - Payroll Type -->
+        <menuitem id="menu_action_payroll_type" 
+            action="action_payroll_type"
+            name="Payroll Type Config" 
+            parent="menu_exhr_configurations"
+            />
+
         <!-- Action Window - Loan Type -->
         <menuitem id="menu_action_loan_type" 
             action="action_loan_type"
