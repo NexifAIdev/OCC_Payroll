@@ -21,7 +21,7 @@ class OvertimeRequestLine(models.Model):
         odoo_dow_list = []        
         try:
             odoo_dow_list = self.odoo_dow_list
-        except AttributeError as AE:
+        except AttributeError as ae:
             odoo_dow_list = self.env["occ.payroll.cfg"].odoo_dow_list
         
         ic(odoo_dow_list)
