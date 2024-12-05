@@ -5,6 +5,7 @@ from datetime import datetime, date, time, timedelta
 # Local python modules
 
 # Custom python modules
+from icecream import ic
 
 # Odoo modules
 from odoo import models, fields, api, _
@@ -14,13 +15,28 @@ from odoo.exceptions import UserError, ValidationError
 
 class OvertimeRequestLine(models.Model):
     _name = "overtime.request.line"
+    _inherit = ["occ.payroll.cfg"]
+    
+    def _get_odoo_dow_list(self):
+        odoo_dow_list = []        
+        try:
+            odoo_dow_list = self.odoo_dow_list
+        except AttributeError as AE:
+            odoo_dow_list = self.env["occ.payroll.cfg"].odoo_dow_list
+        
+        ic(odoo_dow_list)
+        if not len(odoo_dow_list) > 0:
+            raise ValidationError(f"occ.payroll.cfg was not loaded properly")
+            
+        return odoo_dow_list
+        
 
     date = fields.Date(default=fields.Date.today(), index=True)
     date_approved = fields.Date(index=True)
 
     actual_in = fields.Float(string="OT Start", help="Actual Start of OT time.")
     actual_out = fields.Float(string="OT End", help="Actual End of OT time.")
-    dayofweek = fields.Selection(selection=lambda self: self.odoo_dow_list, string="Day of Week", index=True, default="0")
+    dayofweek = fields.Selection(selection=lambda self: self._get_odoo_dow_list(), string="Day of Week", index=True, default="0")
     
     payslip_id = fields.Many2one("exhr.payslip", string="Payslip", store=True, index=True)
 

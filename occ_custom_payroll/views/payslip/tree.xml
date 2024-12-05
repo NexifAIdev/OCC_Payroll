@@ -3,7 +3,33 @@
 
     <data>
     
-        
+        <record id="exhr_payslip_view_tree" model="ir.ui.view">
+			<field name="name">exhr.payslip.view.tree</field>
+			<field name="model">exhr.payslip</field>
+			<field name="arch" type="xml">
+				<tree delete="0">
+					<field name="name"/>
+					<field name="employee_id"/>
+                    <field name="department_id" string="Department"/>
+					<field name="company_id"/>
+					<field name="pay_period_from"/>
+					<field name="pay_period_to"/>
+					<field name="cutoff_date"/>
+					<field name="payroll_id"/>
+					
+
+					<field name="amount_untaxed"/>
+					<field name="amount_nontaxable_signed" invisible="1"/>
+					<field name="new_amount_nontaxable"/>
+					<field name="amount_total"/>
+
+					<field name="state"/>
+
+
+
+				</tree>
+			</field>
+		</record>
     
     </data>
     

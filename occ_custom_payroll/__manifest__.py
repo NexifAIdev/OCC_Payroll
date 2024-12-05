@@ -24,9 +24,9 @@ OCC Payroll Configurations
         ]
     },
     "depends": [
-        "ohrms_core",
-        "hr_appraisal",
+        "oh_appraisal",
         "occ_configurations",
+        "analytic",
     ],
     "data": [
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
@@ -49,10 +49,30 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Sequence
 		#___________________________________________
+		# "views/config/sequence.xml",
+        # "views/account/windows.xml",
+        # "views/attendance/windows.xml",
+        # "views/overtime/windows.xml",
+        # "views/hr/windows.xml",
+        "views/payslip/sequence.xml",
+        "views/payroll/sequence.xml",
+        # "views/resource/windows.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Emails
 		#___________________________________________
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Search
+		#___________________________________________
+		# "views/config/search.xml",
+        # "views/account/search.xml",
+        # "views/attendance/search.xml",
+        # "views/overtime/search.xml",
+        # "views/hr/search.xml",
+        "views/payslip/search.xml",
+        # "views/payroll/search.xml",
+        # "views/resource/search.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Views
@@ -62,16 +82,16 @@ OCC Payroll Configurations
         # "views/attendance/tree.xml",
         # "views/overtime/tree.xml",
         # "views/hr/tree.xml",
-        # "views/payslip/tree.xml",
-        # "views/payroll/tree.xml",
+        "views/payslip/tree.xml",
+        "views/payroll/tree.xml",
         # "views/resource/tree.xml",
         # "views/config/form.xml",
 		# "views/account/form.xml",
 		# "views/attendance/form.xml",
 		# "views/overtime/form.xml",
 		# "views/hr/form.xml",
-		# "views/payslip/form.xml",
-		# "views/payroll/form.xml",
+		"views/payslip/form.xml",
+		"views/payroll/form.xml",
 		# "views/resource/form.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
@@ -82,8 +102,8 @@ OCC Payroll Configurations
         # "views/attendance/windows.xml",
         # "views/overtime/windows.xml",
         # "views/hr/windows.xml",
-        # "views/payslip/windows.xml",
-        # "views/payroll/windows.xml",
+        "views/payslip/windows.xml",
+        "views/payroll/windows.xml",
         # "views/resource/windows.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
@@ -101,15 +121,20 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Menus
 		#___________________________________________
-		# "views/menuitems.xml",
+		"views/menuitems.xml",
         # "views/config/menuitems.xml",
         # "views/account/menuitems.xml",
         # "views/attendance/menuitems.xml",
         # "views/overtime/menuitems.xml",
         # "views/hr/menuitems.xml",
-        # "views/payslip/menuitems.xml",
-        # "views/payroll/menuitems.xml",
+        "views/payslip/menuitems.xml",
+        "views/payroll/menuitems.xml",
         # "views/resource/menuitems.xml",
+		#-------------------------------------------
+		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+		# Data
+		#___________________________________________
+		"data/data.xml",
 		#-------------------------------------------
     ]
 }

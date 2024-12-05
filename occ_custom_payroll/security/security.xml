@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
+
+        <record id="group_hide_payroll_features" model="res.groups">
+            <field name="name">Hide Payroll Features</field>
+            <field name="category_id" ref="base.module_category_hidden" />
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+            <field name="users" eval="[]" />
+        </record>
+
         <record id="module_category_occ_custom_payroll"
             model="ir.module.category">
             <field name="name">Payroll
@@ -323,21 +331,21 @@
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]
             </field>
         </record>
-        <record id="hr_appraisal.group_hr_appraisal_user"
+        <record id="oh_appraisal.oh_appraisal_group_employee"
             model="res.groups">
             <field name="implied_ids"
                 eval="[(3, ref('hr.group_hr_user'))]"
             />
 
         </record>
-        <record id="hr_appraisal.group_hr_appraisal_manager"
+        <record id="oh_appraisal.oh_appraisal_group_manager"
             model="res.groups">
             <field name="users"
                 eval="[(3, ref('base.user_root')), (3, ref('base.user_admin'))]"
             />
 
         </record>
-        <record id="hr_attendance.group_hr_attendance_user"
+        <record id="hr_attendance.group_hr_attendance_officer"
             model="res.groups">
             <field name="implied_ids"
                 eval="[(3, ref('hr.group_hr_user'))]"

@@ -3,7 +3,371 @@
 
     <data>
     
-        
+        <record id="exhr_payslip_view_form" model="ir.ui.view">
+			<field name="name">exhr.payslip.view.form</field>
+			<field name="model">exhr.payslip</field>
+			<field name="arch" type="xml">
+				<form string="Payslip" delete="0">
+					<header>
+						<button name="button_compute_payslip"
+                            string="Compute"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ['draft']"
+                        />
+
+                        <button name="button_compute_total"
+                            string="Compute Total"
+                            type="object"
+                            invisible="state not in ['draft']"
+                        />
+
+                        <button name="set_to_posted"
+                            string="Post"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ['draft']"
+                            groups="occ_custom_payroll.group_payroll_manager"
+                        />
+
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            invisible="state not in ['draft']"
+                            groups="occ_custom_payroll.group_payroll_manager,occ_custom_payroll.group_payroll_officer,occ_custom_payroll.group_payroll_officer"
+                        />
+
+                        <button name="set_to_cancel_posted"
+                            string="Cancel"
+                            type="object"
+                            invisible="state not in ['posted']"
+                            groups="occ_custom_payroll.group_payroll_admin"
+                        />
+
+                        <button name="set_to_draft"
+                            string="Set to Draft"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state not in ['cancel']"
+                        />
+						<field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+					</header>
+					<sheet>
+						<div class="oe_title">
+							<h1>
+								<font color="#00a09d">
+									<field name="name" readonly="1"/>
+								</font>
+							</h1>
+						</div>
+							
+						<div class="o_row"
+                            name="computation_range">
+                            <h3>
+                                <font color="#875b7b">
+                                    <span>Computation from
+                                    </span>
+                                    <field name="pay_period_from"
+                                        nolabel="1"
+                                        required="True"
+                                        readonly="state not in ['draft']"
+                                    />
+
+                                    <span>to
+                                    </span>
+                                    <field name="pay_period_to"
+                                        nolabel="1"
+                                        required="True"
+                                        readonly="state not in ['draft']"
+                                    />
+
+                                </font>
+                            </h3>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="cutoff_date"
+                                    required="True"
+                                    readonly="state not in ['draft']"
+                                />
+
+                                <field name="company_id"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    readonly="1"
+                                    force_save="1"
+                                />
+
+                                <field name="posted_date"
+                                    readonly="state not in ['draft']"
+                                    invisible="state not in ['posted']"
+                                />
+
+                            </group>
+                            <group>
+                                <field name="employee_id"
+                                    readonly="state not in ['draft']"
+                                    options="{'no_open': True, 'no_create': True}"
+                                />
+
+                                <field name="payroll_id"
+                                    readonly="state not in ['draft']"
+                                    options="{'no_open': True, 'no_create': True}"
+                                />
+
+                                <field name="total_working_days"
+                                    invisible="1"
+                                />
+
+                            </group>
+                        </group>							
+
+						<notebook>
+							<page string="Computation">
+								<h2>EARNINGS</h2>
+								<field name="earnings_line_ids" widget="one2many_list" nolabel="1" readonly="state not in ['draft']">
+									<tree string="Earnings" editable="bottom" create="true" delete="true">
+										<field name="name_id" string="Description" required="True"/>
+										<field name="date" string="Date" invisible="1"/>
+										<field name="no_day_hrs" string="No. of Hrs" invisible="1"/>
+										<field name="no_day_hrs_disp" string="Hrs/Days"/>
+										<field name="amt_per_day_hrs" string="Amt. Per Hr" invisible="1"/>
+										<field name="amount_subtotal" string="Sub Total Amount" sum='Total Gross Earnings'/>
+									</tree>
+								</field>
+
+								<h2>DEDUCTIONS</h2>
+								<field name="deductions_line_ids" widget="one2many_list" nolabel="1" readonly="state not in ['draft']">
+									<tree string="Earnings" editable="bottom" create="true" delete="true">
+										<field name="name_id" string="Description" required="True"/>
+										<field name="no_day_hrs_disp" string="Hrs/Days"/>
+										<field name="amount_total" string="Amount" sum='Total Deductions'/>
+									</tree>
+								</field>	
+
+								<h2>OTHER EARNINGS/CHARGES</h2>
+								<field name="nontaxable_line_ids"
+                                    widget="one2many_list"
+                                    nolabel="1">
+                                    <tree string="Non Taxable"
+                                        editable="bottom"
+                                        create="true"
+                                        delete="true">
+                                        <field name="pay_type"
+                                            string="Type"
+                                            required="True"
+                                            readonly="parent.state not in ['draft']"
+                                        />
+
+                                        <field name="name_id"
+                                            string="Description"
+                                            readonly="parent.state not in ['draft']"
+                                        />
+
+                                        <field name="taxable"
+                                            readonly="parent.state not in ['draft']"
+                                        />
+
+                                        <field name="loan_id"
+                                            invisible="1"
+                                        />
+
+                                        <field name="new_loan_name"
+                                            string="Loan Name"
+                                        />
+
+                                        <field name="gl_account_id"
+                                            domain="[('company_id','=',parent.company_id)]"
+                                            readonly="loan_id != False or parent.state not in ['draft']"
+                                        />
+
+                                        <field name="ref"
+                                            string="Reference"
+                                            readonly="parent.state not in ['draft']"
+                                        />
+
+                                        <field name="amount_total"
+                                            string="Amount"
+                                            sum="Total Deductions"
+                                            readonly="parent.state not in ['draft']"
+                                        />
+
+                                    </tree>
+                                </field>
+
+							</page>
+							<page string="Attendance Sheet">
+								<button name="update_attendance_sheet" string="System Compute" type="object" invisible="0" groups="base.group_no_one"/>
+								<button name="apply_changes" string="Apply Changes" type="object" invisible="1"/>
+
+
+								<field name="attendance_sheet_ids" nolabel="1" readonly="state not in ['draft']">
+									<tree string="Attendance" editable="bottom" create="false" delete="false">
+										<field name="date" readonly="True"/>
+										<field name="employee_id" invisible="True"/>
+										<field name="work_schedule_type" readonly="1" force_save="1"/>
+										<field name="dayofweek" string="DoW" readonly="True"/>
+										<!-- <field name="analytic_account_id"/> -->
+										<field name="rate_type" readonly="True"/>
+
+										<field name="planned_in" widget="float_time" readonly="True"/>
+										<field name="planned_out" widget="float_time" readonly="True"/>
+
+										<field name="actual_in" widget="float_time" readonly="True"/>
+										<field name="actual_out" widget="float_time" readonly="True"/>
+										<field name="actual_time_diff"  readonly="1" force_save="1" sum="Total"/>
+										<!-- <field name="time_diff" sum="Total"/> -->
+										<field name="hrs_for_payroll" sum="Total" invisible="1"/>
+										<field name="mins_for_late"  readonly="1" force_save="1" invisible="0" sum="Total" />
+										<field name="mins_for_undertime"  readonly="1" force_save="1" invisible="0" sum="Total"/>										
+
+										<field name="leave_start" widget="float_time" readonly="True" invisible="1"/>
+										<field name="leave_end" widget="float_time" readonly="True" invisible="1"/>
+
+										<field name="tardy_mins" invisible="1"/>
+										<field name="undertime_mins" invisible="1"/>
+
+										<field name="schedule_type_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+										<field name="remarks"/>
+
+										<field name="nightdiff_amount_pay" sum='Total Night Diff. Pay' invisible="1"/>
+										<field name="holiday_amount_pay" sum='Total Holiday Pay' invisible="1"/>
+
+										<field name="tardiness_amount_ded" sum='Total Tardiness Deduction' invisible="1"/>
+										<field name="undertime_amount_ded" sum='Total Undertime Deduction' invisible="1"/>
+										<field name="leavewopay_amount_ded" sum='Total Leave w/o pay Deduction' invisible="1"/>
+
+									</tree>
+								</field>	
+								<group>
+									<field name="total_working_days"/>
+									<field name="total_holidays"/>
+									<field name="hrs_for_prorate"/>
+									<field name="no_days_present" readonly="1" force_save="1"/>
+								</group>
+                                <field name="overtime_ids"
+                                    nolabel="1"
+                                    readonly="state not in ['draft']">
+                                    <tree string="Overtime"
+                                        editable="bottom"
+                                        create="false"
+                                        delete="false">
+                                        <field name="status"
+                                            invisible="True"
+                                        />
+
+                                        <field name="date"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="employee_id"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="overtime_id"
+                                            string="OT Line"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="dayofweek"
+                                            string="DoW"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="rate_type"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="total_ot_hrs"
+                                            widget="float_time"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="actual_in"
+                                            widget="float_time"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <field name="actual_out"
+                                            widget="float_time"
+                                            readonly="True"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                        <button name="show_breakdown_wizard"
+                                            type="object"
+                                            icon="fa-pencil-square-o"
+                                            invisible="status not in ['approved']"
+                                        />
+
+                                    </tree>
+                                </field>
+								<field name="leave_ids" nolabel="1" readonly="state not in ['draft']" invisible="1">
+									<tree string="Time Off" editable="bottom" create="false" delete="false">
+										<field name="leaves_id"/>
+										<field name="holiday_status_id"/>
+										<field name="days"/>
+									</tree>
+								</field>	
+							</page>
+					
+							<page string="SSS Contribution" invisible="0">
+								<field name="sss_ids" nolabel="1" force_save="1" readonly="state not in ['draft']">
+									<tree editable="bottom">
+										<field name='date'/>
+										<field name='er_regular_amount'/>
+										<field name='ee_regular_amount'/>
+										<field name='er_ec_amount'/>
+										<field name='ee_ec_amount'/>
+										<field name='er_mpf_amount'/>
+										<field name='ee_mpf_amount'/>
+									</tree>
+								</field>
+							</page>
+							<page string="PHIC Contribution" invisible="0">
+								<field name="phic_ids" nolabel="1" force_save="1" readonly="state not in ['draft']">
+									<tree editable="bottom">
+										<field name='date'/>
+										<field name='ee_amount'/>
+										<field name='er_amount'/>
+									</tree>
+								</field>
+							</page>							
+							<page string="HDMF Contribution" invisible="0">
+								<field name="hdmf_ids" nolabel="1" force_save="1" readonly="state not in ['draft']">
+									<tree editable="bottom">
+										<field name='date'/>
+										<field name='ee_amount'/>
+										<field name='er_amount'/>
+									</tree>
+								</field>
+							</page>														
+
+						</notebook>
+
+ 						<group class="oe_subtotal_footer oe_right">
+							<field name="amount_basic_salary" string="Basic Salary"/>
+							<field name="amount_untaxed" string="Taxable Income"/>
+							<field name="amount_nontaxable_signed" string="Non-taxable Income" invisible="1"/>
+							<field name="new_amount_nontaxable" string="Non-taxable Income"/>
+							<field name="amount_tax_signed" string="Withholding Tax"/>
+							<field name="amount_total" string="Net Pay"/>
+						</group>						
+
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="activity_ids" widget="mail_activity"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>					
+				</form>
+			</field>
+		</record>
     
     </data>
     

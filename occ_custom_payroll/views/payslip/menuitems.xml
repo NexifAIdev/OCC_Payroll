@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem id="menu_exhr_payslip_action" 
+            action="exhr_payslip_action"
+            name="Payslip" 
+            sequence="10"
+            parent="menu_exhr_payslip"
+            />
+    
+    </data>
+    
+
+</odoo>

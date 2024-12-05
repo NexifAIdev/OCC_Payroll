@@ -3,7 +3,19 @@
 
     <data>
     
-        
+        <record id="exhr_payroll_action" model="ir.actions.act_window">
+			<field name="name">Payroll</field>
+			<field name="res_model">exhr.payroll</field>
+			<field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_payroll_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.exhr_payroll_view_form')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_payroll_view_tree',
+                'form_view_ref':'occ_custom_payroll.exhr_payroll_view_form', 
+}</field>
+		</record>
     
     </data>
     

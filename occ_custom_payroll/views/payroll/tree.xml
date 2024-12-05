@@ -3,7 +3,18 @@
 
     <data>
     
-        
+        <record id="exhr_payroll_view_tree" model="ir.ui.view">
+			<field name="name">exhr.payroll.view.tree</field>
+			<field name="model">exhr.payroll</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+					<field name="pay_period_from"/>
+					<field name="pay_period_to"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>	
     
     </data>
     

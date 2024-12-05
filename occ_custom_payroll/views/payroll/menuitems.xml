@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem id="menu_exhr_payroll_action" 
+            action="exhr_payroll_action"
+            name="Payroll" 
+            sequence="1"
+            parent="menu_exhr_payroll"
+            />
+    
+    </data>
+    
+
+</odoo>

@@ -3,7 +3,16 @@
 
     <data>
     
-        
+        <record model="ir.ui.view" id="custom_view_account_analytic_account_form">
+			<field name="name">custom.analytic.analytic.account.form</field>
+			<field name="model">account.analytic.account</field>
+			<field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+			<field name="arch" type="xml">
+				<field name="group_id" position="before">
+					<field name="analytic_tag_ids" widget='many2many_tags'/>
+				</field>
+			</field>
+		</record>
     
     </data>
     
