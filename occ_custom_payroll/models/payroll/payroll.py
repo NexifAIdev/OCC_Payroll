@@ -21,7 +21,7 @@ import odoo.addons.decimal_precision as dp
 class exhr_payroll(models.Model):
     _name = "exhr.payroll"
     _description = "Payroll Period"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "occ.payroll.cfg"]
 
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
@@ -695,7 +695,7 @@ class exhr_payroll(models.Model):
                         print(
                             "took from attendance since this is the employees schedule, OT logging is not necessary"
                         )
-                        rendered_hr = actual_out - actual_in
+                        rendered_hr = att.actual_out - att.actual_in
                         rd_hr += rendered_hr
 
             ot_qry = """
@@ -930,15 +930,7 @@ class exhr_payroll(models.Model):
     # - - - - - END - PRINT PAYROLL SLIP - - - - - -
 
     def get_ot_rate(self, rate_type, hourly_rate, isHoliday):
-        if isHoliday:
-            percent = (
-                self.env["overtime.rate.config"]
-                .search([("rate_id", "=", rate_type)])
-                .percentage
-            )
-            per
-        else:
-            percent = (
+        percent = (
                 self.env["overtime.rate.config"]
                 .search([("rate_id", "=", rate_type)])
                 .percentage

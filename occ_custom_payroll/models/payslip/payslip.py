@@ -16,7 +16,7 @@ import odoo.addons.decimal_precision as dp
 class exhr_payslip(models.Model):
     _name = "exhr.payslip"
     _description = "Employee's Payslip"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "occ.payroll.cfg"]
 
     name = fields.Char(
         "Payslip No.", copy=False, track_visibility="onchange", default="Draft"
@@ -836,8 +836,8 @@ class exhr_payslip(models.Model):
             if vals.daily_wage:
                 for a in att_list:
                     worked_rate = 0
-                    holiday = get_holiday_status(
-                        self, a.date, self.employee_id.exhr_work_location
+                    holiday = self.get_holiday_status(
+                        a.date, self.employee_id.exhr_work_location
                     )
                     if holiday.get("count") > 0:  # it is a holiday
                         # print('it is a holiday! : ', a.date)
@@ -906,8 +906,8 @@ class exhr_payslip(models.Model):
             else:  # NOT daily wage earner
                 for a in att_list:
                     worked_rate = 0
-                    holiday = get_holiday_status(
-                        self, a.date, self.employee_id.exhr_work_location
+                    holiday = self.get_holiday_status(
+                        a.date, self.employee_id.exhr_work_location
                     )
                     if holiday.get("count") > 0:  # it is a holiday
                         holiday_type = holiday.get("type")
@@ -2427,7 +2427,7 @@ class exhr_payslip(models.Model):
             # print('EMPLOYEE: ', self.employee_id.name)
             # search for contract, get only the latest one based on id of creation
             # print('EMPLOYEEEEEEEEEEEE: ', self.employee_id.name)
-            data_a = get_contract_info(self, self.cutoff_date, self.employee_id.id)
+            data_a = self.get_contract_info(self.cutoff_date, self.employee_id.id)
             if data_a:
                 vals = self.env["hr.contract"].search(
                     [("id", "=", data_a.get("contract_id"))]
@@ -2484,7 +2484,7 @@ class exhr_payslip(models.Model):
     def button_compute_payslip(self):
         for rec in self:
             # search for contract, get only the latest one based on id of creation
-            data_a = get_contract_info(self, self.cutoff_date, self.employee_id.id)
+            data_a = self.get_contract_info(self.cutoff_date, self.employee_id.id)
             if data_a:
                 vals = self.env["hr.contract"].search(
                     [("id", "=", data_a.get("contract_id"))]
