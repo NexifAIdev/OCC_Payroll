@@ -1,3 +1,6 @@
+from . import earnings_type
+from . import deduction_type
+from . import nontaxable_type
 from . import hdmf_contribution_line
 from . import phic_contribution_line
 from . import sss_contribution_line

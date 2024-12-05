@@ -10,6 +10,7 @@ from tempfile import TemporaryFile
 # Custom python modules
 import xlsxwriter
 from xlsxwriter.utility import xl_rowcol_to_cell
+from icecream import ic
 
 # Odoo modules
 from odoo import models, fields, api, _
@@ -314,6 +315,7 @@ class exhr_payroll(models.Model):
             line.set_to_draft()
 
     def generate_payslips(self):
+        ic(self.payslip_line_ids)
         if not self.payslip_line_ids:
             payslip_obj = self.env["exhr.payslip"]
 
@@ -333,7 +335,9 @@ class exhr_payroll(models.Model):
             )
 
             self._cr.execute(query)
+            ic(query)
             data = self._cr.fetchall()
+            ic(data)
 
             for x in data:
                 vals = {

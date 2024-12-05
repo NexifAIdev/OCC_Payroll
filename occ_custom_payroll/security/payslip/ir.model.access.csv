@@ -26,3 +26,15 @@ access_payroll_officer_exhr_payslip_nontaxable,payroll.officer.exhr.payslip.nont
 access_all_exhr_payslip,all.exhr.payslip,model_exhr_payslip,base.group_user,1,0,0,0
 access_payroll_manager_exhr_payslip,payroll.manager.exhr.payslip,model_exhr_payslip,group_payroll_manager,1,1,1,1
 access_payroll_officer_exhr_payslip,payroll.officer.exhr.payslip,model_exhr_payslip,group_payroll_officer,1,1,1,1
+,,,,,,,
+access_all_earnings_type,all.earnings.type,model_earnings_type,base.group_user,1,0,0,0
+access_payroll_manager_earnings_type,payroll.manager.earnings.type,model_earnings_type,group_payroll_manager,1,1,1,1
+access_payroll_officer_earnings_type,payroll.officer.earnings.type,model_earnings_type,group_payroll_officer,1,1,1,1
+,,,,,,,
+access_all_deduction_type,all.manager.deduction,model_deduction_type,base.group_user,1,0,0,0
+access_payroll_manager_deduction_type,payroll.manager.deduction.type,model_deduction_type,group_payroll_manager,1,1,1,1
+access_payroll_officer_deduction_type,payroll.officer.deduction.type,model_deduction_type,group_payroll_officer,1,1,1,1
+,,,,,,,
+all_nontaxable_type,all.nontaxable.type,model_nontaxable_type,base.group_user,1,0,0,0
+access_payroll_manager_nontaxable_type,payroll.manager.nontaxable.type,model_nontaxable_type,group_payroll_manager,1,1,1,1
+access_payroll_officer_nontaxable_type,payroll.officer.nontaxable.type,model_nontaxable_type,group_payroll_officer,1,1,1,1

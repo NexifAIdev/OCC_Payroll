@@ -235,7 +235,7 @@ class OccPayrollCfg(models.AbstractModel):
         - Regular Holiday
         """
         attype = "0"  # Ordinary Day
-        holiday_status = self.get_holiday_status(self, date_now, work_location)
+        holiday_status = self.get_holiday_status(date_now, work_location)
 
         # FOR REGULAR WORKING SCHEDULE
         if planned_in == planned_out:  # if planned_in=0, planned_out=0
@@ -308,7 +308,7 @@ class OccPayrollCfg(models.AbstractModel):
         -Sundays and holidays are not working days (as per AVSC policy)
         """
         attype = 1
-        holiday_status = self.get_holiday_status(self, date_now, work_location)
+        holiday_status = self.get_holiday_status(date_now, work_location)
         contract = self.env["hr.contract"].search(
             [("employee_id", "=", self.employee_id.id), ("state", "=", "open")], limit=1
         )
@@ -340,7 +340,7 @@ class OccPayrollCfg(models.AbstractModel):
         -Sundays and holidays are not working days (as per AVSC policy)
         """
         attype = 1
-        holiday_status = self.get_holiday_status(self, date_now, work_location)
+        holiday_status = self.get_holiday_status(date_now, work_location)
 
         # shane
         day_type = (
@@ -366,7 +366,7 @@ class OccPayrollCfg(models.AbstractModel):
     def get_holiday_pay(self, date_now, dow_int, work_location, contract):
         """This function returns if the given date is a holiday"""
         attype = 0
-        holidays = self.get_holiday_status(self, date_now, work_location)
+        holidays = self.get_holiday_status(date_now, work_location)
 
         if holidays.get("count") > 0:
             attype = 1
@@ -624,9 +624,9 @@ class OccPayrollCfg(models.AbstractModel):
 
         print("active_contract : ", active_contract)
         print("self.employee_id.id : ", self.employee_id.id)
-        contract = self.get_holiday_status(self, active_contract, date_now)
+        contract = self.get_holiday_status(active_contract, date_now)
         attype = "0"
-        holiday_status = self.get_holiday_status(self, date_now, work_location)
+        holiday_status = self.get_holiday_status(date_now, work_location)
         # 00:00 -- 00:00
         if contract["planned_in"] == 0:
             # rest day
@@ -840,7 +840,7 @@ class OccPayrollCfg(models.AbstractModel):
             ):  # not rest day, no attendance
                 value = "1"  # Absent
 
-        holiday_status = self.get_holiday_status(self, date, work_location)
+        holiday_status = self.get_holiday_status(date, work_location)
         if holiday_status.get("count") > 0:
             value = "7"
 
@@ -1107,7 +1107,7 @@ class OccPayrollCfg(models.AbstractModel):
             limit=1,
         )
         holiday_status = self.get_holiday_status(
-            self, self.date, self.employee_id.tk_work_location
+            self.date, self.employee_id.tk_work_location
         )
 
         if self.work_schedule_type == "regular":

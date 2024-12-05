@@ -1,3 +1,4 @@
+from . import hr_leave
 from . import employee_dependents
 from . import employee_incident
 from . import employee_position

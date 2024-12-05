@@ -5,6 +5,7 @@ from datetime import datetime, date, timedelta
 # Local python modules
 
 # Custom python modules
+from icecream import ic
 
 # Odoo modules
 from odoo import models, fields, api, _
@@ -166,13 +167,12 @@ class exhr_payslip(models.Model):
                 for i in range((rec.pay_period_to - rec.pay_period_from).days + 1):
                     date = rec.pay_period_from + timedelta(days=i)
 
-                    c = get_count_work_days(
-                        rec, date, int(date.weekday()), rec.employee_id.exhr_work_location
+                    c = rec.get_count_work_days(
+                        date, int(date.weekday()), rec.employee_id.exhr_work_location
                     )
                     count_work_days += c
 
-                    a = get_holiday_pay(
-                        self,
+                    a = self.get_holiday_pay(
                         date,
                         int(date.weekday()),
                         rec.employee_id.exhr_work_location,
@@ -240,6 +240,7 @@ class exhr_payslip(models.Model):
                 ("employee_id", "=", self.employee_id.id),
             ]
         )
+        ic(days_present)
 
         # days_present_daily_wage - used for daily wage earner - computes all days present , NOT including holidays
         days_present_daily_wage = self.env["hr.attendance.sheet"].search_count(
@@ -251,6 +252,7 @@ class exhr_payslip(models.Model):
                 ("schedule_type_ids", "not in", (7)),
             ]
         )
+        ic(days_present_daily_wage)
 
         # days_present_fixed - used for FIXED and 48H WW working sched - computes all days present on Ordinary Days ONLY
         days_present_fixed = self.env["hr.attendance.sheet"].search_count(
@@ -262,6 +264,7 @@ class exhr_payslip(models.Model):
                 ("rate_type", "=", "0"),
             ]
         )
+        ic(days_present_fixed)
 
         # att_list = self.env['hr.attendance.sheet'].search([('actual_in','>',0),('actual_out','>',0),
         # 											('payslip_id','=',self.id),('employee_id','=',self.employee_id.id)])
@@ -276,10 +279,12 @@ class exhr_payslip(models.Model):
                 ("rate_type", "not in", (2, 3, 10, 11, 18, 19, 26, 27)),
             ]
         )
+        ic(days_present_regular)
         # for rec in att_list:
         # 	if '7' in rec.schedule_type_ids.ids: #holiday
         # 		hol_count +=1
 
+        ic(vals)
         if vals.daily_wage:
             # print(days_present_daily_wage)
             self.no_days_present = days_present_daily_wage
@@ -391,7 +396,9 @@ class exhr_payslip(models.Model):
                     ("payslip_id", "=", self.id),
                 ]
             )
+            ic(att_list)
             no_days_present = self.no_days_present
+            ic(no_days_present)
 
             if (
                 self.env["earnings.type"].search_count(
@@ -400,10 +407,14 @@ class exhr_payslip(models.Model):
                 > 0
             ):
                 val_str = vals.payroll_type_id.name
+                ic(val_str)
 
                 earning_id = self.env["earnings.type"].search(
                     [("name", "=", "Base Salary"), ("active", "=", True)], limit=1
                 )
+                ic(earning_id)
+                amount = 0
+                no_day_hrs_disp = ""
                 if vals.daily_wage:
                     for rec in att_list:
                         if (
@@ -433,6 +444,9 @@ class exhr_payslip(models.Model):
                     elif vals.payroll_type_id.name == "Semi-Monthly":
                         amount = vals.wage / 2
 
+                
+                ic(amount)
+                ic(no_day_hrs_disp)
                 if (
                     vals.work_schedule_type == "fixed"
                     or vals.work_schedule_type == "na"
@@ -443,6 +457,7 @@ class exhr_payslip(models.Model):
                     count = self.env["exhr.payslip.earnings"].search_count(
                         [("payslip_id", "=", self.id), ("name_id", "=", earning_id.id)]
                     )
+                    ic(count)
 
                     if count == 0:  # nothing found, will create earnings line
                         self.env["exhr.payslip.earnings"].create(
@@ -1086,8 +1101,8 @@ class exhr_payslip(models.Model):
     def compute_leave_pay(self, vals):
         """Computes Leave Pay in Earnings table:
         - Consider:
-                 - validated leaves covered in the payroll period (not a rest day based on tagged schedule in contracts, not Unpaid or Undertime)
-                 - validated leaves before the payroll period , not yet paid in payslip (not a rest day based on tagged schedule in contracts, not Unpaid or Undertime)
+                - validated leaves covered in the payroll period (not a rest day based on tagged schedule in contracts, not Unpaid or Undertime)
+                - validated leaves before the payroll period , not yet paid in payslip (not a rest day based on tagged schedule in contracts, not Unpaid or Undertime)
         """
 
         if vals:  # with contract, will update the payslip base on the found contract
@@ -2428,23 +2443,25 @@ class exhr_payslip(models.Model):
             # search for contract, get only the latest one based on id of creation
             # print('EMPLOYEEEEEEEEEEEE: ', self.employee_id.name)
             data_a = self.get_contract_info(self.cutoff_date, self.employee_id.id)
+            ic(data_a)
             if data_a:
                 vals = self.env["hr.contract"].search(
                     [("id", "=", data_a.get("contract_id"))]
                 )
 
                 # attached attendance sheet in payslip
+                ic(vals)
                 rec.update_attendance_sheet()
                 rec.compute_count_days(vals)
-                if self.employee_id.id == 1474:
-                    print("1")
+                # if self.employee_id.id == 1474:
+                #     print("1")
                 # earnings
                 rec.compute_base_salary(vals)
                 rec.compute_leave_pay(vals)
                 rec.compute_holiday_pay(vals)
                 rec.compute_overtime(vals)
-                if self.employee_id.id == 1474:
-                    print("1")
+                # if self.employee_id.id == 1474:
+                #     print("1")
                 # deductions
                 rec.compute_tardiness(vals)
                 rec.compute_undertime(vals)
@@ -2526,6 +2543,7 @@ class exhr_payslip(models.Model):
             rec._compute_amount()
 
     def update_attendance_sheet(self):
+        ic("update_attendance_sheet")
         attendance_obj = (
             self.env["hr.attendance.sheet"]
             .sudo()
@@ -2540,6 +2558,7 @@ class exhr_payslip(models.Model):
             )
         )
         self.attendance_sheet_ids = attendance_obj
+        ic(attendance_obj)
 
         for x in self.attendance_sheet_ids:
             x.update_attendance_sheet()
