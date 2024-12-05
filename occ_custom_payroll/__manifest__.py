@@ -61,6 +61,14 @@ OCC Payroll Configurations
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Emails
 		#___________________________________________
+		# "views/config/email.xml",
+        # "views/account/email.xml",
+        "views/attendance/email.xml",
+        "views/overtime/email.xml",
+        # "views/hr/email.xml",
+        # "views/payslip/email.xml",
+        # "views/payroll/email.xml",
+        # "views/resource/email.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Search
@@ -81,7 +89,7 @@ OCC Payroll Configurations
         # "views/account/tree.xml",
         # "views/attendance/tree.xml",
         "views/overtime/tree.xml",
-        # "views/hr/tree.xml",
+        "views/hr/tree.xml",
         "views/payslip/tree.xml",
         "views/payroll/tree.xml",
         # "views/resource/tree.xml",
@@ -89,10 +97,10 @@ OCC Payroll Configurations
 		# "views/account/form.xml",
 		# "views/attendance/form.xml",
 		"views/overtime/form.xml",
-		# "views/hr/form.xml",
+		"views/hr/form.xml",
 		"views/payslip/form.xml",
 		"views/payroll/form.xml",
-		# "views/resource/form.xml",
+		"views/resource/form.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Windows
@@ -104,7 +112,7 @@ OCC Payroll Configurations
         # "views/hr/windows.xml",
         "views/payslip/windows.xml",
         "views/payroll/windows.xml",
-        # "views/resource/windows.xml",
+        "views/resource/windows.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Action Servers

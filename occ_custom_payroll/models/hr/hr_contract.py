@@ -39,7 +39,7 @@ class HrContract(models.Model):
         string="Payment Type",
         default="monthly",
     )
-    html_formula = fields.Text(default=text_formula)
+    html_formula = fields.Html(default=text_formula)
 
     # SSS Contribution
     sss_1st_co_date = fields.Selection(

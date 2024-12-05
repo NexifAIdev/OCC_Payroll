@@ -3,7 +3,160 @@
 
     <data>
     
-        
+        <!-- Res Users Form -->
+		<record id="ex_res_users_view_form" model="ir.ui.view">
+			<field name="name">ex.res.users.view.form</field>
+			<field name="model">res.users</field>
+			<field name="inherit_id" ref="hr_holidays.res_users_view_form"/>
+
+			<field name="arch" type="xml">
+				<field name="leave_manager_id" position="replace">
+					<field name="leave_manager_id" readonly="1"/>
+				</field>
+			</field>
+		</record>
+
+        <!-- Res Config Settings -->
+        <record id="ot_settings_view" model="ir.ui.view">
+            <field name="name">OCC Payroll Settings</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="OCC Payroll Settings" string="OCC Payroll Settings" name="occ_custom_payroll" groups="base.group_system">
+                        <block name="block_overtime_policy" title="Overtime Policies">
+                            <setting id="set_overtime_policy" string="Policies">
+                                <div class="o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="default_ot_policy"/>
+                                        <!--
+                                        <div class="text-muted">
+                                            Description text 1
+                                        </div>
+                                        -->
+                                        <div class="content-group">
+                                            <div class="mt16">
+                                                <field name="default_ot_policy" class="o_light_label" required="True"/>
+                                                <field name="default_preot_policy" class="o_light_label" required="True" invisible="1"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                            
+                        <block name="block_preapproval_process" title="Pre-Approval Process">
+                            <setting id="set_preapproval_process" string="Pre-Approval Process">
+                                <div class="o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="default_preapproval_process"/>
+                                        
+                                        <div class="text-muted">
+                                            Approver 1 is the supervisor in Employee record. Approver 2 is the manager in Employee record.
+                                        </div>
+                                        
+                                        <div class="content-group">
+                                            <div class="mt16">
+                                                <field name="default_preapproval_process" 
+                                                    class="o_light_label" 
+                                                    readonly="default_ot_policy == '2'"
+                                                    required="True"
+                                                    />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block name="block_approval_process" title="Approval Process">
+                            <setting id="set_approval_process" string="Approval Process">
+                                <div class="o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="default_approval_process"/>
+                                        
+                                        <div class="text-muted">
+                                            Approver 1 is the supervisor in Employee record. Approver 2 is the manager in Employee record.									
+                                        </div>
+                                        
+                                        <div class="content-group">
+                                            <div class="mt16">
+                                                <field name="default_approval_process" class="o_light_label" required="True"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block name="block_min_ot_hours" title="Minimum OT Hours">
+                            <setting id="set_min_ot_hours" string="Minimum OT Hours">
+                                <div class="o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="default_min_ot_hours"/>
+                                        
+                                        <div class="text-muted">
+                                            Set the minimum straight OT hours for auto capturing of employees OT in actual attendance. This OT will be automatically suggested on employee's OT filling view.									
+                                        </div>
+                                        
+                                        <div class="content-group">
+                                            <div class="mt16">
+                                                <field name="default_min_ot_hours" class="o_light_label" required="True"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block name="block_number_of_days" title="No. of Days">
+                            <setting id="set_number_of_days" string="No. of Days">
+                                <div class="o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="default_number_of_days"/>
+                                        
+                                        <div class="text-muted">
+                                            Set the date coverage of approved pre-OT request that will show up in employee's OT filling view.				
+                                        </div>
+                                        
+                                        <div class="content-group">
+                                            <div class="mt16">
+                                                <field name="default_number_of_days" class="o_light_label" required="True"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+
+                        <block name="block_total_hrs_for_brk" title="Total Hours for Break">
+                            <setting id="set_total_hrs_for_brk" string="Total Hours for Break">
+                                <div class="o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <label for="default_break_hrs"/>
+                                        
+                                        <div class="text-muted">
+                                            Indicate the number of break hours to be deducted in every staight OT hours. Ex. In every 4 hrs there will be .5 hrs break will be deducted.				
+                                        </div>
+                                        
+                                        <div class="content-group">
+                                            <div class="mt16">
+                                                OT Hr
+                                                <field name="default_total_hrs_for_brk" class="o_light_label" required="True"/>
+                                            </div>
+                                            <div class="mt16">
+                                                Break Hr to be deducted
+                                                <field name="default_break_hrs" class="o_light_label" required="True"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
     
     </data>
     

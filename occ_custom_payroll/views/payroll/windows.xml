@@ -124,6 +124,40 @@
                 'form_view_ref':'occ_custom_payroll.exhr_hr_accounting_config_view_form',
 }</field>
 		</record>
+
+        <record id="action_payment_type" model="ir.actions.act_window">
+            <field name="name">Payment Type</field>
+            <field name="res_model">payment.type</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create new Payment Type
+                </p>
+            </field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.tree_payment_type')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.tree_payment_type',
+}</field>
+        </record>
+
+        <record id="action_loan_type" model="ir.actions.act_window">
+            <field name="name">Loan Type</field>
+            <field name="res_model">loan.type</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create new Loan Type
+                </p>
+            </field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.tree_loan_type')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.tree_loan_type',
+}</field>
+        </record>
     
     </data>
     

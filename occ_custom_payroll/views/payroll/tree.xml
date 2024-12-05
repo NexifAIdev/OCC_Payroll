@@ -112,7 +112,7 @@
 			</field>
 		</record>	
 
-        <!-- Action - Withholding Tax Config -->
+        <!-- Tree - Withholding Tax Config -->
 		<record id="exhr_withholding_tax_config_view_tree" model="ir.ui.view">
 			<field name="name">exhr.withholding.tax.config.view.tree</field>
 			<field name="model">withholding.tax.config</field>
@@ -159,6 +159,32 @@
 				</tree>
 			</field>
 		</record>
+
+        <record id="tree_payment_type" model="ir.ui.view">
+            <field name="name">Payment Type</field>
+            <field name="model">payment.type</field>
+            <field name="arch" type="xml">
+                <tree string="Payment Type" editable="top">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="account_id" domain="[('company_id','=',company_id)]"/>
+                    <field name="sequence"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Loan Type Configuration -->
+        <record id="tree_loan_type" model="ir.ui.view">
+            <field name="name">Loan Type</field>
+            <field name="model">loan.type</field>
+            <field name="arch" type="xml">
+                <tree string="Loan Type" editable="top">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="gl_account" domain="[('company_id','=',company_id)]"/>
+                </tree>
+            </field>
+        </record>
     
     </data>
     

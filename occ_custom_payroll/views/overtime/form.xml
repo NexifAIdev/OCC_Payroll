@@ -77,6 +77,8 @@
 						<group>
 							<field name="date_filed" force_save="1" readonly="True" invisible="0"/>
 							<field name="date_approved" readonly="True" invisible="0"/>
+                            <field name="preot_policy" readonly="True" force_save="1" invisible="1"/>
+				            <field name="preapproval_process" readonly="True" force_save="1" invisible="1"/>
 							<field name="company_id"/>
 						</group>
 
@@ -313,6 +315,8 @@
                                             widget="float_time"
                                         />
                                         <field name="pre_ot_request_id"
+                                            required="parent.ot_policy == '1'"
+                                            invisible="parent.ot_policy == '2'"
                                             domain="[('state', '=', 'approved'),('ot_date', '=', date),('employee_id', '=', parent.employee_id)]"
                                             options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
                                         />
@@ -327,6 +331,16 @@
                                     </tree>
                                 </field>
 							</page>
+                            <page id="page_ot_otherinfo" string="Other Information">
+                                <group>
+                                    <field name="min_ot_hours" readonly="True"/>
+                                    <field name="number_of_days" string="OT Maturity(days)" readonly="True"/>				
+                                    <field name="ot_policy" readonly="True"/>
+                                    <field name="approval_process" readonly="True"/>
+                                    <field name="total_hrs_for_brk" readonly="True"/>
+                                    <field name="break_hrs" readonly="True"/>
+                                </group>
+                            </page>
 						</notebook>
 
 						<group>
@@ -436,6 +450,16 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page id="page_ot_otherinfo" string="Other Information">
+                                <group>
+                                    <field name="min_ot_hours" readonly="True"/>
+                                    <field name="number_of_days" string="OT Maturity(days)" readonly="True"/>				
+                                    <field name="ot_policy" readonly="True"/>
+                                    <field name="approval_process" readonly="True"/>
+                                    <field name="total_hrs_for_brk" readonly="True"/>
+                                    <field name="break_hrs" readonly="True"/>
+                                </group>
+                            </page>
                         </notebook>
 
                         <group>
@@ -532,6 +556,17 @@
                                         />
                                     </tree>
                                 </field>
+                            </page>
+                            <page id="page_ot_otherinfo" string="Other Information">
+                                <group>
+                                    <field name="min_ot_hours" readonly="True"/>
+                                    <field name="number_of_days" string="OT Maturity(days)" readonly="True"/>				
+                                    <field name="ot_policy" readonly="True"/>
+                                    <field name="approval_process" readonly="True"/>
+
+                                    <field name="total_hrs_for_brk" readonly="True"/>
+                                    <field name="break_hrs" readonly="True"/>
+                                </group>
                             </page>
                         </notebook>
 

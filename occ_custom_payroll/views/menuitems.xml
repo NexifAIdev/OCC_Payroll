@@ -16,7 +16,7 @@
             name="OCC Payroll" 
             sequence="45"
             web_icon="hr_payroll_community,static/description/icon.png"
-            groups="occ_custom_payroll.group_payroll_manager,occ_custom_payroll.group_payroll_officer"
+            groups="occ_custom_payroll.group_payroll_admin,occ_custom_payroll.group_payroll_manager,occ_custom_payroll.group_payroll_officer"
             >
 
             <menuitem id="menu_exhr_payroll" 
@@ -37,6 +37,7 @@
             <menuitem id="menu_exhr_configurations" 
                 name="Configurations" 
                 sequence="999"
+                groups="occ_custom_payroll.group_payroll_admin"
                 />
 
         </menuitem>
