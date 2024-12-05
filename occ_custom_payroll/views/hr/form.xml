@@ -3,7 +3,16 @@
 
     <data>
     
-        
+        <!-- <record id="payroll_tk_view_employee_form" model="ir.ui.view">
+			<field name="name">payroll.tk.view.employee.form</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="tk_hr.tk_view_employee_form"/>
+			<field name="arch" type="xml">
+				<field name="job_description" position="after">
+					<field name="accounting_tag_id" domain="[('company_id','=',company_id)]" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}" required="1"/>
+				</field>
+			</field>
+		</record> -->
     
     </data>
     

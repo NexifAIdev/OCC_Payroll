@@ -16,6 +16,114 @@
                 'form_view_ref':'occ_custom_payroll.exhr_payroll_view_form', 
 }</field>
 		</record>
+
+        <!-- Action Window - Late/Undertime Config -->
+        <record id="exhr_late_undertime_config_view_action" model="ir.actions.act_window">
+			<field name="name">Late/Undertime Config</field>
+			<field name="res_model">late.undertime.config</field>
+			<field name="view_mode">tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_late_undertime_config_view_tree')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_late_undertime_config_view_tree',
+}</field>
+		</record>
+
+        <!-- Action Window - Rate Table Config -->
+        <record id="exhr_overtime_rate_config_view_action" model="ir.actions.act_window">
+			<field name="name">Rate Table Config</field>
+			<field name="res_model">overtime.rate.config</field>
+			<field name="view_mode">tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_overtime_rate_config_view_tree')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_overtime_rate_config_view_tree',
+}</field>
+		</record>
+
+        <!-- Action Window - SSS Contribution Config -->
+        <record id="exhr_sss_contribution_config_view_action" model="ir.actions.act_window">
+			<field name="name">SSS Contribution Config</field>
+			<field name="res_model">sss.contribution.config</field>
+			<field name="view_mode">tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_sss_contribution_config_view_tree')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_sss_contribution_config_view_tree',
+}</field>
+		</record>
+
+        <!-- Action Window - PHIC Contribution Config -->
+        <record id="exhr_phic_contribution_config_view_action" model="ir.actions.act_window">
+			<field name="name">PHIC Contribution Config</field>
+			<field name="res_model">phic.contribution.config</field>
+			<field name="view_mode">tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_phic_contribution_config_view_tree')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_phic_contribution_config_view_tree',
+}</field>
+		</record>
+
+        <!-- Action Window - HDMF Contribution Config -->
+        <record id="exhr_hdmf_contribution_config_view_action" model="ir.actions.act_window">
+			<field name="name">HDMF Contribution Config</field>
+			<field name="res_model">hdmf.contribution.config</field>
+			<field name="view_mode">tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_hdmf_contribution_config_view_tree')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_hdmf_contribution_config_view_tree',
+}</field>
+		</record>
+
+        <!-- Action Window - Withholding Tax Config -->
+        <record id="exhr_withholding_tax_config_view_action" model="ir.actions.act_window">
+			<field name="name">Withholding Tax Config</field>
+			<field name="res_model">withholding.tax.config</field>
+			<field name="view_mode">tree</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_withholding_tax_config_view_tree')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_withholding_tax_config_view_tree',
+}</field>
+		</record>
+
+        <!-- Action Window - Payroll Accounting Config -->
+        <record id="exhr_payroll_accounting_config_view_action" model="ir.actions.act_window">
+			<field name="name">Payroll Accounting Config</field>
+			<field name="res_model">payroll.accounting.config</field>
+			<field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_payroll_accounting_config_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.exhr_payroll_accounting_config_view_form')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_payroll_accounting_config_view_tree',
+                'form_view_ref':'occ_custom_payroll.exhr_payroll_accounting_config_view_form',
+}</field>
+		</record>
+
+        <!-- Action Window - HR Accounting Config -->
+        <record id="exhr_hr_accounting_config_view_action" model="ir.actions.act_window">
+			<field name="name">HR Accounting Config</field>
+			<field name="res_model">hr.accounting.config</field>
+			<field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.exhr_hr_accounting_config_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.exhr_hr_accounting_config_view_form')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.exhr_hr_accounting_config_view_tree',
+                'form_view_ref':'occ_custom_payroll.exhr_hr_accounting_config_view_form',
+}</field>
+		</record>
     
     </data>
     

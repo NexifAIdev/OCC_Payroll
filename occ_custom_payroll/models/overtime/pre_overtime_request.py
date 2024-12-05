@@ -16,7 +16,7 @@ import odoo.addons.decimal_precision as dp
 
 class PreOvertimeRequest(models.Model):
     _name = "pre.overtime.request"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "occ.payroll.cfg"]
     _description = "Pre-Approval Overtime Request"
     
     def _default_employee(self):

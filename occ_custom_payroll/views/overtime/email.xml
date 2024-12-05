@@ -3,7 +3,45 @@
 
     <data>
     
-        
+        <record id="email_pre_overtime_request" model="mail.template">
+            <field name="name">Pre-OT - Approval</field>
+            <field name="subject">Pre-OT - Approval</field>
+            <field name="email_to">${ctx.get('d_email')}</field>
+            <field name="model_id" ref="occ_custom_payroll.model_pre_overtime_request"/>
+            <field name="body_html"><![CDATA[<p></p>
+                <p>Dear ${ctx.get('d_name')}, <br/><br/>
+                    The pre-overtime request, ${object.name}, of ${object.employee_id.name} is for your approval.
+                    <br/>
+                    <br/>
+                    <a href=${ctx.get('url')} style="background-color: #87517b; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px;" class="o_default_snippet_text">View Pre-Overtime Request</a><br/><br/>                    
+                    <br/>
+                    <br/>                  
+                    Regards,
+                    <br/><br/>
+                    ${object.company_id.name}
+                </p>
+            ]]></field>
+        </record>
+
+        <record id="email_overtime_request" model="mail.template">
+            <field name="name">OT - Approval</field>
+            <field name="subject">OT - Approval</field>
+            <field name="email_to">${ctx.get('d_email')}</field>
+            <field name="model_id" ref="occ_custom_payroll.model_overtime_request"/>
+            <field name="body_html"><![CDATA[<p></p>
+                <p>Dear ${ctx.get('d_name')}, <br/><br/>
+                    The pre-overtime request, ${object.name}, of ${object.employee_id.name} is for your approval.
+                    <br/>
+                    <br/>
+                    <a href=${ctx.get('url')} style="background-color: #87517b; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px;" class="o_default_snippet_text">View Pre-Overtime Request</a><br/><br/>                    
+                    <br/>
+                    <br/>                  
+                    Regards,
+                    <br/><br/>
+                    ${object.company_id.name}
+                </p>
+            ]]></field>
+        </record>
     
     </data>
     

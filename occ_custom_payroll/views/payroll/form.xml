@@ -173,6 +173,96 @@
 				</form>
 			</field>
 		</record>
+
+        <!-- Form - Payroll Accounting Config -->
+        <record id="exhr_payroll_accounting_config_view_form" model="ir.ui.view">
+			<field name="name">exhr.payroll.accounting.config.view.form</field>
+			<field name="model">payroll.accounting.config</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+<!-- 						<group>
+							<group>
+								<field name="company_id"/>
+							</group>
+						</group> -->
+						<separator string="Journal Entry"/>
+						<group>
+							<group>
+								<field name="default_auto_jv"/>
+							</group>
+							<group>
+								<field name="default_auto_post"/>
+							</group>							
+						</group>
+						<separator/>
+<!-- 						<group>
+							<group>
+								<field name="default_payroll_journal_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_salaries_exp_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_tax_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_others_account_id" domain="[('company_id','=',company_id)]"/>
+							</group>
+							<group>
+								<field name="default_sss_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_phic_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_hdmf_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_sss_er_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_phic_er_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_hdmf_er_account_id" domain="[('company_id','=',company_id)]"/>
+							</group>							
+						</group> -->
+						<separator string="Night Differential"/>
+						<group>
+							<group>
+								<field name="default_ns_start"/>
+							</group>
+							<group>
+								<field name="default_ns_end"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>	
+
+        <!-- Form - HR Accounting Config -->
+        <record id="exhr_hr_accounting_config_view_form" model="ir.ui.view">
+			<field name="name">exhr.hr.accounting.config.view.form</field>
+			<field name="model">hr.accounting.config</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<field name="company_id"/>
+							</group>
+						</group>
+						<separator/>
+						<group>
+							<group>
+								<field name="default_payroll_journal_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_salaries_exp_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_tax_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_others_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_net_pay_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_13th_month_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_13th_payable_account_id" domain="[('company_id','=',company_id)]"/>
+							</group>
+							<group>
+								<field name="default_sss_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_phic_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_hdmf_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_sss_er_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_phic_er_account_id" domain="[('company_id','=',company_id)]"/>
+								<field name="default_hdmf_er_account_id" domain="[('company_id','=',company_id)]"/>
+							</group>							
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>		
     
     </data>
     

@@ -16,6 +16,7 @@
             name="OCC Payroll" 
             sequence="45"
             web_icon="hr_payroll_community,static/description/icon.png"
+            groups="occ_custom_payroll.group_payroll_manager,occ_custom_payroll.group_payroll_officer"
             >
 
             <menuitem id="menu_exhr_payroll" 
@@ -34,6 +35,30 @@
                 />
 
             <menuitem id="menu_exhr_configurations" 
+                name="Configurations" 
+                sequence="999"
+                />
+
+        </menuitem>
+
+        <!-- Custom Overtime -->
+        <menuitem id="menu_occ_overtime_root" 
+            name="OCC Overtime" 
+            sequence="50"
+            web_icon="hr_payroll_community,static/description/icon.png"
+            >
+
+            <menuitem id="menu_pre_overtime_base" 
+                name="Pre-Overtime" 
+                sequence="1"
+                />
+
+            <menuitem id="menu_overtime_base" 
+                name="Overtime" 
+                sequence="2"
+                />
+
+            <menuitem id="menu_overtime_configurations" 
                 name="Configurations" 
                 sequence="999"
                 />
