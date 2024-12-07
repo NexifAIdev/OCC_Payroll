@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="viewform_employee_work_location" model="ir.ui.view">
+            <field name="name">viewform.employee.work.location</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id"
+                ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet//group//group" position="inside">
+                    <field name="work_location_type" groups="occ_configurations.group_work_location_manager"/>
+                </xpath>
+
+                <xpath expr="//sheet//notebook//page[@name='hr_settings']" position="after">
+                    <page name="page-login_creds" string="Login Credentials">
+                        <field name="login_credential_line_ids" groups="occ_configurations.group_work_location_manager,occ_configurations.group_ip_address_configuration,occ_configurations.group_ip_logger_configuration">
+                            <tree>
+                                <field name="name" readonly="1"/>
+                                <field name="location_name" readonly="1"/>
+                                <field name="login_date" readonly="1"/>
+                                <field name="employee_id" column_invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

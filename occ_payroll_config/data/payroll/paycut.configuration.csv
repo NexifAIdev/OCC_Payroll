@@ -1,0 +1,6 @@
+id,name,start_day,end_day,description,active
+paycut_first_half,First Half,1,15,"Paycut for the first half of the month",True
+paycut_second_half_30,Second Half (30),16,30,"Paycut for the second half of months with 30 days",True
+paycut_second_half_31,Second Half (31),16,31,"Paycut for the second half of months with 31 days",True
+paycut_second_half_28,Second Half (28),16,28,"Paycut for the second half of February (non-leap year)",True
+paycut_second_half_29,Second Half (29),16,29,"Paycut for the second half of February (leap year)",True

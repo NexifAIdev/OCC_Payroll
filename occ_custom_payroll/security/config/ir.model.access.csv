@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+,,,,,,,
+access_payroll_type_contract_manager,payroll.type.contract.manager,model_payroll_type,hr_contract.group_hr_contract_manager,1,1,1,1
+access_payroll_type_all,payroll.type.all,model_payroll_type,base.group_user,1,1,1,0

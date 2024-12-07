@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_set_schedule_form" model="ir.ui.view">
+            <field name="name">set.schedule.form</field>
+            <field name="model">set.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Register Payment">
+                    <sheet>
+                        <group>
+                            <field name="employee_ids" widget="many2many_tags" string="Employees"/>
+                        </group>
+                    </sheet>
+        
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

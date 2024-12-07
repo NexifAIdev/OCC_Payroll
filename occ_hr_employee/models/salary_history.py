@@ -15,6 +15,7 @@ class SalaryHistory(models.Model):
     commission = fields.Float("Commission")
     notes = fields.Text("Notes")
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.company.currency_id)
+    
 class EmployeeSalary(models.Model):
     _inherit = "hr.employee"
 

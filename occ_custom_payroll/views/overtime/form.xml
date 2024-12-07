@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <!-- Form - Pre Overtime - Employee -->
+        <record id="employee_preovertime_form_view" model="ir.ui.view">
+			<field name="name">employee.preovertime.request.form</field>
+			<field name="model">pre.overtime.request</field>
+			<field name="arch" type="xml">
+				<form string="Overtime Request">
+					<header>
+                        <button name="submit"
+                            string="Submit"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['draft']"
+                        />
+
+                        <button name="reset_to_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['cancelled']"
+                        />
+
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['approved','denied','cancelled']"
+                        />
+
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="submitted,approved"
+                            clickable="False"
+                        />
+
+                    </header>
+
+					<sheet>
+						<div class="oe_title">
+							<h1>
+								<field name="name" readonly="1"/>
+							</h1>
+						</div>
+                        <group>
+                            <field name="employee_id"
+                                force_save="1"
+                                readonly="1"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                            />
+
+                            <field name="department_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                            />
+
+                            <field name="ot_date"
+                                required="True"
+                                readonly="state not in ['draft']"
+                            />
+
+                            <field name="est_hours"
+                                widget="float_time"
+                                readonly="state not in ['draft']"
+                            />
+
+                            <field name="details"
+                                required="True"
+                                readonly="state not in ['draft']"
+                            />
+
+                        </group>
+
+
+						<group>
+							<field name="date_filed" force_save="1" readonly="True" invisible="0"/>
+							<field name="date_approved" readonly="True" invisible="0"/>
+                            <field name="preot_policy" readonly="True" force_save="1" invisible="1"/>
+				            <field name="preapproval_process" readonly="True" force_save="1" invisible="1"/>
+							<field name="company_id"/>
+						</group>
+
+					</sheet>
+
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+
+				</form>
+			</field>
+		</record>
+
+        <!-- Form - Pre Overtime - Supervisor -->
+        <record id="supervisor_preovertime_form_view" model="ir.ui.view">
+            <field name="name">supervisor.preovertime.form.view</field>
+            <field name="model">pre.overtime.request</field>
+            <field name="arch" type="xml">
+                <form string="Overtime Request for Approval">
+                    <header>
+                        <button name="approved_by_1"
+                            string="Approve"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted','subver']"
+                        />
+                        <button name="set_to_denied_by_1"
+                            string="Deny"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted','subver']"
+                        />
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['approved','denied','cancelled']"
+                        />
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="submitted,approved"
+                            clickable="False"
+                        />
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="employee_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                readonly="state not in ['draft']"
+                            />
+                            <field name="department_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                            />
+                            <field name="ot_date"
+                                readonly="True"
+                            />
+                            <field name="est_hours"
+                                widget="float_time"
+                                readonly="True"
+                            />
+                            <field name="details"
+                                readonly="True"
+                            />
+                        </group>
+                        <group>
+                            <field name="date_filed" readonly="True"/>
+                            <field name="date_approved"/>
+                        </group>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form - Pre Overtime - Manager -->
+        <record id="manager_preovertime_form_view" model="ir.ui.view">
+            <field name="name">manager.preovertime.request.form</field>
+            <field name="model">pre.overtime.request</field>
+            <field name="arch" type="xml">
+                <form string="Overtime Request">
+                    <header>
+                        <button name="approved_by_1"
+                            string="Approve"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted','subver']"
+                        />
+                        <button name="set_to_denied_by_2"
+                            string="Deny"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['verified','subver']"
+                        />
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['approved','denied','cancelled']"
+                        />
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="submitted,approved"
+                            clickable="False"
+                        />
+                    </header>
+
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group readonly="state not in ['draft']">
+                            <field name="employee_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                readonly="state not in ['draft']"
+                            />
+                            <field name="department_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                            />
+                            <field name="ot_date"
+                                readonly="True"
+                            />
+                            <field name="est_hours"
+                                widget="float_time"
+                                readonly="True"
+                            />
+                            <field name="details"
+                                readonly="True"
+                            />
+                        </group>
+
+                        <group>
+                            <field name="date_filed" readonly="True"/>
+                            <field name="date_approved"/>
+                        </group>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+
+        <!-- Form - Overtime - Employee -->
+        <record id="employee_overtime_form_view" model="ir.ui.view">
+			<field name="name">employee.overtime.request.form</field>
+			<field name="model">overtime.request</field>
+			<field name="arch" type="xml">
+				<form string="Overtime Request">
+					<header>
+                        <button name="submit"
+                            string="Submit"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['draft']"
+                        />
+
+                        <button name="reset_to_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['cancelled']"
+                        />
+
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['approved','denied','cancelled']"
+                        />
+
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="submitted,approved"
+                            clickable="False"
+                        />
+
+                    </header>
+					<sheet>
+						<h1><field name="name" readonly="True"/></h1>
+						<group>
+							<field name="employee_id" readonly="True" force_save="1" options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"/>
+							<field name="department_id" options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"/>
+							<field name="company_id"/>
+						</group>
+
+
+						<notebook>
+							<page id="page_ot_request" string="Overtime Request">
+								<field name="overtime_line_ids"
+                                    widget="one2many_list"
+                                    nolabel="1"
+                                    readonly="state not in ['draft']">
+                                    <tree editable="bottom"
+                                        colors="red:system_generated!=False">
+                                        <field name="system_generated"
+                                            readonly="True"
+                                        />
+                                        <field name="date"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+                                        <field name="actual_in"
+                                            widget="float_time"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+                                        <field name="actual_out"
+                                            widget="float_time"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+                                        <field name="rate_type"
+                                            readonly="1"
+                                            force_save="1"
+                                        />
+                                        <field name="total_ot_hrs"
+                                            widget="float_time"
+                                        />
+                                        <field name="pre_ot_request_id"
+                                            required="parent.ot_policy == '1'"
+                                            invisible="parent.ot_policy == '2'"
+                                            domain="[('state', '=', 'approved'),('ot_date', '=', date),('employee_id', '=', parent.employee_id)]"
+                                            options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                        />
+                                        <field name="details"
+                                        />
+                                        <field name="status"
+                                            readonly="True"
+                                        />
+                                        <field name="company_id"
+                                            invisible="1"
+                                        />
+                                    </tree>
+                                </field>
+							</page>
+                            <page id="page_ot_otherinfo" string="Other Information">
+                                <group>
+                                    <field name="min_ot_hours" readonly="True"/>
+                                    <field name="number_of_days" string="OT Maturity(days)" readonly="True"/>				
+                                    <field name="ot_policy" readonly="True"/>
+                                    <field name="approval_process" readonly="True"/>
+                                    <field name="total_hrs_for_brk" readonly="True"/>
+                                    <field name="break_hrs" readonly="True"/>
+                                </group>
+                            </page>
+						</notebook>
+
+						<group>
+							<field name="date_filed" readonly="True"/>
+							<field name="date_approved"/>
+						</group>
+
+					</sheet>
+
+
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+
+				</form>
+			</field>
+		</record>
+
+        <!-- Form - Overtime - Supervisor -->
+        <record id="supervisor_overtime_form_view" model="ir.ui.view">
+            <field name="name">supervisor.overtime.request.form</field>
+            <field name="model">overtime.request</field>
+            <field name="arch" type="xml">
+                <form string="Overtime Request">
+                    <header>
+                        <button name="approved_by_1"
+                            string="Done"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted','subver']"
+                        />
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['approved','denied','cancelled']"
+                        />
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="submitted,approved"
+                            clickable="False"
+                        />
+                    </header>
+
+                    <sheet>
+                        <h1><field name="name" readonly="True"/></h1>
+                        <group>
+                            <field name="employee_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                readonly="state not in ['draft']"
+                            />
+
+                            <field name="department_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                readonly="state not in ['draft']"
+                            />
+
+                        </group>
+
+                        <notebook>
+                            <page id="page_ot_request"
+                                string="Overtime Request">
+                                <field name="overtime_line_ids"
+                                    widget="one2many_list"
+                                    nolabel="1"
+                                    readonly="state not in ['draft']">
+                                    <tree editable="bottom"
+                                        colors="red:system_generated!=False">
+                                        <field name="system_generated"
+                                            readonly="True"
+                                        />
+
+                                        <field name="date"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+
+                                        <field name="actual_in"
+                                            widget="float_time"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+
+                                        <field name="actual_out"
+                                            widget="float_time"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+
+                                        <field name="total_ot_hrs"
+                                            widget="float_time"
+                                        />
+
+                                        <field name="pre_ot_request_id"
+                                            domain="[('state', '=', 'approved'),('ot_date', '=', date),('employee_id', '=', parent.employee_id)]"
+                                            options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                        />
+
+                                        <field name="details"
+                                        />
+
+                                        <field name="status"
+                                            readonly="True"
+                                        />
+
+                                    </tree>
+                                </field>
+                            </page>
+                            <page id="page_ot_otherinfo" string="Other Information">
+                                <group>
+                                    <field name="min_ot_hours" readonly="True"/>
+                                    <field name="number_of_days" string="OT Maturity(days)" readonly="True"/>				
+                                    <field name="ot_policy" readonly="True"/>
+                                    <field name="approval_process" readonly="True"/>
+                                    <field name="total_hrs_for_brk" readonly="True"/>
+                                    <field name="break_hrs" readonly="True"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                        <group>
+                            <field name="date_filed" readonly="True"/>
+                            <field name="date_approved"/>
+                        </group>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- Form - Overtime - Manager -->
+        <record id="manager_overtime_form_view" model="ir.ui.view">
+            <field name="name">manager.overtime.request.form</field>
+            <field name="model">overtime.request</field>
+            <field name="arch" type="xml">
+                <form string="Overtime Request">
+                    <header>
+                        <button name="approved_by_1"
+                            string="Done"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['submitted','subver']"
+                        />
+                        <button name="set_to_cancel"
+                            string="Cancel"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['approved','denied','cancelled']"
+                        />
+                        <field name="state"
+                            widget="statusbar"
+                            statusbar_visible="submitted,approved"
+                            clickable="False"
+                        />
+                    </header>
+
+                    <sheet>
+                        <h1><field name="name" readonly="True"/></h1>
+                        <group>
+                            <field name="employee_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                readonly="state not in ['draft']"
+                            />
+                            <field name="department_id"
+                                options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                readonly="state not in ['draft']"
+                            />
+                        </group>
+
+                        <notebook>
+                            <page id="page_ot_request"
+                                string="Overtime Request">
+                                <field name="overtime_line_ids"
+                                    widget="one2many_list"
+                                    nolabel="1"
+                                    readonly="state not in ['draft']">
+                                    <tree editable="bottom"
+                                        colors="red:system_generated!=False">
+                                        <field name="system_generated"
+                                            readonly="True"
+                                        />
+                                        <field name="date"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+                                        <field name="actual_in"
+                                            widget="float_time"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+                                        <field name="actual_out"
+                                            widget="float_time"
+                                            required="True"
+                                            readonly="system_generated == True"
+                                        />
+                                        <field name="total_ot_hrs"
+                                            widget="float_time"
+                                        />
+                                        <field name="pre_ot_request_id"
+                                            domain="[('state', '=', 'approved'),('ot_date', '=', date),('employee_id', '=', parent.employee_id)]"
+                                            options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"
+                                        />
+                                        <field name="details"
+                                        />
+                                        <field name="status"
+                                            readonly="True"
+                                        />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page id="page_ot_otherinfo" string="Other Information">
+                                <group>
+                                    <field name="min_ot_hours" readonly="True"/>
+                                    <field name="number_of_days" string="OT Maturity(days)" readonly="True"/>				
+                                    <field name="ot_policy" readonly="True"/>
+                                    <field name="approval_process" readonly="True"/>
+
+                                    <field name="total_hrs_for_brk" readonly="True"/>
+                                    <field name="break_hrs" readonly="True"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                        <group>
+                            <field name="date_filed" readonly="True"/>
+                            <field name="date_approved"/>
+                        </group>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form - Overtime - Timekeeper -->
+        <record id="timekeeper_employee_overtime_form_view" model="ir.ui.view">
+            <field name="name">timekeeper.employee.overtime.request.form</field>
+            <field name="model">overtime.request</field>
+            <field name="inherit_id" ref="occ_custom_payroll.employee_overtime_form_view"/>
+            <field name="mode">primary</field>
+            <field name="priority">20</field>            
+            <field name="arch" type="xml">          
+                <field name="employee_id" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </field>
+            </field>
+        </record>
+
+    
+    </data>
+    
+
+</odoo>

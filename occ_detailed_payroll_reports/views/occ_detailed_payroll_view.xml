@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="custom_occ_detailed_payroll_report" model="ir.ui.view">
+        <field name="name">Occ Detailed Payroll Report</field>
+        <field name="model">occ.detailed.payroll.report</field>
+        <field name="arch" type="xml">
+            <form string="Occ Detailed Payroll Report">
+                <group class="oe_title">
+                    <field name="multi_company_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
+                    <field name="select_date"/>
+                    <field name="employee_type_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <hr/>
+                <footer>
+                    <button name="print_occ_detailed_payroll_report" string="Print XLS" type="object" class="oe_highlight" />
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+        <!-- Define an action for the wizard -->
+        <record id="action_attendance_view_custom_wizard_new_int" model="ir.actions.act_window">
+            <field name="name">Occ Detailed Payroll Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">occ.detailed.payroll.report</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="occ_detailed_payroll_reports.custom_occ_detailed_payroll_report"/>
+        </record>
+
+        <menuitem 
+              id="menu_department_main"
+              parent="hr_payroll_community.menu_hr_payroll_community_root"
+              groups="hr_payroll_community.group_hr_payroll_community_user"
+              name="Employee Payslips"
+              sequence="0"
+              />
+
+        <menuitem action="hr_payroll_community.hr_payslip_action"
+              id="hr_payroll_community.menu_department_tree"
+              parent="menu_department_main"
+              sequence="0"
+              />
+
+        <menuitem action="action_attendance_view_custom_wizard_new_int"
+              id="menu_attendance_view_custom_wizard_new_int"
+              parent="menu_department_main"
+              sequence="1"
+              />
+
+        <record id="view_hr_employee_form_inherited" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="occ_hr_employee.view_hr_employee_form_inherit2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page/group/group/field[@name='job_grade']" position="before">
+                <field name="employee_type_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
+            </xpath>
+        </field>
+        </record>
+</odoo>

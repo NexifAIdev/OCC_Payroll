@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <!-- Menu - Pre Overtime - Employee -->
+        <menuitem id="employee_preovertime_request_menu"
+            name="Pre-Overtime Request"
+            action="employee_preovertime_action_view"
+            parent="menu_pre_overtime_base"
+            sequence="11"
+            groups="group_preovertime_requestor"
+        />
+
+        <!-- Menu - Pre Overtime - Supervisor -->
+        <menuitem id="officer_preovertime_approval_menu"
+            name="Pre-Overtime For Verify"
+            action="supervisor_preovertime_action_view"
+            parent="menu_pre_overtime_base"
+            sequence="21"
+            groups="group_preovertime_supervisor_approver"
+        />
+
+        <!-- Menu - Pre Overtime - Manager -->
+        <menuitem id="manager_preovertime_approval_menu"
+            name="Pre-Overtime For Approval"
+            action="manager_preovertime_action_view"
+            parent="menu_pre_overtime_base"
+            sequence="31"
+            groups="group_preovertime_manager_approver"
+        />
+
+        <!-- Menu - Pre Overtime - All -->
+        <menuitem id="all_preot_approval_menu"
+            name="All Pre-OT"
+            parent="menu_pre_overtime_base"
+            action="employee_preovertime_action_view"
+            sequence="0"
+        />
+
+        <!-- Menu - Overtime - Employee -->
+        <menuitem id="employee_postovertime_request_menu"
+            name="Overtime Request"
+            action="employee_overtime_action_view"
+            parent="menu_overtime_base"
+            sequence="12"
+            groups="group_postovertime_requestor,group_preovertime_requestor"
+        />
+
+        <!-- Menu - Overtime - Supervisor -->
+        <menuitem id="supervisor_postovertime_approval_menu"
+            name="Overtime For Verify"
+            action="supervisor_overtime_action_view"
+            parent="menu_overtime_base"
+            sequence="22"
+            groups="group_postovertime_supervisor_approver,group_preovertime_supervisor_approver"
+        />
+
+        <!-- Menu - Overtime - Manager -->
+        <menuitem id="manager_postovertime_approval_menu"
+            name="Overtime For Approval"
+            action="manager_overtime_action_view"
+            parent="menu_overtime_base"
+            sequence="32"
+            groups="group_postovertime_manager_approver,group_preovertime_manager_approver"
+        />
+
+        <!-- Menu - Overtime - Timekeeper -->
+        <menuitem id="timekeeper_postovertime_approval_menu"
+            name="Overtime - Timekeeper"
+            action="timekeeper_overtime_action_view"
+            parent="menu_overtime_base"
+            sequence="40"
+            groups="occ_custom_payroll.group_attendance_correction_approver_1,occ_custom_payroll.group_attendance_correction_approver_2"
+        />
+
+        <!-- Menu - Pre Overtime - All -->
+        <menuitem id="all_overtime_approval_menu"
+            name="Overtime"
+            action="all_overtime_action_view"
+            parent="menu_overtime_base"
+            sequence="1"
+        />
+    
+    </data>
+    
+
+</odoo>

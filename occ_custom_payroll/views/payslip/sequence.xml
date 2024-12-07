@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <!-- Sequence - Payslip No.-->
+		<record model="ir.sequence" id="seq_exhr_payslip_no">
+			<field name="name">Payslip No. Sequence</field>
+			<field name="code">exhr_payslip_no_sequence</field>
+			<field name="implementation">no_gap</field>
+			<field name="prefix">PS/%(range_year)s/</field>
+			<field name="padding">4</field>
+			<field name="company_id" eval="False"/>
+		</record>
+
+        <!-- Sequence - Payslip Journal No.-->
+		<record model="ir.sequence" id="seq_exhr_payslip_journal_no">
+			<field name="name">Payslip Journal No. Sequence</field>
+			<field name="code">exhr_payslip_journal_no_sequence</field>
+			<field name="implementation">no_gap</field>
+			<field name="prefix">PYJ/%(range_year)s/</field>
+			<field name="padding">4</field>
+			<field name="company_id" eval="False"/>
+		</record>
+    
+    </data>
+    
+
+</odoo>

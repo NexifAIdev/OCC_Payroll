@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="exhr_payroll_view_tree" model="ir.ui.view">
+			<field name="name">exhr.payroll.view.tree</field>
+			<field name="model">exhr.payroll</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+					<field name="pay_period_from"/>
+					<field name="pay_period_to"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>	
+
+        <!-- Tree - Late/Undertime Config -->
+		<record id="exhr_late_undertime_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.late.undertime.config.view.tree</field>
+			<field name="model">late.undertime.config</field>
+			<field name="arch" type="xml">
+				<tree editable="top">
+					<field name="config_type" required="True"/>
+					<field name="min_from" string="From (Minutes)" required="True"/>
+					<field name="min_to" string="To (Minutes)" required="True"/>
+					<field name="percentage" string="Percentage(Decimal)" required="True"/>
+
+				</tree>
+			</field>
+		</record>
+
+        <!-- Tree - Rate Table Config -->
+		<record id="exhr_overtime_rate_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.overtime.rate.config.view.tree</field>
+			<field name="model">overtime.rate.config</field>
+			<field name="arch" type="xml">
+				<tree editable="top">
+					<field name="name" string="Work on" required="True"/>
+					<field name="percentage" string="Pay Percentage(Decimal)" required="True"/>
+
+				</tree>
+			</field>
+		</record>	
+
+        <!-- Tree - SSS Contribution Config -->
+		<record id="exhr_sss_contribution_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.sss.contribution.config.view.tree</field>
+			<field name="model">sss.contribution.config</field>
+			<field name="arch" type="xml">
+				<tree editable="top">
+					<field name="range_from" required="True"/>
+					<field name="range_to" required="True"/>
+
+					<field name="er_ss_contri" required="True"/>
+					<field name="ee_ss_contri" required="True"/>
+					<field name="total_ss_contri" required="True"/>
+					
+					<field name="er_ec_contri" required="True"/>
+					<field name="ee_ec_contri" required="True"/>
+					<field name="total_ec_contri" required="True"/>
+
+					<field name="er_provident_fund" required="True"/>
+					<field name="ee_provident_fund" required="True"/>
+					<field name="total_provident_fund" required="True"/>
+
+					<field name="total_er_ss" required="True"/>
+					<field name="total_ee_ss" required="True"/>
+					<field name="total_ss" required="True"/>
+
+
+				</tree>
+			</field>
+		</record>	
+
+        <!-- Tree - PHIC Contribution Config -->
+		<record id="exhr_phic_contribution_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.phic.contribution.config.view.tree</field>
+			<field name="model">phic.contribution.config</field>
+			<field name="arch" type="xml">
+				<tree editable="top">
+					<field name="range_from" string="Range from" required="True"/>
+					<field name="range_to" string="Range to" required="True"/>
+
+					<field name="monthly_premium" required="True"/>
+
+					<field name="personal_contri" string="Personal Share" required="True"/>
+					<field name="employer_contri" string="Employer Share" required="True"/>
+
+					<!-- <field name="computed"/> -->
+					<field name="percent_decimal"/>
+
+				</tree>
+			</field>
+		</record>		
+
+        <!-- Tree - HDMF Contribution Config -->
+		<record id="exhr_hdmf_contribution_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.hdmf.contribution.config.view.tree</field>
+			<field name="model">hdmf.contribution.config</field>
+			<field name="arch" type="xml">
+				<tree editable="top">
+					<field name="range_from" string="Range from" required="True"/>
+					<field name="range_to" string="Range to" required="True"/>
+					<field name="max_compensation" required="True"/>
+
+					<field name="personal_contri" string="Personal Share" required="True"/>
+					<field name="employer_contri" string="Employer Share" required="True"/>
+
+				</tree>
+			</field>
+		</record>	
+
+        <!-- Tree - Withholding Tax Config -->
+		<record id="exhr_withholding_tax_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.withholding.tax.config.view.tree</field>
+			<field name="model">withholding.tax.config</field>
+			<field name="arch" type="xml">
+				<tree editable="top">
+					<field name="payroll_type_id"/>
+
+					<field name="range_from"/>
+					<field name="range_to"/>
+
+					<field name="x_value"/>
+					<field name="y_value"  string="y (Percent)"/>
+					<field name="z_value"/>
+
+					<field name="complete_formula" string="Prescribed Minimum Withholding Tax (x + y% over z)"/>
+
+
+				</tree>
+			</field>
+		</record>	
+
+        <!-- Payroll Accounting Config -->
+		<record id="exhr_payroll_accounting_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.payroll.accounting.config.view.tree</field>
+			<field name="model">payroll.accounting.config</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="default_auto_jv"/>
+					<field name="default_auto_post"/>
+					<field name="default_ns_start"/>
+					<field name="default_ns_end"/>
+				</tree>
+			</field>
+		</record>
+
+        <!-- HR Accounting Config -->
+		<record id="exhr_hr_accounting_config_view_tree" model="ir.ui.view">
+			<field name="name">exhr.hr.accounting.config.view.tree</field>
+			<field name="model">hr.accounting.config</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="name"/>
+					<field name="company_id"/>
+				</tree>
+			</field>
+		</record>
+
+        <record id="tree_payment_type" model="ir.ui.view">
+            <field name="name">Payment Type</field>
+            <field name="model">payment.type</field>
+            <field name="arch" type="xml">
+                <tree string="Payment Type" editable="top">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="account_id" domain="[('company_id','=',company_id)]"/>
+                    <field name="sequence"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tree_payroll_type" model="ir.ui.view">
+            <field name="name">Payroll Type</field>
+            <field name="model">payroll.type</field>
+            <field name="arch" type="xml">
+                <tree string="Payroll Type" editable="top">
+                    <field name="name"/>
+                    <field name="sequence"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Loan Type Configuration -->
+        <record id="tree_loan_type" model="ir.ui.view">
+            <field name="name">Loan Type</field>
+            <field name="model">loan.type</field>
+            <field name="arch" type="xml">
+                <tree string="Loan Type" editable="top">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="gl_account" domain="[('company_id','=',company_id)]"/>
+                </tree>
+            </field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

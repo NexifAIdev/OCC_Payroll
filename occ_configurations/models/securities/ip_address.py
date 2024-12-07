@@ -28,32 +28,23 @@ class ResIPAddress(models.Model):
         compute="_compute_name",
     )
 
-    device_name = fields.Char(
-        string="Device",
-        default=False,
-    )
-
     ip_address = fields.Char(
         string="IP Address",
         default=False,
         required=True,
     )
 
-    location_name = fields.Char(
-        string="Location",
-        default=False,
+    active = fields.Boolean(
+        string="Active", 
+        default=True,
     )
 
-    active = fields.Boolean("Active", default=True)
-
-    @api.depends("device_name", "ip_address")
+    @api.depends("ip_address")
     def _compute_name(self):
         for rec in self:
             name = rec.name
-            if rec.device_name and rec.ip_address:
-                name = f"{rec.device_name} | {rec.ip_address}"
-            elif rec.ip_address:
-                name = rec.ip_address
+            if rec.ip_address:
+                name = f"{rec.ip_address}"
             rec.name = name
             rec.name_compute = name
 

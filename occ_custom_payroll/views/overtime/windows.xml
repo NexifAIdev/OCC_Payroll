@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <!-- Action - Pre Overtime - Employee -->
+        <record id="employee_preovertime_action_view" model="ir.actions.act_window">
+			<field name="name">My Pre-Overtime Request</field>
+			<field name="res_model">pre.overtime.request</field>
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" eval="False"/>
+			<field name="help"></field>
+			<field name="domain">[('employee_id.user_id.id','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.employee_preovertime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.employee_preovertime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.employee_preovertime_tree_view',
+                'form_view_ref':'occ_custom_payroll.employee_preovertime_form_view', 
+}</field>
+		</record>
+
+        <!-- Action - Pre Overtime - Supervisor -->
+        <record id="supervisor_preovertime_action_view" model="ir.actions.act_window">
+            <field name="name">Need Supervisor Pre-Approval</field>
+            <field name="res_model">pre.overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/>
+            <field name="help">Congratulations! You don't have pending Pre-OT request for verification.</field>
+            <field name="domain">['|',('employee_id.parent_id.user_id.id','=',uid),('employee_id.coach_id.user_id.id','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.supervisor_preovertime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.supervisor_preovertime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.supervisor_preovertime_tree_view',
+                'form_view_ref':'occ_custom_payroll.supervisor_preovertime_form_view', 
+}</field>
+        </record>
+
+
+        <!-- Action - Pre Overtime - Manager -->
+        <record id="manager_preovertime_action_view" model="ir.actions.act_window">
+            <field name="name">Pre-Overtime for Manager Approval</field>
+            <field name="res_model">pre.overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/>
+            <field name="help">Congratulations! You don't have pending Pre-OT request for approval.</field>
+            <field name="domain">['|',('employee_id.parent_id.user_id.id','=',uid),('employee_id.coach_id.user_id.id','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.manager_preovertime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.manager_preovertime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.manager_preovertime_tree_view',
+                'form_view_ref':'occ_custom_payroll.manager_preovertime_form_view', 
+}</field>
+        </record>
+
+        <!-- Action - Pre Overtime - ALL -->
+        <record id="all_preot_action_view" model="ir.actions.act_window">
+            <field name="name">All Pre-OT</field>
+            <field name="res_model">pre.overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/>
+            <field name="domain">[]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.employee_preovertime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.employee_preovertime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.employee_preovertime_tree_view',
+                'form_view_ref':'occ_custom_payroll.employee_preovertime_form_view', 
+}</field>
+        </record>
+
+        <!-- Action - Overtime - Employee -->
+        <record id="employee_overtime_action_view" model="ir.actions.act_window">
+			<field name="name">My Overtime Request</field>
+			<field name="res_model">overtime.request</field>
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" eval="False"/>
+			<field name="help"></field>
+			<field name="domain">[('employee_id.user_id.id','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.employee_overtime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.employee_overtime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.employee_overtime_tree_view',
+                'form_view_ref':'occ_custom_payroll.employee_overtime_form_view', 
+}</field>
+		</record>
+
+        <!-- Action - Overtime - Supervisor -->
+        <record id="supervisor_overtime_action_view" model="ir.actions.act_window">
+            <field name="name">Need Supervisor Approval</field>
+            <field name="res_model">overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/>
+            <field name="help">Congratulations! You don't have pending OT request for verification.</field>
+            <field name="domain">['|',('employee_id.parent_id.user_id.id','=',uid),('employee_id.coach_id.user_id.id','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.supervisor_overtime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.supervisor_overtime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.supervisor_overtime_tree_view',
+                'form_view_ref':'occ_custom_payroll.supervisor_overtime_form_view', 
+}</field>
+        </record>
+        
+        <!-- Action - Overtime - Manager -->
+        <record id="manager_overtime_action_view" model="ir.actions.act_window">
+            <field name="name">Overtime for Manager Approval</field>
+            <field name="res_model">overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/> 
+            <field name="help">Congratulations! You don't have pending OT request for approval.</field>
+            <field name="domain">['|',('employee_id.parent_id.user_id.id','=',uid),('employee_id.coach_id.user_id.id','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.manager_overtime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.manager_overtime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.manager_overtime_tree_view',
+                'form_view_ref':'occ_custom_payroll.manager_overtime_form_view', 
+}</field>
+        </record>
+
+        <!-- Action - Overtime - Timekeeper -->
+        <record id="timekeeper_overtime_action_view" model="ir.actions.act_window">
+            <field name="name">Overtime - Timekeeper</field>
+            <field name="res_model">overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/>
+            <field name="domain">[('create_uid','=',uid)]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.employee_overtime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.timekeeper_employee_overtime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.employee_overtime_tree_view',
+                'form_view_ref':'occ_custom_payroll.timekeeper_employee_overtime_form_view', 
+}</field>
+        </record>
+
+        <!-- Action - Overtime - ALL -->
+        <record id="all_overtime_action_view" model="ir.actions.act_window">
+            <field name="name">All Overtime</field>
+            <field name="res_model">overtime.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" eval="False"/>
+            <field name="domain">[]</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('occ_custom_payroll.employee_overtime_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('occ_custom_payroll.employee_overtime_form_view')}),
+            ]"/>
+            <field name="context">{
+                'tree_view_ref':'occ_custom_payroll.employee_overtime_tree_view',
+                'form_view_ref':'occ_custom_payroll.employee_overtime_form_view', 
+}</field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

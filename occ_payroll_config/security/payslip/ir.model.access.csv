@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+,,,,,,,
+access_rate_type_config,access_rate_type_config,model_rate_type_config,base.group_user,1,0,0,0
+access_rate_type_list,access_rate_type_list,model_rate_type_list,base.group_user,1,0,0,0

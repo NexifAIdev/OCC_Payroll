@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <!-- Tree - Pre Overtime Request - Employees -->
+        <record id="employee_preovertime_tree_view" model="ir.ui.view">
+			<field name="name">employee.preovertime.request.tree</field>
+			<field name="model">pre.overtime.request</field>
+			<field name="arch" type="xml">
+				<tree string="Overtime Request">
+					<field name="ot_date"/>
+					<field name="est_hours" widget="float_time"/>
+					<field name="name"/>
+					<field name="employee_id"/>
+					<field name="company_id"/>
+					<field name="department_id"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+        <!-- Tree - Pre Overtime Request - Supervisor -->
+        <record id="supervisor_preovertime_tree_view" model="ir.ui.view">
+            <field name="name">supervisor.preovertime.tree.view</field>
+            <field name="model">pre.overtime.request</field>
+            <field name="arch" type="xml">
+                <tree string="Pre-Overtime for Approval" create="false">
+                    <field name="ot_date"/>
+                    <field name="est_hours" widget="float_time"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Tree - Pre Overtime Request - Manager -->
+        <record id="manager_preovertime_tree_view" model="ir.ui.view">
+            <field name="name">manager.preovertime.request.tree</field>
+            <field name="model">pre.overtime.request</field>
+            <field name="arch" type="xml">
+                <tree string="Pre-Overtime for Approval" create="false">
+                    <field name="ot_date"/>
+                    <field name="est_hours" widget="float_time"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Tree - Overtime Request - Employees -->
+        <record id="employee_overtime_tree_view" model="ir.ui.view">
+			<field name="name">employee.overtime.request.tree</field>
+			<field name="model">overtime.request</field>
+			<field name="arch" type="xml">
+				<tree string="Overtime Request">
+					<field name="name"/>
+					<field name="employee_id"/>
+					<field name="company_id"/>
+					<field name="department_id"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+        <!-- Tree - Overtime Request - Supervisor -->
+        <record id="supervisor_overtime_tree_view" model="ir.ui.view">
+            <field name="name">supervisor.overtime.request.tree</field>
+            <field name="model">overtime.request</field>
+            <field name="arch" type="xml">
+                <tree string="Overtime Request" create="false">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Tree - Overtime Request - Manager -->
+        <record id="manager_overtime_tree_view" model="ir.ui.view">
+            <field name="name">manager.overtime.request.tree</field>
+            <field name="model">overtime.request</field>
+            <field name="arch" type="xml">
+                <tree string="Overtime Request" create="false">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+    
+    </data>
+    
+
+</odoo>

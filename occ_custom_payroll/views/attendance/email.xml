@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="email_manual_attendance" model="mail.template">
+            <field name="name">Manual Attendance - Approval</field>
+            <field name="subject">Manual Attendance - Approval</field>
+            <field name="email_to">${ctx.get('d_email')}</field>
+            <field name="model_id" ref="occ_custom_payroll.model_manual_attendance"/>
+            <field name="body_html"><![CDATA[<p></p>
+                <p>Dear ${ctx.get('d_name')}, <br/><br/>
+                    The manual attendance request, ${object.name}, of ${object.employee_id.name} is for your approval.
+                    <br/>
+                    <br/>
+                    <a href=${ctx.get('url')} style="background-color: #87517b; padding: 10px; text-decoration: none; color: #fff; border-radius: 5px;" class="o_default_snippet_text">View Manual Attendance Request</a><br/><br/>                    
+                    <br/>
+                    <br/>                  
+                    Regards,
+                    <br/><br/>
+                    ${object.company_id.name}
+                </p>
+            ]]></field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

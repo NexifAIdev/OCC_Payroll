@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem
+            id="menu_employee_types"
+            name="Employee Types"
+            parent="menu_payroll_configurations"
+            action="actwindow_employee_types"
+            sequence="50"/>
+            
+    </data>
+    
+
+</odoo>

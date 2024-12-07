@@ -11,8 +11,6 @@
                     <field name="name" />
                     <field name="name_compute" column_invisible="1"/>
                     <field name="ip_address" />
-                    <field name="device_name" />
-                    <field name="location_name" optional="hide" />
                     <field name="active" />
                 </tree>
             </field>

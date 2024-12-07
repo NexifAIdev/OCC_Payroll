@@ -93,7 +93,18 @@ def import_csv_data_locations(cr):
         kind="init",
     )
 
+def import_csv_configs(cr):
+    tools.convert_file(
+        cr,
+        "occ_configurations",
+        "data/configs/paycut.configuration.csv",
+        None,
+        mode="init",
+        noupdate=True,
+        kind="init",
+    )
 
 def main_post_hook(cr):
     import_csv_data_locations(cr)
+    import_csv_configs(cr)
     import_csv_data(cr, directory="data/ips")

@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<odoo>
+	<data noupdate="0">
+
+		<!-- Payroll Type -->		
+		<record model="payroll.type" id="payroll_type_monthly">
+			<field name="name">Monthly</field>
+			<field name="sequence">1</field>
+		</record>
+
+		<record model="payroll.type" id="payroll_semi_monthly">
+			<field name="name">Semi-Monthly</field>
+			<field name="sequence">2</field>
+		</record>
+
+		<record model="payroll.type" id="payroll_daily">
+			<field name="name">Weekly</field>
+			<field name="sequence">3</field>
+		</record>
+
+
+		<!-- Payment Type -->		
+		<record model="payment.type" id="payment_type_monthly">
+			<field name="name">Cash</field>
+			<field name="sequence">1</field>
+		</record>
+
+		<record model="payment.type" id="payment_semi_monthly">
+			<field name="name">Bank Deposit</field>
+			<field name="sequence">2</field>
+		</record>		
+
+		<!-- Attendance Sheet Generator - Scheduler -->
+		<record id="ir_cron_create_attendance_sheet" model="ir.cron">
+			<field name="name">HR Attendance: Create attendance sheet for today</field>
+			<field name="model_id" ref="model_hr_attendance"/>
+			<field name="type">ir.actions.server</field>
+			<field name="state">code</field>
+			<field name="code">model._cron_create_attendance_sheet()</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+		</record> 
+
+		<!-- Schedule Type data -->
+		<record model="schedule.type" id="mysched_type_absent">
+			<field name="name">Absent</field>
+			<field name="external_id">1</field>
+			<field name="color">1</field>
+		</record>
+
+		<record model="schedule.type" id="mysched_type_leave_half">
+			<field name="name">On Leave (Half-Day)</field>
+			<field name="external_id">2</field>
+			<field name="color">2</field>
+
+		</record>
+
+		<record model="schedule.type" id="mysched_type_no_out">
+			<field name="name">No Time-Out</field>
+			<field name="external_id">3</field>
+			<field name="color">3</field>
+
+		</record>
+
+		<record model="schedule.type" id="mysched_type_onleave">
+			<field name="name">On Leave</field>
+			<field name="external_id">4</field>
+			<field name="color">4</field>
+
+		</record>
+
+		<record model="schedule.type" id="mysched_type_absent_half">
+			<field name="name">Absent (Half-Day)</field>
+			<field name="external_id">5</field>
+			<field name="color">5</field>
+
+		</record>
+
+		<record model="schedule.type" id="mysched_type_no_in">
+			<field name="name">No Time-In</field>
+			<field name="external_id">6</field>
+			<field name="color">6</field>
+		</record> 
+
+		<!-- ADDITIONAL SCHEDULE TYPE: 07/20/2020 -->
+		<record model="schedule.type" id="mysched_type_holiday">
+			<field name="name">Holiday</field>
+			<field name="external_id">7</field>
+			<field name="color">7</field>
+		</record> 		
+
+	<!-- Regular Holidays -->		
+		<record id="holiday_new_year" model="custom.holidays.config">
+			<field name="name">New Year's Day</field>
+			<field name="day">01</field>
+			<field name="month">01</field>
+			<field name="state">inactive</field>
+			<field name="holiday_type">regular</field>
+		</record>	
+
+		<record id="holiday_kagitingan" model="custom.holidays.config">
+			<field name="name">Araw ng Kagitingan</field>
+			<field name="day">09</field>
+			<field name="month">04</field>
+			<field name="state">inactive</field>
+			<field name="holiday_type">regular</field>
+		</record>	
+
+		<record id="holiday_labor_day" model="custom.holidays.config">
+			<field name="name">Labor Day</field>
+			<field name="day">01</field>
+			<field name="month">05</field>
+			<field name="holiday_type">regular</field>
+			<field name="state">inactive</field>
+		</record>	
+
+		<record id="holiday_independence_day" model="custom.holidays.config">
+			<field name="name">Independence Day</field>
+			<field name="day">12</field>
+			<field name="month">06</field>
+			<field name="holiday_type">regular</field>
+			<field name="state">inactive</field>
+		</record>	
+
+		<record id="holiday_bonifacio_day" model="custom.holidays.config">
+			<field name="name">Bonifacio Day</field>
+			<field name="day">30</field>
+			<field name="month">11</field>
+			<field name="holiday_type">regular</field>
+			<field name="state">inactive</field>
+		</record>		
+
+		<record id="holiday_christmas_day" model="custom.holidays.config">
+			<field name="name">Christmas Day</field>
+			<field name="day">25</field>
+			<field name="month">12</field>
+			<field name="holiday_type">regular</field>
+			<field name="state">inactive</field>
+		</record>	
+
+		<record id="holiday_rizal_day" model="custom.holidays.config">
+			<field name="name">Rizal Day</field>
+			<field name="day">30</field>
+			<field name="month">12</field>
+			<field name="holiday_type">regular</field>
+			<field name="state">inactive</field>
+		</record>	
+
+	<!-- Special Non-working Holidays -->		
+		<record id="holiday_edsa" model="custom.holidays.config">
+			<field name="name">EDSA People Power Revolution Anniversary</field>
+			<field name="day">25</field>
+			<field name="month">02</field>
+			<field name="holiday_type">special</field>
+			<field name="state">inactive</field>
+		</record>	
+
+		<record id="holiday_ninoy" model="custom.holidays.config">
+			<field name="name">Ninoy Aquino Day</field>
+			<field name="day">21</field>
+			<field name="month">08</field>
+			<field name="holiday_type">special</field>
+			<field name="state">inactive</field>
+		</record>	
+
+		<record id="holiday_all_saints" model="custom.holidays.config">
+			<field name="name">All Saints' Day</field>
+			<field name="day">01</field>
+			<field name="month">11</field>
+			<field name="holiday_type">special</field>
+			<field name="state">inactive</field>
+		</record>
+
+		<record id="holiday_all_saints_addtl" model="custom.holidays.config">
+			<field name="name">Additional special (non-working) day</field>
+			<field name="day">02</field>
+			<field name="month">11</field>
+			<field name="holiday_type">special</field>
+			<field name="state">inactive</field>
+		</record>
+
+		<record id="holiday_christmas_day_addtl" model="custom.holidays.config">
+			<field name="name">Additional special (non-working) day</field>
+			<field name="day">24</field>
+			<field name="month">12</field>
+			<field name="holiday_type">special</field>
+			<field name="state">inactive</field>
+		</record>
+
+		<record id="holiday_last_day" model="custom.holidays.config">
+			<field name="name">Last Day of the Year</field>
+			<field name="day">31</field>
+			<field name="month">12</field>
+			<field name="holiday_type">special</field>
+			<field name="state">inactive</field>
+		</record>
+
+		<!-- Holiday Generator - Scheduler -->
+		<record id="ir_cron_data_yearly_holiday" model="ir.cron">
+			<field name="name">HR Holiday: Create yearly holiday</field>
+			<field name="model_id" ref="model_custom_holidays_config"/>
+			<field name="type">ir.actions.server</field>
+			<field name="state">code</field>
+			<field name="code">model._cron_create_yearly_holidays()</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">months</field>
+			<field name="numbercall">-1</field>
+		</record>
+
+
+		<!-- Overtime	 -->
+		<record model="ir.sequence" id="preovertime_sequence">
+			<field name="name">Pre-overtime Sequence</field>
+			<field name="code">preovertime_sequence</field>
+			<field name="prefix">Pre-OT%(range_year)s/</field>
+			<field name="company_id" eval="False"/>
+			<field name="padding">3</field>
+		</record> 
+
+		<!-- Overtime	 -->
+		<record model="ir.sequence" id="overtime_sequence">
+			<field name="name">Overtime Sequence</field>
+			<field name="code">overtime_sequence</field>
+			<field name="prefix">OT%(range_year)s/</field>
+			<field name="company_id" eval="False"/>
+			<field name="padding">3</field>
+		</record>
+
+		<!-- Manual Attendance	 -->
+		<record model="ir.sequence" id="manual_attendance_sequence">
+			<field name="name">Manual Attendance Sequence</field>
+			<field name="code">manual_attendance_sequence</field>
+			<field name="prefix">ATT%(range_year)s/</field>
+			<field name="company_id" eval="False"/>
+			<field name="padding">3</field>
+		</record> 
+
+		<!-- Work Sched Adjustment	 -->
+		<record model="ir.sequence" id="work_sched_sequence">
+			<field name="name">Work Sched Adjustment Sequence</field>
+			<field name="code">work_sched_sequence</field>
+			<field name="prefix">ADJ%(range_year)s/</field>
+			<field name="company_id" eval="False"/>
+			<field name="padding">3</field>
+		</record>
+			
+	</data>
+</odoo>

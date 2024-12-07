@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <menuitem id="menu_exhr_payroll_action" 
+            action="exhr_payroll_action"
+            name="Payroll" 
+            sequence="1"
+            parent="menu_exhr_payroll"
+            />
+
+        <!-- Action Window - Late/Undertime Config -->
+        <menuitem id="menu_exhr_late_undertime_config_view_action" 
+            action="exhr_late_undertime_config_view_action"
+            name="Late/Undertime Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - Rate Table Config -->
+        <menuitem id="menu_exhr_overtime_rate_config_view_action" 
+            action="exhr_overtime_rate_config_view_action"
+            name="Rate Table Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - Withholding Tax Config -->
+        <menuitem id="menu_exhr_withholding_tax_config_view_action" 
+            action="exhr_withholding_tax_config_view_action"
+            name="Withholding Tax Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - SSS Contribution Config -->
+        <menuitem id="menu_exhr_sss_contribution_config_view_action" 
+            action="exhr_sss_contribution_config_view_action"
+            name="SSS Contribution Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - PHIC Contribution Config -->
+        <menuitem id="menu_exhr_phic_contribution_config_view_action" 
+            action="exhr_phic_contribution_config_view_action"
+            name="PHIC Contribution Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - HDMF Contribution Config -->
+        <menuitem id="menu_exhr_hdmf_contribution_config_view_action" 
+            action="exhr_hdmf_contribution_config_view_action"
+            name="HDMF Contribution Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - Payroll Accounting Config -->
+        <menuitem id="menu_exhr_payroll_accounting_config_view_action" 
+            action="exhr_payroll_accounting_config_view_action"
+            name="Payroll Accounting Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - HR Accounting Config -->
+        <menuitem id="menu_exhr_hr_accounting_config_view_action" 
+            action="exhr_hr_accounting_config_view_action"
+            name="HR Accounting Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - Payment Type -->
+        <menuitem id="menu_action_payment_type" 
+            action="action_payment_type"
+            name="Payment Type Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - Payroll Type -->
+        <menuitem id="menu_action_payroll_type" 
+            action="action_payroll_type"
+            name="Payroll Type Config" 
+            parent="menu_exhr_configurations"
+            />
+
+        <!-- Action Window - Loan Type -->
+        <menuitem id="menu_action_loan_type" 
+            action="action_loan_type"
+            name="Loan Type Config" 
+            parent="menu_exhr_configurations"
+            />
+    
+    </data>
+    
+
+</odoo>

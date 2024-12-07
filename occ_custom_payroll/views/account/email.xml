@@ -1,0 +1,58 @@
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="occ_cp_view_employee_form"
+                model="ir.ui.view">
+            <field name="name">occ.cp.view.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id"
+                ref="hr.view_employee_form" />
+            <field name="arch"
+                type="xml">
+                <field name="job_title"
+                    position="replace">
+                    <group col="4">
+                        <field name="job_title"
+                            placeholder="Job Position"
+                            nolabel="1" />
+                        <field name="employee_number"
+                            placeholder="Employee ID"
+                            nolabel="1" />
+                    </group>
+                </field>
+                <field name="parent_id"
+                    position="after">
+                    <field name="analytic_account_id"
+                        domain="[('company_id','=',company_id),('active','=',True)]"
+                        options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}" />
+                    <field name="job_description" />
+                </field>
+                <field name="category_ids" position="attributes">
+			        <attribute name="groups">base.group_user</attribute>
+			    </field>
+
+                <field name="birthday" position="after">
+					<field name="age_today"/>
+				</field>
+
+                <field name="address_home_id" position="after">
+					<field name="private_address"/>
+				</field>
+
+                <field name="address_home_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+
+                <field name="bank_account_id" position="after">
+					<field name="bank_account"/>
+				</field>
+
+                <field name="bank_account_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <!-- <record id="overtime_settings_action" model="ir.actions.act_window">
+            <field name="name">Overtime</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_id" ref="ot_settings_view"/>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'overtime_settings'}</field>
+        </record> -->
+    
+    </data>
+    
+
+</odoo>

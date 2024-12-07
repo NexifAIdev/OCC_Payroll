@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="actwindow_employee_types" model="ir.actions.act_window">
+            <field name="name">Employee Types</field>
+            <field name="res_model">hr.employee.types</field>
+            <field name="view_mode">tree</field>
+        </record>
+    
+    </data>
+    
+
+</odoo>

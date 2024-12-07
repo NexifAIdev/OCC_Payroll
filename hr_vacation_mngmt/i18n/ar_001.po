@@ -700,7 +700,7 @@ msgstr "تحقق من قائمة تمكين"
 #: model:ir.model.fields,field_description:oh_hr_zk_attendance.field_zk_machine_attendance__check_out
 #: model:ir.model.fields.selection,name:oh_hr_zk_attendance.selection__zk_machine_attendance__punch_type__1
 #: model:ir.model.fields.selection,name:oh_hr_zk_attendance.selection__zk_report_daily_attendance__punch_type__1
-msgid "Check Out"
+msgid "Check out"
 msgstr "الدفع"
 
 #. module: oh_appraisal
