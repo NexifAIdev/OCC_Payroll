@@ -72,8 +72,11 @@ class occ_hr_employee(models.Model):
     ],string="Billability")
     expected_regularization_date = fields.Date("Expected Regularization Date")
     regularization_date = fields.Date("Regularization Date")
+    separation_date = fields.Date("Separation Date")
     employee_remarks = fields.Text("Employee Remarks")
+    reason_for_leaving = fields.Text("Reason for Leaving")
     biometric_id = fields.Char("Biometric ID")
+    approver_id = fields.Many2one("hr.employee", string="Approver")
 
     #Government Details
     sss_no = fields.Char("SSS No:")

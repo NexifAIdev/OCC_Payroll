@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+
+      <!-- Tree View -->
+      <record id="view_hr_overtime_tree" model="ir.ui.view">
+          <field name="name">hr.overtime.tree</field>
+          <field name="model">hr_overtime</field>
+          <field name="arch" type="xml">
+              <tree>
+                  <field name="employee_id"/>
+                  <field name="approver_id"/>
+                  <field name="start_date"/>
+                  <field name="end_date"/>
+                  <field name="ot_type"/>
+                  <field name="is_valid_range"/>
+              </tree>
+          </field>
+      </record>
+
+      <!-- Form View -->
+      <record id="view_hr_overtime_form" model="ir.ui.view">
+          <field name="name">hr.overtime.form</field>
+          <field name="model">hr_overtime</field>
+          <field name="arch" type="xml">
+              <form string="Overtime Request">
+                  <sheet>
+                      <group>`
+                          <field name="employee_id"/>
+                          <field name="approver_id"/>
+                      </group>
+                      <group>
+                          <field name="start_date"/>
+                          <field name="end_date"/>
+                      </group>
+                      <group>
+                          <field name="ot_type"/>
+                      </group>
+                      <group>
+                          <field name="is_valid_range" readonly="1"/>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+      </record>
+
+      <!-- Action to open the Overtime model -->
+      <record id="action_hr_overtime" model="ir.actions.act_window">
+          <field name="name">Overtime Requests</field>
+          <field name="res_model">hr_overtime</field>
+          <field name="view_mode">tree,form</field>
+      </record>
+
+      <!-- Menu Item -->
+      <menuitem id="menu_hr_management" name="Overtime" web_icon="fas fa-user-clock"/>
+
+      <menuitem id="menu_hr_overtime" name="Overtime Requests" parent="menu_hr_management" action="action_hr_overtime" sequence="1"/>
+
+
+  </data>
+</odoo>
