@@ -20,7 +20,26 @@ fi
 sudo groupadd --system tomcat
 sudo useradd -m -p $(openssl passwd -1 tomcat) -s /bin/bash -g tomcat -d ${TOMCAT_HOME} tomcat
 
-wget https://downloads.apache.org/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tar.gz
+get_latest_tomcat_version() {
+    local major_version="$1"
+    local base_url="https://downloads.apache.org/tomcat/tomcat-${major_version}/"
+    local latest_version
+
+    if ! latest_version=$(curl -s "$base_url" | grep -oP "v${major_version}\.\d+\.\d+/" | sort -V | tail -n 1 | tr -d '/'); then
+        echo "Error: Unable to determine the latest version of Tomcat $major_version." >&2
+        exit 1
+    fi
+
+    echo "$latest_version"
+}
+
+if ! curl -sfI "https://downloads.apache.org/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz" > /dev/null; then
+    echo "Specified Tomcat version $TOMCAT_VERSION is not available. Attempting to find the latest version..."
+    TOMCAT_VERSION=$(get_latest_tomcat_version "$TOMCAT_MAJOR_VERSION")
+    echo "Using the latest available version: $TOMCAT_VERSION"
+fi
+
+wget "https://downloads.apache.org/tomcat/tomcat-${TOMCAT_MAJOR_VERSION}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz" -O /tmp/tomcat.tar.gz
 
 sudo mkdir -p ${TOMCAT_HOME}
 sudo tar xzvf /tmp/tomcat.tar.gz -C ${TOMCAT_HOME} --strip-components=1
