@@ -1,16 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- View definition for set.schedule form -->
+        <record id="view_set_schedule_form" model="ir.ui.view">
+            <field name="name">set.schedule.form</field>
+            <field name="model">set.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Set Schedule">
+                    <sheet>
+                        <div>
+                            <p>
+                            All selected employees will be created a schedule for the desired week number.
+
+                            Current week is <field name="current_week" readonly="1"/>. Year <field name="current_year" readonly="1"/>
+                            </p>
+                        </div>
+                        <group>
+                            <group>
+                                <!-- Many2many widget to select employees -->
+                                <field name="employee_ids" widget="many2many_tags" string="Employees"/>
+                            </group>
+                            <group>
+                                <field name="week_number" string="Week"/>
+                                <field name="year"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <!-- Buttons for form actions -->
+                            <button string="Create Schedules" type="object" name="create_schedules" class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action for the view -->
+        <!-- <record id="action_set_schedule" model="ir.actions.act_window">
+            <field name="name">Set Schedule</field>
+            <field name="res_model">set.schedule</field>
+            <field name="view_mode">form</field>
+            <field name="context">{'active_ids': active_ids}</field>
+            <field name="target">new</field>
+        </record> -->
+
+        <!-- Menu item to access the view -->
+        <!-- <menuitem id="menu_set_schedule" name="Set Schedule" parent="base.menu_custom" action="action_set_schedule"/> -->
+    </data>
+</odoo>
+
+
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
 
         <record id="view_set_schedule_form" model="ir.ui.view">
             <field name="name">set.schedule.form</field>
             <field name="model">set.schedule</field>
             <field name="arch" type="xml">
-                <form string="Register Payment">
+                <form string="Register Payment" style="z-index:999; display:flex; justify-content: center; align-items: center; height: 40%; width: 30%;">
                     <sheet>
                         <group>
                             <field name="employee_ids" widget="many2many_tags" string="Employees"/>
                         </group>
+                        <footer>
+                            <button string="Create" type="object" name="create_schedules" class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
                     </sheet>
         
                 </form>
@@ -18,4 +74,6 @@
         </record>
 
     </data>
-</odoo>
+    
+
+</odoo> -->

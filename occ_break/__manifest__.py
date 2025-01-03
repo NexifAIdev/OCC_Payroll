@@ -1,5 +1,5 @@
 {
-    'name': "occ_hr_employee",
+    'name': "OCC Break",
     'summary': "Module for managing and updating employee shift schedules.",
 
     'description': """
@@ -9,18 +9,16 @@
     rotations and quick updates to staff schedules.
     """,
 
-    'author': "My Company",
-    'website': "https://www.yourcompany.com",    #  
+    'author': "Andy M.",
+    'website': "Andy Dev",    #  
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr', 'hr_attendance'],
 
     'data': [
-        'security/ir.model.access.csv',
-        'views/schedule_management.xml',
-        'views/set_schedule.xml',
-        'views/hr.xml',
+        # 'security/ir.model.access.csv',
+        'views/hr_attendance.xml',
     ],
     'installable': True,
     'application': False,
