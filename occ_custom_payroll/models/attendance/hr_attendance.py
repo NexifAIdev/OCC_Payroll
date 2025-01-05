@@ -6,6 +6,7 @@ from datetime import datetime, date, time, timedelta
 
 # Custom python modules
 import pytz
+from pytz import timezone
 
 # Odoo modules
 from odoo import models, fields, api, _
@@ -14,6 +15,13 @@ from odoo.exceptions import UserError, ValidationError
 
 class HRAttendance(models.Model):
     _inherit = "hr.attendance"
+    
+    check_in_date = fields.Date("Date", index=True, compute="_get_check_in", store=True)
+    attendance_sheet_id = fields.Many2one(
+        comodel_name="hr.attendance.sheet", 
+        string="Attendance Sheet",
+        ondelete="cascade",
+    )
     
     def _occ_payroll_cfg(self):
         occ_payroll = self.env["occ.payroll.cfg"]
@@ -28,8 +36,6 @@ class HRAttendance(models.Model):
                 .astimezone(self._occ_payroll_cfg()["tz"])
                 .date()
             )
-
-    check_in_date = fields.Date("Date", index=True, compute="_get_check_in", store=True)
 
     @api.model
     def _cron_update_attendance_sheet(self):
@@ -112,3 +118,54 @@ class HRAttendance(models.Model):
                         "planned_out": work_sched.get("planned_out"),
                     }
                     atd_sheet_obj.create(value)
+                    
+    @api.model
+    def create(self, vals):
+        # Convert check_in and check_out to Asia/Manila timezone
+        manila_tz = timezone("Asia/Manila")
+        if "check_in" in vals:
+            check_in = fields.Datetime.from_string(vals["check_in"]).replace(tzinfo=timezone("UTC"))
+            check_in_manila = check_in.astimezone(manila_tz).replace(tzinfo=None)
+            vals["check_in"] = fields.Datetime.to_string(check_in_manila)
+
+        if "check_out" in vals:
+            check_out = fields.Datetime.from_string(vals["check_out"]).replace(tzinfo=timezone("UTC"))
+            check_out_manila = check_out.astimezone(manila_tz).replace(tzinfo=None)
+            vals["check_out"] = fields.Datetime.to_string(check_out_manila)
+
+        attendance = super(HRAttendance, self).create(vals)
+
+        # Automatically create a linked attendance sheet
+        attendance_sheet_id = self.env["hr.attendance.sheet"].create({
+            "employee_id": attendance.employee_id.id,
+            "date": attendance.check_in.date(),
+            "actual_in": attendance.check_in.hour + attendance.check_in.minute / 60.0,
+            "actual_out": attendance.check_out.hour + attendance.check_out.minute / 60.0 if attendance.check_out else 0,
+            "attendance_id": attendance.id,
+        })
+        
+        attendance.attendance_sheet_id = attendance_sheet_id
+        
+        return attendance
+
+    def write(self, vals):
+        # Update attendance sheet on changes to check_in/check_out
+        result = super(HRAttendance, self).write(vals)
+        for attendance in self:
+            if "check_in" in vals or "check_out" in vals:
+                attendance_sheet = self.env["hr.attendance.sheet"].search(
+                    [("attendance_id", "=", attendance.id)], limit=1
+                )
+                if attendance_sheet:
+                    manila_tz = timezone("Asia/Manila")
+                    if "check_in" in vals:
+                        check_in = fields.Datetime.from_string(vals["check_in"]).replace(tzinfo=timezone("UTC"))
+                        check_in_manila = check_in.astimezone(manila_tz).replace(tzinfo=None)
+                        attendance_sheet.actual_in = check_in_manila.hour + check_in_manila.minute / 60.0
+
+                    if "check_out" in vals:
+                        check_out = fields.Datetime.from_string(vals["check_out"]).replace(tzinfo=timezone("UTC"))
+                        check_out_manila = check_out.astimezone(manila_tz).replace(tzinfo=None)
+                        attendance_sheet.actual_out = check_out_manila.hour + check_out_manila.minute / 60.0
+
+        return result

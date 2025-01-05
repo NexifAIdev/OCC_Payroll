@@ -2466,13 +2466,13 @@ class exhr_payslip(models.Model):
                 rec.compute_tardiness(vals)
                 rec.compute_undertime(vals)
                 rec.compute_leave_wo_pay(vals)
-                if self.employee_id.id == 1474:
-                    print("1")
+                # if self.employee_id.id == 1474:
+                #     print("1")
                 rec.compute_sss(vals)
                 rec.compute_phic(vals)
                 rec.compute_hdmf(vals)
-                if self.employee_id.id == 1474:
-                    print("self.no_days_present : ", self.no_days_present)
+                # if self.employee_id.id == 1474:
+                #     print("self.no_days_present : ", self.no_days_present)
                 # others
                 rec.compute_allowance(vals)
                 rec.compute_loans(vals)
@@ -2488,6 +2488,7 @@ class exhr_payslip(models.Model):
                     )
                     .amount_subtotal
                 )
+                ic(base_salary)
                 if (
                     base_salary == 0
                     or self.amount_total <= 0
@@ -2496,16 +2497,21 @@ class exhr_payslip(models.Model):
                     if vals.work_schedule_type != "na":
                         rec.unlink()
                 else:
+                    ic(f"{base_salary} > button_compute_payslip")
                     self.button_compute_payslip()
 
     def button_compute_payslip(self):
+        ic("button_compute_payslip")
         for rec in self:
+            ic(rec)
             # search for contract, get only the latest one based on id of creation
             data_a = self.get_contract_info(self.cutoff_date, self.employee_id.id)
+            ic(data_a)
             if data_a:
                 vals = self.env["hr.contract"].search(
                     [("id", "=", data_a.get("contract_id"))]
                 )
+                ic(vals)
 
                 rec.update_attendance_sheet()
                 rec.compute_count_days(vals)

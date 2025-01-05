@@ -23,6 +23,12 @@ class HRAttendanceSheet(models.Model):
         related="employee_id.department_id", string="Department", store=True, index=True
     )
     # manager_id = fields.Many2one(related='employee_id.parent_id', string='Manager', store=True, index=True)
+    
+    attendance_id = fields.Many2one(
+        comodel_name="hr.attendance",
+        string="Attendance",
+        ondelete="cascade",
+    )
 
     date = fields.Date(index=True)
     dayofweek = fields.Selection(selection=lambda self: self.odoo_dow_list, string="Day of Week", index=True, default="0")
@@ -121,6 +127,12 @@ class HRAttendanceSheet(models.Model):
     tardiness_amount_ded = fields.Float(string="Tardiness Deduction")
     undertime_amount_ded = fields.Float(string="Undertime Deduction")
     leavewopay_amount_ded = fields.Float(string="Leave Deduction")
+    
+    @api.constrains("attendance_id")
+    def _check_unique_attendance(self):
+        for record in self:
+            if record.attendance_id and self.search_count([("attendance_id", "=", record.attendance_id.id)]) > 1:
+                raise ValidationError("Each Attendance can only have one Attendance Sheet.")
     
     @api.depends("employee_id", "actual_in", "actual_out")
     def _compute_manager_ids(self):
