@@ -11,7 +11,7 @@ from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
 class HrWorkLocation(models.Model):
-    _name = "hr.work.location"
+    _inherit = "hr.work.location"
     _order = "name asc"
 
     name = fields.Char(string="Location")
