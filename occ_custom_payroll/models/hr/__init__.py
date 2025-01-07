@@ -15,3 +15,4 @@ from . import hr_schools
 from . import hr_work_location
 from . import nature_discipline
 from . import penalty_sanction
+from . import employee_type

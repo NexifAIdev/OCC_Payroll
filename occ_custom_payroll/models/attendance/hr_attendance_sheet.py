@@ -257,7 +257,7 @@ class HRAttendanceSheet(models.Model):
             )
 
             # Update Actual In and Actual Out
-            actual_att = self.get_attendance_actual(self)
+            actual_att = self.get_attendance_actual()
 
             # Update holiday amount pay - START //FOR CHECKING - should remove this? check first the computation in payslip
             if self.work_schedule_type == "regular" or self.work_schedule_type == "ww":
@@ -313,7 +313,8 @@ class HRAttendanceSheet(models.Model):
             self.schedule_type_ids = [(5, 0, 0)]  # new way to clear many2many
             work_hr = self.planned_out - self.planned_in - self.break_hours
             half_work_hr = work_hr / 2  # FOR CHECKING - can this be eliminated?
-            status = self.get_attendance_status(                self.date,
+            status = self.get_attendance_status(
+                self.date,
                 work_hr,
                 half_work_hr,
                 self.planned_in,
@@ -331,7 +332,7 @@ class HRAttendanceSheet(models.Model):
 
             # Update Remarks
             self.remarks = self.get_attendance_remarks(
-                self, self.employee_id, self.date, self.date
+                self.employee_id, self.date, self.date
             )
 
             # Update Tardiness (mins)
@@ -339,12 +340,12 @@ class HRAttendanceSheet(models.Model):
 
             # Update Undertime (mins)
             self.mins_for_undertime = self.get_mins_for_undertime(
-                self, work_hr, half_work_hr
+                work_hr, half_work_hr
             )
 
             # recompute the Planned In and Planned Out of Employees if Holiday
             holiday_status = self.get_holiday_status(
-                self, self.date, self.employee_id.exhr_work_location
+                self.date, self.employee_id.exhr_work_location
             )
             if holiday_status.get("count") > 0:
                 self.planned_in = 0
@@ -402,7 +403,7 @@ class HRAttendanceSheet(models.Model):
                 )
 
                 # Update Actual In and Actual Out
-                actual_att = self.get_attendance_actual(self)
+                actual_att = self.get_attendance_actual()
 
                 # Update holiday amount pay - START //FOR CHECKING - should remove this? check first the computation in payslip
                 if (
@@ -474,7 +475,7 @@ class HRAttendanceSheet(models.Model):
 
                 # Update Remarks
                 self.remarks = self.get_attendance_remarks(
-                    self, self.employee_id, self.date, self.date
+                    self.employee_id, self.date, self.date
                 )
 
                 # Update Tardiness (mins)
@@ -482,7 +483,7 @@ class HRAttendanceSheet(models.Model):
 
                 # Update Undertime (mins)
                 self.mins_for_undertime = self.get_mins_for_undertime(
-                    self, work_hr, half_work_hr
+                    work_hr, half_work_hr
                 )
 
                 # get updated in and out from attendance correction
@@ -507,7 +508,7 @@ class HRAttendanceSheet(models.Model):
 
                 # recompute the Planned In and Planned Out of Employees if Holiday
                 holiday_status = self.get_holiday_status(
-                    self, self.date, self.employee_id.exhr_work_location
+                    self.date, self.employee_id.exhr_work_location
                 )
                 if holiday_status.get("count") > 0:
                     self.planned_in = 0
