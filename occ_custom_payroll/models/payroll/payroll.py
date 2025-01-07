@@ -411,7 +411,7 @@ class exhr_payroll(models.Model):
                 line.write({"payroll_id": False})  # Unlink the payroll association
 
         # Create or update payslip lines as needed
-        payslip_obj = self.env["tk.payslip"]
+        payslip_obj = self.env["exhr.payslip"]
         for employee_id, id_number in to_add_or_update:
             # Search for existing record
             existing_payslip = payslip_obj.search([("employee_id", "=", employee_id), ("id_number", "=", id_number)], limit=1)

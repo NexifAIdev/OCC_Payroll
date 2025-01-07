@@ -105,7 +105,6 @@ class HRAttendance(models.Model):
 
                 if not val:
                     work_sched = self.get_attendance_sched(
-                        self,
                         date_now,
                         x.get("resource_calendar_id"),
                         self.get_attendance_sched,

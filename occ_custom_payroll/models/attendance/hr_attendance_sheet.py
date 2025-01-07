@@ -223,7 +223,6 @@ class HRAttendanceSheet(models.Model):
 
             # Update Planned In and Planned Out - START
             work_sched = self.get_attendance_sched(
-                self,
                 self.date,
                 contract.resource_calendar_id,
                 self.employee_id.exhr_work_location,
@@ -245,7 +244,6 @@ class HRAttendanceSheet(models.Model):
             # Update Type
             self.rate_type = str(
                 self.get_attendance_type(
-                    self,
                     self.date,
                     int(self.dayofweek),
                     self.planned_in,
@@ -372,7 +370,6 @@ class HRAttendanceSheet(models.Model):
 
                 # Update Planned In and Planned Out - START
                 work_sched = self.get_attendance_sched(
-                    self,
                     self.date,
                     exp_contract.resource_calendar_id,
                     self.employee_id.exhr_work_location,
@@ -394,7 +391,6 @@ class HRAttendanceSheet(models.Model):
                 # Update Type
                 self.rate_type = str(
                     self.get_attendance_type(
-                        self,
                         self.date,
                         int(self.dayofweek),
                         self.planned_in,
