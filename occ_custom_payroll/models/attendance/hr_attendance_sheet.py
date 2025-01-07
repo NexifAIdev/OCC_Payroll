@@ -313,9 +313,7 @@ class HRAttendanceSheet(models.Model):
             self.schedule_type_ids = [(5, 0, 0)]  # new way to clear many2many
             work_hr = self.planned_out - self.planned_in - self.break_hours
             half_work_hr = work_hr / 2  # FOR CHECKING - can this be eliminated?
-            status = self.get_attendance_status(
-                self,
-                self.date,
+            status = self.get_attendance_status(                self.date,
                 work_hr,
                 half_work_hr,
                 self.planned_in,
@@ -458,7 +456,6 @@ class HRAttendanceSheet(models.Model):
                 work_hr = self.planned_out - self.planned_in - self.break_hours
                 half_work_hr = work_hr / 2  # FOR CHECKING - can this be eliminated?
                 status = self.get_attendance_status(
-                    self,
                     self.date,
                     work_hr,
                     half_work_hr,
