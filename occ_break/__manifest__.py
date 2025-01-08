@@ -10,7 +10,7 @@
     """,
 
     'author': "Andy M.",
-    'website': "Andy Dev",    #  
+    'website': "",    #  
     'category': 'Uncategorized',
     'version': '0.1',
 

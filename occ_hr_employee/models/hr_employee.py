@@ -35,6 +35,7 @@ class HREmployee(models.Model):
     ], string="User Type")
     job_code = fields.Char("Job Code")
     job_grade = fields.Selection([
+        ("0","0"),
         ("1","1"),
         ("2","2"),
         ("3","3"),
@@ -97,3 +98,23 @@ class HREmployee(models.Model):
         related='resource_calendar_id.attendance_ids',
         help="Work schedule of the employee")
     
+    marital = fields.Selection([
+        ('single', 'Single'),
+        ('married', 'Married'),
+        ('cohabitant', 'Legal Cohabitant'),
+        ('widower', 'Widower'),
+        ('widowed', 'Widowed'),
+        ('divorced', 'Divorced'),
+        ('separated','Separated')
+    ], string='Marital Status', groups="hr.group_hr_user", default='single', tracking=True)
+    employee_type = fields.Selection([
+            ('rankandfile', 'Rank and file'),
+            ('officer', 'Officer'),
+            ('manager', 'Manager'),
+            ('employee', 'Employee'),
+            ('student', 'Student'),
+            ('trainee', 'Trainee'),
+            ('contractor', 'Contractor'),
+            ('freelance', 'Freelancer'),
+        ], string='Employee Type', default='employee', required=True, groups="hr.group_hr_user",
+        help="The employee type. Although the primary purpose may seem to categorize employees, this field has also an impact in the Contract History. Only Employee type is supposed to be under contract and will have a Contract History.")

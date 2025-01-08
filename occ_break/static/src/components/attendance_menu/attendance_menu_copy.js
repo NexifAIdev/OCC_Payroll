@@ -7,9 +7,7 @@ import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 import { deserializeDateTime } from "@web/core/l10n/dates";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { useDebounced } from "@web/core/utils/timing";
 import { isIosApp } from "@web/core/browser/feature_detection";
-
 const { DateTime } = luxon;
 
 export class ActivityMenu extends Component {
@@ -24,64 +22,17 @@ export class ActivityMenu extends Component {
         this.employee = false;
         this.state = useState({
             checkedIn: false,
-            isDisplayed: false,
-            isBreak: false,
+            isDisplayed: false
         });
         this.date_formatter = registry.category("formatters").get("float_time")
-        this.onClickSignInOut = useDebounced(this.signInOut, 200, true);
-        this.onClickTakeABreak = useDebounced(this.takeBreak, 200, true);
-        this.onClickEndBreak = useDebounced(this.endBreak, 200, true);
         // load data but do not wait for it to render to prevent from delaying
         // the whole webclient
-        this.searchEmployeeBreak();
         this.searchReadEmployee();
-    }  
-
-    async searchEmployeeBreak() {
-        const result = await this.rpc("/hr_attendance/take_break")
-        console.log("Check Employee Break!");
-        this.employee = result;
-        if (this.employee.id) {
-            this.breakTimeStart = this.date_formatter(this.employee.start_lunch);
-            this.breakDuration = this.date_formatter(this.employee.duration);
-            this.state.isBreak = this.employee.is_break
-        }
-        else {
-            this.state.isBreak = false
-        }
-
-    }
-
-    async takeBreak() {
-        // const scriptElement = document.getElementById("web.layout.odooscript");
-        // const scriptContent = scriptElement.textContent;
-        // const tempScript = document.createElement('script');
-        // tempScript.textContent = scriptContent;
-        // document.head.appendChild(tempScript);
-        // const csrfToken = window.odoo.csrf_token;
-        // document.head.removeChild(tempScript);
-        
-        
-        await this.rpc('/hr_attendance/systray_break_out');
-        await this.searchReadEmployee()
-        await this.searchEmployeeBreak()
-
-
-    }
-
-    async endBreak() {
-
-        console.log("end break!");
-
-        await this.rpc('/hr_attendance/systray_break_out');
-        await this.searchReadEmployee()
-        await this.searchEmployeeBreak()
     }
 
     async searchReadEmployee(){
         const result = await this.rpc("/hr_attendance/attendance_user_data");
         this.employee = result;
-        console.log("Read Employee!");
         if (this.employee.id) {
             this.hoursToday = this.date_formatter(
                 this.employee.hours_today
@@ -99,10 +50,11 @@ export class ActivityMenu extends Component {
         } else {
             this.state.isDisplayed = false
         }
-        await this.searchEmployeeBreak();
     }
 
     async signInOut() {
+        // to close the dropdown
+        document.body.click()
         // iOS app lacks permissions to call `getCurrentPosition`
         if (!isIosApp()) {
             navigator.geolocation.getCurrentPosition(
