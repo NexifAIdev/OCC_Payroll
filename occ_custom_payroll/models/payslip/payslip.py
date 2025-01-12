@@ -2494,6 +2494,9 @@ class exhr_payslip(models.Model):
                     or self.amount_total <= 0
                     or self.no_days_present == 0
                 ):
+                    ic(self.amount_total)
+                    ic(self.no_days_present)
+                    ic(vals.work_schedule_type)
                     if vals.work_schedule_type != "na":
                         rec.unlink()
                 else:
@@ -3005,3 +3008,10 @@ class exhr_payslip(models.Model):
 
         else:
             raise UserError("No Running Contract found!")
+
+    def unlink(self):
+        # for rec in self:
+        #     rec.state = "inactive"
+
+        ic("unlinked")
+        return super(exhr_payslip, self).unlink()
