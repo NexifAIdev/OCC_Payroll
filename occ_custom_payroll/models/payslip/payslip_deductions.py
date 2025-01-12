@@ -13,6 +13,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class exhr_payslip_deductions(models.Model):
     _name = "exhr.payslip.deductions"
 
@@ -22,7 +23,11 @@ class exhr_payslip_deductions(models.Model):
     amount_total = fields.Monetary(string="Amount", store=True)
     no_day_hrs_disp = fields.Char(string="Hrs/Days")
     payslip_id = fields.Many2one(
-        "exhr.payslip", "deductions_line_ids", store=True, ondelete="cascade", index=True
+        "exhr.payslip",
+        "deductions_line_ids",
+        store=True,
+        ondelete="cascade",
+        index=True,
     )
 
     currency_id = fields.Many2one(

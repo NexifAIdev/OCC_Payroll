@@ -13,6 +13,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class exhr_payslip_nontaxable(models.Model):
     _name = "exhr.payslip.nontaxable"
 
@@ -25,7 +26,11 @@ class exhr_payslip_nontaxable(models.Model):
         default="earnings",
     )
     payslip_id = fields.Many2one(
-        "exhr.payslip", "nontaxable_line_ids", store=True, ondelete="cascade", index=True
+        "exhr.payslip",
+        "nontaxable_line_ids",
+        store=True,
+        ondelete="cascade",
+        index=True,
     )
     currency_id = fields.Many2one(
         "res.currency", related="payslip_id.currency_id", store=True, related_sudo=False

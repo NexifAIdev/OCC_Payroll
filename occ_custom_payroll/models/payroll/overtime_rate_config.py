@@ -13,6 +13,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class OvertimeRateConfig(models.Model):
     _name = "overtime.rate.config"
     _description = "Rate Table Configuration"

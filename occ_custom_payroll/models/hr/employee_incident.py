@@ -10,6 +10,7 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+
 class EmployeeIncident(models.Model):
     _name = "employee.incident"
     _description = "Employee Incident Report"

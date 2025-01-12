@@ -18,14 +18,17 @@ class OvertimeRequest(models.Model):
     _name = "overtime.request"
     _inherit = ["mail.thread", "occ.payroll.cfg"]
     _description = "Overtime Request"
-    
+
     def _default_employee(self):
         return self.env.context.get("default_employee_id") or self.env[
             "hr.employee"
         ].sudo().search([("user_id", "=", self.env.uid)], limit=1)
 
     state = fields.Selection(
-        selection=lambda self: self.state_list2, default="draft", copy=False, track_visibility="onchange"
+        selection=lambda self: self.state_list2,
+        default="draft",
+        copy=False,
+        track_visibility="onchange",
     )
 
     name = fields.Char(copy=False, default="New")
@@ -54,9 +57,13 @@ class OvertimeRequest(models.Model):
     company_id = fields.Many2one(
         "res.company", related="employee_id.company_id", required=True
     )
-    
-    ot_policy = fields.Selection(selection=lambda self: self.list_policy, string="OT Policy")
-    approval_process = fields.Selection(selection=lambda self: self.list_approval, string="OT Approval Process")
+
+    ot_policy = fields.Selection(
+        selection=lambda self: self.list_policy, string="OT Policy"
+    )
+    approval_process = fields.Selection(
+        selection=lambda self: self.list_approval, string="OT Approval Process"
+    )
     min_ot_hours = fields.Float(string="Minimum OT hours")
     number_of_days = fields.Float(string="Number of Days")
     break_hrs = fields.Float(string="Break Hrs for every straight OT")
@@ -83,7 +90,7 @@ class OvertimeRequest(models.Model):
                 ]
             )
         )
-    
+
     def process_att_sheet(self, sheet_lines, employee_id, state):
 
         for x in sheet_lines:

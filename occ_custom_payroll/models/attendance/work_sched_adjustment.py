@@ -10,6 +10,7 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+
 class WorkSchedAdjustment(models.Model):
     _name = "work.sched.adjustment"
     _inherit = ["mail.thread", "occ.payroll.cfg"]

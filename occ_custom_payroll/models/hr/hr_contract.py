@@ -343,6 +343,16 @@ class HrContract(models.Model):
             ) / self.eemr_months
             self.daily_rate = self.hourly_rate * self.eemr_hours
             
+    @api.onchange("company_id")
+    def onchange_company_id(self):
+        if self.company_id:
+            self.analytic_account_id = False
+            self.accounting_tag_id = False
+            self.payroll_type_id = False
+            self.payment_type_id = False
+            self.employee_type = False
+            self.work_schedule_type = False
+
     def write(self, vals):
 
         # declaring the existing sched of employee
@@ -361,3 +371,32 @@ class HrContract(models.Model):
             self.mapped("employee_id").write({"resource_calendar_id": employee_sched})
 
         return res
+    
+    @api.model
+    def create(self, vals):
+
+        contracts = super(HrContract, self).create(vals)
+        # print(vals.get('company_id'),self.env.company)
+        # if vals.get('company_id') != self.env.company.id:
+        #     raise UserError(_('The company in employee record does not match......'))
+        employee_search = self.env["hr.employee"].search(
+            [("id", "=", vals.get("employee_id"))], limit=1
+        )
+        if vals.get("company_id") != employee_search.company_id.id:
+            raise UserError(_("The company in the employee record does not match."))
+
+        if vals.get("state") == "open":
+            contracts._assign_open_contract()
+        open_contracts = contracts.filtered(
+            lambda c: c.state == "open"
+            or c.state == "draft"
+            and c.kanban_state == "done"
+        )
+
+        # sync contract calendar -> calendar employee
+        for contract in open_contracts.filtered(
+            lambda c: c.employee_id and c.resource_calendar_id
+        ):
+            contract.employee_id.resource_calendar_id = contract.resource_calendar_id
+        return contracts
+

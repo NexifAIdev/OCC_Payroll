@@ -13,6 +13,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class HDMFContributionConfig(models.Model):
     _name = "hdmf.contribution.config"
     _description = "HDMF Contribution Table"

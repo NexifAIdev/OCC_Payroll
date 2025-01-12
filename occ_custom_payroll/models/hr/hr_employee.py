@@ -321,17 +321,7 @@ class HrEmployeePrivate(models.Model):
 
     color = fields.Integer(groups="base.group_user")
     accounting_tag_id = fields.Many2one("hr.accounting.config")
-    
-    @api.onchange("company_id")
-    def onchange_company_id(self):
-        if self.company_id:
-            self.analytic_account_id = False
-            self.accounting_tag_id = False
-            self.payroll_type_id = False
-            self.payment_type_id = False
-            self.employee_type = False
-            self.work_schedule_type = False
-            
+
     def write(self, vals):
 
         res = super(HrEmployeePrivate, self).write(vals)
@@ -343,49 +333,3 @@ class HrEmployeePrivate(models.Model):
             raise UserError(
                 _("The company in the running contract record does not match.")
             )
-        
-        if vals.get("state") == "open":
-            self._assign_open_contract()
-            
-        calendar = vals.get("resource_calendar_id")
-        if calendar and (
-            self.state == "open"
-            or (self.state == "draft" and self.kanban_state == "done")
-        ):
-            self.mapped("employee_id").write({"resource_calendar_id": calendar})
-            
-        if self.company_id.id != self.employee_id.company_id.id:
-            raise UserError(_("The company in employee record does not match."))
-        
-        if "state" in vals and "kanban_state" not in vals:
-            self.write({"kanban_state": "normal"})
-
-        return res
-    
-    @api.model
-    def create(self, vals):
-
-        contracts = super(HrEmployeePrivate, self).create(vals)
-        # print(vals.get('company_id'),self.env.company)
-        # if vals.get('company_id') != self.env.company.id:
-        #     raise UserError(_('The company in employee record does not match......'))
-        employee_search = self.env["hr.employee"].search(
-            [("id", "=", vals.get("employee_id"))], limit=1
-        )
-        if vals.get("company_id") != employee_search.company_id.id:
-            raise UserError(_("The company in the employee record does not match."))
-
-        if vals.get("state") == "open":
-            contracts._assign_open_contract()
-        open_contracts = contracts.filtered(
-            lambda c: c.state == "open"
-            or c.state == "draft"
-            and c.kanban_state == "done"
-        )
-
-        # sync contract calendar -> calendar employee
-        for contract in open_contracts.filtered(
-            lambda c: c.employee_id and c.resource_calendar_id
-        ):
-            contract.employee_id.resource_calendar_id = contract.resource_calendar_id
-        return contracts

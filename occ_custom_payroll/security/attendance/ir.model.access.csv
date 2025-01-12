@@ -20,3 +20,11 @@ access_custom_holidays_attendance_manager,custom.holidays.config.attendance.mana
 access_manual_attendance_base_user,access_manual_attendance_base_user,model_manual_attendance,base.group_user,1,1,1,1
 ,,,,,,,
 access_work_sched_adjustment_base_user,access_work_sched_adjustment_base_user,model_work_sched_adjustment,base.group_user,1,1,1,0
+,,,,,,,
+"user_access_hr_import_attendance","user_access.hr_import_attendance",model_hr_import_attendance,occ_custom_payroll.import_attendance_groups_user,1,1,1,0
+"user_access_hr_import_attendance_line","user_access.hr_import_attendance_line",model_hr_import_attendance_line,occ_custom_payroll.import_attendance_groups_user,1,1,1,0
+"user_access_employee_attendance_line","user_access.employee_attendance_line",model_employee_attendance_line,occ_custom_payroll.import_attendance_groups_user,1,1,1,0
+,,,,,,,
+"manager_access_hr_import_attendance","manager_access.hr_import_attendance",model_hr_import_attendance,occ_custom_payroll.import_attendance_groups_manager,1,1,1,0
+"manager_access_hr_import_attendance_line","manager_access.hr_import_attendance_line",model_hr_import_attendance_line,occ_custom_payroll.import_attendance_groups_manager,1,1,1,0
+"manager_access_employee_attendance_line","manager_access.employee_attendance_line",model_employee_attendance_line,occ_custom_payroll.import_attendance_groups_manager,1,1,1,0

@@ -10,6 +10,7 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+
 class HrWorkLocation(models.Model):
     _inherit = "hr.work.location"
     _order = "name asc"

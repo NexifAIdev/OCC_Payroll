@@ -19,6 +19,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class exhr_payroll(models.Model):
     _name = "exhr.payroll"
     _description = "Payroll Period"
@@ -62,7 +63,7 @@ class exhr_payroll(models.Model):
 
     payroll_type_id = fields.Many2one("payroll.type", string="Payroll Type")
     payment_type_id = fields.Many2one("payment.type", string="Payment Type")
-    
+
     def _get_default_auto_jv(self):
         # config = self.env['payroll.accounting.config'].search([('company_id','=',self.env.company.id)])
         config = self.env["payroll.accounting.config"].search([], limit=1)
@@ -198,6 +199,8 @@ class exhr_payroll(models.Model):
         string="HDMF ER Contribution Account",
         default=_get_default_hdmf_er_account_id,
     )
+
+    _is_thirteenth_pay = fields.Boolean(string="13th Month")
 
     # @api.onchange('payment_type_id')
     # def onchange_payment_type_id(self):
@@ -382,7 +385,12 @@ class exhr_payroll(models.Model):
                 he.active = 't' AND 
                 hc.company_id = %s AND 
                 hc.active = 't'
-        """ % (self.payroll_type_id.id, self.payment_type_id.id, self.cutoff_date, self.company_id.id)
+        """ % (
+            self.payroll_type_id.id,
+            self.payment_type_id.id,
+            self.cutoff_date,
+            self.company_id.id,
+        )
 
         print(f"Executing Query:\n{query}")
         self._cr.execute(query)
@@ -395,7 +403,9 @@ class exhr_payroll(models.Model):
 
         # Get current payslip lines
         current_lines = self.payslip_line_ids
-        current_employee_set = {(line.employee_id.id, line.id_number) for line in current_lines}
+        current_employee_set = {
+            (line.employee_id.id, line.id_number) for line in current_lines
+        }
         print(f"Current Employee Set: {current_employee_set}")
 
         # Determine which employees need to be added or updated
@@ -414,14 +424,21 @@ class exhr_payroll(models.Model):
         payslip_obj = self.env["exhr.payslip"]
         for employee_id, id_number in to_add_or_update:
             # Search for existing record
-            existing_payslip = payslip_obj.search([("employee_id", "=", employee_id), ("id_number", "=", id_number)], limit=1)
-            
+            existing_payslip = payslip_obj.search(
+                [("employee_id", "=", employee_id), ("id_number", "=", id_number)],
+                limit=1,
+            )
+
             if existing_payslip:
-                print(f"Updating existing payslip for Employee ID: {employee_id}, ID Number: {id_number}")
+                print(
+                    f"Updating existing payslip for Employee ID: {employee_id}, ID Number: {id_number}"
+                )
                 # Update the payroll_id and reset to draft
                 existing_payslip.write({"payroll_id": self.id, "state": "draft"})
             else:
-                print(f"Creating new payslip for Employee ID: {employee_id}, ID Number: {id_number}")
+                print(
+                    f"Creating new payslip for Employee ID: {employee_id}, ID Number: {id_number}"
+                )
                 # Create a new payslip record
                 vals = {
                     "employee_id": employee_id,
@@ -438,7 +455,6 @@ class exhr_payroll(models.Model):
                 new_payslip_obj.compute_payslip()
 
         print("Payslip generation completed.")
-
 
     # - - - - - - PRINT PAYROLL SLIP - - - - - - - - -
 
@@ -1011,9 +1027,9 @@ class exhr_payroll(models.Model):
 
     def get_ot_rate(self, rate_type, hourly_rate, isHoliday):
         percent = (
-                self.env["overtime.rate.config"]
-                .search([("rate_id", "=", rate_type)])
-                .percentage
-            )
+            self.env["overtime.rate.config"]
+            .search([("rate_id", "=", rate_type)])
+            .percentage
+        )
 
         return percent * hourly_rate

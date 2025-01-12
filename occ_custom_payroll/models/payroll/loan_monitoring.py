@@ -10,6 +10,7 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+
 class LoanMonitoring(models.Model):
     _name = "loan.monitoring"
     _rec_name = "loan_name"

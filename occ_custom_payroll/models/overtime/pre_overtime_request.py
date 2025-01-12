@@ -18,14 +18,17 @@ class PreOvertimeRequest(models.Model):
     _name = "pre.overtime.request"
     _inherit = ["mail.thread", "occ.payroll.cfg"]
     _description = "Pre-Approval Overtime Request"
-    
+
     def _default_employee(self):
         return self.env.context.get("default_employee_id") or self.env[
             "hr.employee"
         ].sudo().search([("user_id", "=", self.env.uid)], limit=1)
 
     state = fields.Selection(
-        selection=lambda self: self.state_list, default="draft", copy=False, track_visibility="onchange"
+        selection=lambda self: self.state_list,
+        default="draft",
+        copy=False,
+        track_visibility="onchange",
     )
 
     name = fields.Char(copy=False, default="New")
@@ -54,8 +57,10 @@ class PreOvertimeRequest(models.Model):
     company_id = fields.Many2one(
         "res.company", related="employee_id.company_id", required=True
     )
-    
-    preot_policy = fields.Selection(selection=lambda self: self.list_policy, string="OT Policy")
+
+    preot_policy = fields.Selection(
+        selection=lambda self: self.list_policy, string="OT Policy"
+    )
     preapproval_process = fields.Selection(
         selection=lambda self: self.list_approval, string="Pre-OT Approval Process"
     )

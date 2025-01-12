@@ -13,6 +13,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class hdmf_contribution(models.Model):
     _name = "hdmf.contribution.line"
 

@@ -18,7 +18,7 @@ from odoo.exceptions import UserError, ValidationError
 class OccPayrollCfg(models.AbstractModel):
     _name = "occ.payroll.cfg"
     _description = "Payroll Config"
-    
+
     # manual.attendance
     # pre.overtime.request
     # overtime.request
@@ -33,11 +33,11 @@ class OccPayrollCfg(models.AbstractModel):
     # hr.leave.type
     # hr.attendance.sheet.summary
     # overtime.request.line
-    
+
     DEFAULT_SERVER_DATE_FORMAT = "%Y-%m-%d"
     DEFAULT_SERVER_DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
     manila_tz = pytz.timezone("Asia/Manila")
-    
+
     state_list = [
         ("draft", "Draft"),
         ("submitted", "Submitted"),  # approver 1
@@ -56,7 +56,7 @@ class OccPayrollCfg(models.AbstractModel):
         ("denied", "Denied"),
         ("cancelled", "Cancel"),
     ]
-    
+
     list_policy = [
         ("1", "Pre-approved OT request before Filing actual OT request"),
         ("2", "OT Request only"),
@@ -68,7 +68,7 @@ class OccPayrollCfg(models.AbstractModel):
         ("3", "Approver 1 only before it approves"),
         ("4", "Approver 2 only before it approves"),
     ]
-    
+
     odoo_dow_list = [
         ("0", "Monday"),
         ("1", "Tuesday"),
@@ -78,8 +78,7 @@ class OccPayrollCfg(models.AbstractModel):
         ("5", "Saturday"),
         ("6", "Sunday"),
     ]
-    
-    
+
     ratetype_list = [
         ("0", "Ordinary Day"),
         ("1", "Rest Day"),
@@ -114,7 +113,7 @@ class OccPayrollCfg(models.AbstractModel):
         ("30", "Double Holiday, night shift, OT"),
         ("31", "Double Holiday, rest day, night shift, OT"),
     ]
-    
+
     def get_holiday_status(self, date_now, work_location):
         """
         This function returns the type and number of holidays for the given date
@@ -150,7 +149,7 @@ class OccPayrollCfg(models.AbstractModel):
             val_dict["type"] = holiday.holiday_type
 
         return val_dict
-    
+
     def get_attendance_sched(self, date_now, resource_calendar_id, work_location):
         """
         this function returns a dictionary of planned_in, planned_out, break_hours based on the schedule of employee in contracts (resource.calendar)
@@ -214,7 +213,7 @@ class OccPayrollCfg(models.AbstractModel):
             }
 
         return val_dict
-    
+
     def get_attendance_type(
         self,
         date_now,
@@ -302,7 +301,7 @@ class OccPayrollCfg(models.AbstractModel):
                     attype = "14"  # Double Holiday, night shift
 
         return attype
-    
+
     def get_count_work_days(self, date_now, dow_int, work_location):
         """This function returns if the given date is counted as a work day
         -Sundays and holidays are not working days (as per AVSC policy)
@@ -333,7 +332,6 @@ class OccPayrollCfg(models.AbstractModel):
             attype = 0
 
         return attype
-
 
     def new_count_work_days(self, date_now, dow_int, work_location):
         """This function returns if the given date is counted as a work day
@@ -372,7 +370,7 @@ class OccPayrollCfg(models.AbstractModel):
             attype = 1
 
         return attype
-    
+
     def get_contract_info(self, my_date, employee_id):
         """This function returns the running contract of the employee
         return: hourly_rate,daily_rate,hours,contract_id
@@ -585,7 +583,7 @@ class OccPayrollCfg(models.AbstractModel):
                 }
 
                 return val_dict
-            
+
     def get_attedance_type(
         self,
         date_now,
@@ -873,7 +871,6 @@ class OccPayrollCfg(models.AbstractModel):
 
         return value
 
-
     def get_attendance_remarks(self, employee_id, date_from, date_to):
         value = self.remarks
         leaves = self.env["hr.leave"].search(
@@ -890,7 +887,6 @@ class OccPayrollCfg(models.AbstractModel):
                 value += l.holiday_status_id.name
 
         return value
-
 
     def get_attendance_actual(self):
         """
@@ -974,14 +970,16 @@ class OccPayrollCfg(models.AbstractModel):
         split_date = self.date.strftime("%Y-%m-%d").split("-")
         date_format_clockify = f"{split_date[1]},{split_date[2]},{split_date[0]}"
 
-        import_attendance_clockify = self.env["import.employee.attendance.line"].search(
+        import_attendance_clockify = self.env["hr.import.attendance.line"].search(
             [
                 ("date_from", "=", date_format_clockify),
                 ("employee_id", "=", self.employee_id.id),
             ],
             order="write_date asc",
         )
-        import_attendance_biometrics = self.env["import.employee.attendance.line"].search(
+        import_attendance_biometrics = self.env[
+            "hr.import.attendance.line"
+        ].search(
             [("date_from", "=", self.date), ("employee_id", "=", self.employee_id.id)],
             order="write_date asc",
         )
@@ -1058,7 +1056,6 @@ class OccPayrollCfg(models.AbstractModel):
         if self.original == "excess":
             self.write({"actual_out": out_hr})
 
-
     def get_mins_for_late(self):
         """
         This function returns the Tardiness(mins) of REGULAR work schedule employees
@@ -1067,7 +1064,10 @@ class OccPayrollCfg(models.AbstractModel):
         mins = 0
         if self.work_schedule_type == "regular":
             if (
-                self.planned_in and self.planned_out and self.actual_in and self.actual_out
+                self.planned_in
+                and self.planned_out
+                and self.actual_in
+                and self.actual_out
             ):  # with attendance
                 if (
                     self.actual_in > self.planned_in
@@ -1091,7 +1091,6 @@ class OccPayrollCfg(models.AbstractModel):
 
         return mins
 
-
     def get_mins_for_undertime(self, work_hr, half_work_hr):
         """
         This function returns the Undertime (mins) of REGULAR work schedule employees
@@ -1107,12 +1106,15 @@ class OccPayrollCfg(models.AbstractModel):
             limit=1,
         )
         holiday_status = self.get_holiday_status(
-            self.date, self.employee_id.tk_work_location
+            self.date, self.employee_id.work_location_id
         )
 
         if self.work_schedule_type == "regular":
             if (
-                self.planned_in and self.planned_out and self.actual_in and self.actual_out
+                self.planned_in
+                and self.planned_out
+                and self.actual_in
+                and self.actual_out
             ):  # with attendance
 
                 actual_in_biased = self.actual_in
@@ -1179,18 +1181,18 @@ class OccPayrollCfg(models.AbstractModel):
             if self.original == "excess":
                 mins = 0
 
-        return mins    
-    
+        return mins
+
     def _get_default_requestor(self):
         return (
             self.env["hr.employee"].search([("user_id", "=", self.env.uid)], limit=1).id
         )
-        
+
     def _default_employee(self):
         return self.env.context.get("default_employee_id") or self.env[
             "hr.employee"
         ].sudo().search([("user_id", "=", self.env.uid)], limit=1)
-        
+
     def _ot_mail_send(
         self, employee_name, rec_name, approver, rec_id, otstage, subject_name
     ):

@@ -13,6 +13,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class WithholdingTaxConfig(models.Model):
     _name = "withholding.tax.config"
     _order = "id asc"

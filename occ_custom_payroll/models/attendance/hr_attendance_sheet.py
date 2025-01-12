@@ -5,6 +5,8 @@ from datetime import datetime, date, time, timedelta
 # Local python modules
 
 # Custom python modules
+import pytz
+from pytz import timezone
 
 # Odoo modules
 from odoo import models, fields, api, _
@@ -17,13 +19,22 @@ class HRAttendanceSheet(models.Model):
     _inherit = ["occ.payroll.cfg"]
     _description = "Employee Attendance Sheet"
     _order = "date desc, employee_id asc"
-    
+
+    _sql_constraints = [
+        (
+            "employee_date_unique",
+            "unique(id)",
+            "employee_id-date-original already exists!",
+        )
+        # ('employee_date_unique', 'Check(1=1)', 'employee_id-date already exists!')
+    ]
+
     employee_id = fields.Many2one("hr.employee", string="Employee", index=True)
     department_id = fields.Many2one(
         related="employee_id.department_id", string="Department", store=True, index=True
     )
     # manager_id = fields.Many2one(related='employee_id.parent_id', string='Manager', store=True, index=True)
-    
+
     attendance_id = fields.Many2one(
         comodel_name="hr.attendance",
         string="Attendance",
@@ -31,7 +42,12 @@ class HRAttendanceSheet(models.Model):
     )
 
     date = fields.Date(index=True)
-    dayofweek = fields.Selection(selection=lambda self: self.odoo_dow_list, string="Day of Week", index=True, default="0")
+    dayofweek = fields.Selection(
+        selection=lambda self: self.odoo_dow_list,
+        string="Day of Week",
+        index=True,
+        default="0",
+    )
     planned_in = fields.Float(
         string="Planned Time In", help="Planned Start time of working."
     )
@@ -59,7 +75,9 @@ class HRAttendanceSheet(models.Model):
     holiday_amount_pay = fields.Float(string="Holiday Pay")  # FOR CHECKING
     holiday_rate = fields.Float(string="Holiday Rate")  # FOR CHECKING
 
-    rate_type = fields.Selection(selection=lambda self: self.ratetype_list, string="Type")
+    rate_type = fields.Selection(
+        selection=lambda self: self.ratetype_list, string="Type"
+    )
     schedule_type_ids = fields.Many2many(
         "schedule.type",
         "attendance_sheet_type_rel",
@@ -117,8 +135,10 @@ class HRAttendanceSheet(models.Model):
 
     ns_start = fields.Float(string="Night Shift Start")
     ns_end = fields.Float(string="Night Shift End")
-    
-    payslip_id = fields.Many2one("exhr.payslip", string="Payslip", store=True, index=True)
+
+    payslip_id = fields.Many2one(
+        "exhr.payslip", string="Payslip", store=True, index=True
+    )
 
     # overtime_amount_pay = fields.Float(string='Overtime Pay')
     # nightdiff_amount_pay = fields.Float(string='Night Diff. Pay')
@@ -127,13 +147,19 @@ class HRAttendanceSheet(models.Model):
     tardiness_amount_ded = fields.Float(string="Tardiness Deduction")
     undertime_amount_ded = fields.Float(string="Undertime Deduction")
     leavewopay_amount_ded = fields.Float(string="Leave Deduction")
-    
+
     @api.constrains("attendance_id")
     def _check_unique_attendance(self):
         for record in self:
-            if record.attendance_id and self.search_count([("attendance_id", "=", record.attendance_id.id)]) > 1:
-                raise ValidationError("Each Attendance can only have one Attendance Sheet.")
-    
+            if (
+                record.attendance_id
+                and self.search_count([("attendance_id", "=", record.attendance_id.id)])
+                > 1
+            ):
+                raise ValidationError(
+                    "Each Attendance can only have one Attendance Sheet."
+                )
+
     @api.depends("employee_id", "actual_in", "actual_out")
     def _compute_manager_ids(self):
         for rec in self:
@@ -204,6 +230,7 @@ class HRAttendanceSheet(models.Model):
             rec.hrs_for_payroll = hrs_for_payroll
 
     def update_attendance_sheet(self):
+        manila_tz = timezone("Asia/Manila")
         undertime = 0
 
         # Update Day of Week
@@ -336,12 +363,10 @@ class HRAttendanceSheet(models.Model):
             )
 
             # Update Tardiness (mins)
-            self.mins_for_late = self.get_mins_for_late(self)
+            self.mins_for_late = self.get_mins_for_late()
 
             # Update Undertime (mins)
-            self.mins_for_undertime = self.get_mins_for_undertime(
-                work_hr, half_work_hr
-            )
+            self.mins_for_undertime = self.get_mins_for_undertime(work_hr, half_work_hr)
 
             # recompute the Planned In and Planned Out of Employees if Holiday
             holiday_status = self.get_holiday_status(
@@ -479,7 +504,7 @@ class HRAttendanceSheet(models.Model):
                 )
 
                 # Update Tardiness (mins)
-                self.mins_for_late = self.get_mins_for_late(self)
+                self.mins_for_late = self.get_mins_for_late()
 
                 # Update Undertime (mins)
                 self.mins_for_undertime = self.get_mins_for_undertime(
@@ -518,3 +543,40 @@ class HRAttendanceSheet(models.Model):
                 if self.work_schedule_type != "regular":
                     self.planned_in = 0
                     self.planned_out = 0
+
+        if self.original == "excess":
+            attendance_query = """
+                SELECT
+                    ha.next_day_checkout,
+                    (
+                        SELECT ins.check_in FROM hr_attendance ins
+                        WHERE ins.check_in_date::DATE = '%s'::DATE - INTERVAL '1 DAY' AND ins.employee_id = %s
+                        ORDER BY ins.check_in ASC NULLS LAST LIMIT 1
+                    ) AS cin,
+                    ha.check_out AS cout
+                FROM hr_attendance ha
+                WHERE ha.check_in_date::DATE = ('%s'::DATE - INTERVAL '1 DAY')::DATE
+                AND ha.employee_id = %s
+                ORDER BY ha.check_out DESC NULLS LAST
+                LIMIT 1
+            """ % (
+                self.date,
+                self.employee_id.id,
+                self.date,
+                self.employee_id.id,
+            )
+            self._cr.execute(attendance_query)
+            attendance_obj = self._cr.fetchall()
+
+            if attendance_obj:
+                if attendance_obj[0][2]:
+                    obj_check_out = attendance_obj[0][2]
+                    out_hr = int(obj_check_out.astimezone(manila_tz).strftime("%-H"))
+                    out_min = int(obj_check_out.astimezone(manila_tz).strftime("%-M"))
+
+                    actual_out_dt = obj_check_out.astimezone(manila_tz)
+
+                    if out_min > 0:
+                        out_hr = out_hr + (out_min / 60)
+
+                    self.write({"actual_out": out_hr})

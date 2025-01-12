@@ -10,14 +10,13 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+
 class HrEmployeeSeminar(models.Model):
     _name = "hr.employee.seminar"
     _order = "seminar_start desc"
 
     employee_id = fields.Many2one(
-        comodel_name="hr.employee", 
-        string="Employee ID", 
-        ondelete="cascade"
+        comodel_name="hr.employee", string="Employee ID", ondelete="cascade"
     )
 
     seminar_title = fields.Char(

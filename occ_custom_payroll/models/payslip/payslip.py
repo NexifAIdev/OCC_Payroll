@@ -14,6 +14,7 @@ from odoo.tools import float_round
 from odoo.exceptions import UserError, ValidationError
 import odoo.addons.decimal_precision as dp
 
+
 class exhr_payslip(models.Model):
     _name = "exhr.payslip"
     _description = "Employee's Payslip"
@@ -143,7 +144,7 @@ class exhr_payslip(models.Model):
     no_days_holiday_present = fields.Float()
     no_hrs_ot = fields.Float()
     # UNUSED FIELDS - END
-    
+
     payroll_id = fields.Many2one(
         "exhr.payroll", string="Reference", store=True, ondelete="cascade", index=True
     )
@@ -444,7 +445,6 @@ class exhr_payslip(models.Model):
                     elif vals.payroll_type_id.name == "Semi-Monthly":
                         amount = vals.wage / 2
 
-                
                 ic(amount)
                 ic(no_day_hrs_disp)
                 if (

@@ -5,3 +5,6 @@ from . import hr_attendance
 from . import manual_attendance
 from . import schedule_type
 from . import work_sched_adjustment
+from . import hr_import_attendance
+from . import hr_import_attendance_line
+from . import employee_attendance_line

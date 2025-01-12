@@ -50,13 +50,13 @@ OCC Payroll Configurations
 		# Sequence
 		#___________________________________________
 		# "views/config/sequence.xml",
-        # "views/account/windows.xml",
-        # "views/attendance/windows.xml",
-        # "views/overtime/windows.xml",
-        # "views/hr/windows.xml",
+        # "views/account/sequence.xml",
+        "views/attendance/sequence.xml",
+        # "views/overtime/sequence.xml",
+        # "views/hr/sequence.xml",
         "views/payslip/sequence.xml",
         "views/payroll/sequence.xml",
-        # "views/resource/windows.xml",
+        # "views/resource/sequence.xml",
 		#-------------------------------------------
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 		# Emails

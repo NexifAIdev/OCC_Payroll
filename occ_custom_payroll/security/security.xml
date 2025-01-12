@@ -87,6 +87,21 @@
             />
 
         </record>
+
+        <record id="import_attendance_groups" model="ir.module.category">
+			<field name="name">Attendance Import</field>
+			<field name="sequence">21</field>
+		</record>
+
+        <record id="import_attendance_groups_user" model="res.groups">
+			<field name="name">User</field>
+			<field name="category_id" ref="occ_custom_payroll.import_attendance_groups"/>
+		</record>
+		<record id="import_attendance_groups_manager" model="res.groups">
+			<field name="name">Manager</field>
+			<field name="category_id" ref="occ_custom_payroll.import_attendance_groups"/>
+		</record>
+
         <record id="module_category_attendance_correction"
             model="ir.module.category">
             <field name="name">Attendance Correction

@@ -16,29 +16,35 @@ from odoo.exceptions import UserError, ValidationError
 class OvertimeRequestLine(models.Model):
     _name = "overtime.request.line"
     _inherit = ["occ.payroll.cfg"]
-    
+
     def _get_odoo_dow_list(self):
-        odoo_dow_list = []        
+        odoo_dow_list = []
         try:
             odoo_dow_list = self.odoo_dow_list
         except AttributeError as ae:
             odoo_dow_list = self.env["occ.payroll.cfg"].odoo_dow_list
-        
+
         ic(odoo_dow_list)
         if not len(odoo_dow_list) > 0:
             raise ValidationError(f"occ.payroll.cfg was not loaded properly")
-            
+
         return odoo_dow_list
-        
 
     date = fields.Date(default=fields.Date.today(), index=True)
     date_approved = fields.Date(index=True)
 
     actual_in = fields.Float(string="OT Start", help="Actual Start of OT time.")
     actual_out = fields.Float(string="OT End", help="Actual End of OT time.")
-    dayofweek = fields.Selection(selection=lambda self: self._get_odoo_dow_list(), string="Day of Week", index=True, default="0")
-    
-    payslip_id = fields.Many2one("exhr.payslip", string="Payslip", store=True, index=True)
+    dayofweek = fields.Selection(
+        selection=lambda self: self._get_odoo_dow_list(),
+        string="Day of Week",
+        index=True,
+        default="0",
+    )
+
+    payslip_id = fields.Many2one(
+        "exhr.payslip", string="Payslip", store=True, index=True
+    )
 
     breakdown_lines = fields.One2many("overtime.breakdown.line", "ot_line_id")
 
@@ -104,7 +110,10 @@ class OvertimeRequestLine(models.Model):
             ln.rate_type = str(rt)
 
     rate_type = fields.Selection(
-        lambda self: self.ratetype_list, string="Type", store=True, compute="get_rate_type"
+        lambda self: self.ratetype_list,
+        string="Type",
+        store=True,
+        compute="get_rate_type",
     )
 
     details = fields.Text()

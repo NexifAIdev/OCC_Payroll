@@ -10,14 +10,13 @@ from odoo import models, fields, api, _
 from odoo.tools.translate import _
 from odoo.exceptions import UserError, ValidationError
 
+
 class Hrdependents(models.Model):
     _name = "hr.dependents"
     _order = "d_birthday desc"
 
     employee_id = fields.Many2one(
-        comodel_name="hr.employee", 
-        string="Employee ID", 
-        ondelete="cascade"
+        comodel_name="hr.employee", string="Employee ID", ondelete="cascade"
     )
 
     d_first = fields.Char(
