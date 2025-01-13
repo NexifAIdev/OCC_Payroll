@@ -34,7 +34,7 @@ class exhr_payslip(models.Model):
         related="employee_id.department_id", string="Department", store=True, index=True
     )
     state = fields.Selection(
-        [("draft", "Draft"), ("posted", "Posted"), ("cancel", "Cancel"), ("inactive", "Inactive")],
+        [("draft", "Draft"), ("posted", "Posted"), ("cancel", "Cancel"), ("invalid", "Invalid")],
         copy=False,
         default="draft",
         track_visibility="onchange",
@@ -3017,7 +3017,7 @@ class exhr_payslip(models.Model):
 
     def unlink(self):
         for rec in self:
-            rec.state = "inactive"
+            rec.state = "invalid"
 
         ic("unlinked")
         # return super(exhr_payslip, self).unlink()
