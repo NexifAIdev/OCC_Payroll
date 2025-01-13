@@ -153,14 +153,14 @@ echo -e "\n---- Create ODOO system user ----"
 if ! id "$OE_USER" &>/dev/null; then
     sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
 else
-    printf "User '%s' already exists.\n" "$USER_NAME" >&2
+    printf "User '%s' already exists.\n" "$OE_USER" >&2
     return 1
 fi
 
 if [[ -n "$OE_USER" ]]; then
     sudo adduser $OE_USER sudo
     echo "$OE_USER:$OE_MGR" | sudo chpasswd
-    echo "$OE_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$USER_NAME" >/dev/null
+    echo "$OE_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/$OE_USER" >/dev/null
     sudo chmod 0440 "/etc/sudoers.d/$OE_USER"
 else
     printf "User '%s' not defined.\n" "$OE_USER" >&2
