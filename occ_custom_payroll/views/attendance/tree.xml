@@ -3,7 +3,18 @@
 
     <data>
     
-        
+        <record model="ir.ui.view" id="exhr_view_attendance_tree">
+			<field name="name">exhr.view.attendance.tree</field>
+			<field name="model">hr.attendance</field>
+			<field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+			<field name="arch" type="xml">
+
+				<field name="check_in" position="before">
+					<field name="check_in_date" string="Date" invisible="False"/>
+				</field>
+				
+			</field>
+		</record> 
     
     </data>
     

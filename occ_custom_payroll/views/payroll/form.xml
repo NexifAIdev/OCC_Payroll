@@ -129,7 +129,7 @@
                                     nolabel="1" 
                                     readonly="state in ['validated', 'posted']"
                                     >
-									<tree string="Employees Payslips" editable="bottom" create="false" delete="true" options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}">
+									<tree string="Employees Payslips" create="false" delete="true" options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}">
 										<field name="name" readonly="True"/>
 										<field name="employee_id" readonly="True"/>
 										<field name="amount_untaxed" sum='Total Taxable Amount' readonly="True"/>
@@ -137,6 +137,8 @@
 										<field name="new_amount_nontaxable" sum='Total Other Earnings/Charges' readonly="True"/>
 										<field name="amount_tax_signed" sum='Total Withholding Tax' readonly="True"/>
 										<field name="amount_total" sum='Total Net Pay' readonly="True"/>
+										<field name="currency_id" column_invisible="True"/>
+										<field name="company_currency_id" column_invisible="True"/>
 									</tree>
 								</field>
 

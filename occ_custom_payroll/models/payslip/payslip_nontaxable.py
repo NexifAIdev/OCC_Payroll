@@ -17,35 +17,52 @@ import odoo.addons.decimal_precision as dp
 class exhr_payslip_nontaxable(models.Model):
     _name = "exhr.payslip.nontaxable"
 
-    name_id = fields.Many2one("nontaxable.type", string="Description", index=True)
+    name_id = fields.Many2one(
+        comodel_name="nontaxable.type", 
+        string="Description", 
+        index=True
+    )
     ref = fields.Char(string="Reference")
-    amount_total = fields.Monetary(string="Amount", store=True)
+    amount_total = fields.Monetary(
+        string="Amount", 
+        store=True,
+        currency_field="company_currency_id",
+    )
     pay_type = fields.Selection(
-        [("earnings", "Earnings"), ("deductions", "Deductions")],
+        selection=[
+            ("earnings", "Earnings"), 
+            ("deductions", "Deductions")
+        ],
         string="Type",
         default="earnings",
     )
     payslip_id = fields.Many2one(
-        "exhr.payslip",
-        "nontaxable_line_ids",
+        comodel_name="exhr.payslip",
+        inverse_name="nontaxable_line_ids",
         store=True,
         ondelete="cascade",
         index=True,
     )
     currency_id = fields.Many2one(
-        "res.currency", related="payslip_id.currency_id", store=True, related_sudo=False
+        comodel_name="res.currency", 
+        related="payslip_id.currency_id", 
+        store=True, 
+        related_sudo=False
     )
     company_currency_id = fields.Many2one(
-        "res.currency",
+        comodel_name="res.currency",
         related="payslip_id.company_currency_id",
         readonly=True,
         related_sudo=False,
     )
 
-    taxable = fields.Boolean("Taxable")
-    loan_id = fields.Many2one("loan.monitoring")
+    taxable = fields.Boolean(string="Taxable")
+    loan_id = fields.Many2one(comodel_name="loan.monitoring")
 
-    gl_account_id = fields.Many2one("account.account", "GL Account")
+    gl_account_id = fields.Many2one(
+        comodel_name="account.account", 
+        string="GL Account",
+    )
 
     # loan_name = fields.Many2one('loan.monitoring', 'Loan Name')
     new_loan_name = fields.Char(string="Loan Name")

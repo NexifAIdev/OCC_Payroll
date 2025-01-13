@@ -34,7 +34,7 @@ class exhr_payslip(models.Model):
         related="employee_id.department_id", string="Department", store=True, index=True
     )
     state = fields.Selection(
-        [("draft", "Draft"), ("posted", "Posted"), ("cancel", "Cancel")],
+        [("draft", "Draft"), ("posted", "Posted"), ("cancel", "Cancel"), ("inactive", "Inactive")],
         copy=False,
         default="draft",
         track_visibility="onchange",
@@ -89,6 +89,7 @@ class exhr_payslip(models.Model):
         compute="_compute_basic",
         readonly=True,
         track_visibility="always",
+        currency_field="company_currency_id",
     )
     amount_untaxed = fields.Monetary(
         string="Taxable Amount",
@@ -96,6 +97,7 @@ class exhr_payslip(models.Model):
         compute="_compute_amount",
         readonly=True,
         track_visibility="always",
+        currency_field="company_currency_id",
     )
     amount_nontaxable_signed = fields.Monetary(
         string="Non-Taxable Amount - Old",
@@ -103,6 +105,7 @@ class exhr_payslip(models.Model):
         compute="_compute_amount",
         readonly=True,
         track_visibility="always",
+        currency_field="company_currency_id",
     )
     amount_tax_signed = fields.Monetary(
         string="Tax Withheld Amount",
@@ -110,6 +113,7 @@ class exhr_payslip(models.Model):
         compute="_compute_amount",
         readonly=True,
         track_visibility="always",
+        currency_field="company_currency_id",
     )
     amount_total = fields.Monetary(
         string="Net Pay",
@@ -117,6 +121,7 @@ class exhr_payslip(models.Model):
         compute="_compute_amount",
         readonly=True,
         track_visibility="always",
+        currency_field="company_currency_id",
     )
     new_amount_nontaxable = fields.Monetary(
         string="Non-Taxable Amount",
@@ -124,6 +129,7 @@ class exhr_payslip(models.Model):
         compute="_compute_amount",
         readonly=True,
         track_visibility="always",
+        currency_field="company_currency_id",
     )
 
     move_id = fields.Many2one("account.move")
@@ -3010,8 +3016,8 @@ class exhr_payslip(models.Model):
             raise UserError("No Running Contract found!")
 
     def unlink(self):
-        # for rec in self:
-        #     rec.state = "inactive"
+        for rec in self:
+            rec.state = "inactive"
 
         ic("unlinked")
-        return super(exhr_payslip, self).unlink()
+        # return super(exhr_payslip, self).unlink()

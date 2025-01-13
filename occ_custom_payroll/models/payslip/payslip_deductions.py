@@ -18,23 +18,34 @@ class exhr_payslip_deductions(models.Model):
     _name = "exhr.payslip.deductions"
 
     # name = fields.Char(string="Deductions")#many2one
-    name_id = fields.Many2one("deduction.type", string="Deductions", index=True)
+    name_id = fields.Many2one(
+        comodel_name="deduction.type", 
+        string="Deductions", 
+        index=True
+    )
     # amount = fields.Float(string="Amount", digits=(5, 2))
-    amount_total = fields.Monetary(string="Amount", store=True)
+    amount_total = fields.Monetary(
+        string="Amount", 
+        store=True,
+        currency_field="company_currency_id",
+    )
     no_day_hrs_disp = fields.Char(string="Hrs/Days")
     payslip_id = fields.Many2one(
-        "exhr.payslip",
-        "deductions_line_ids",
+        comodel_name="exhr.payslip",
+        inverse_name="deductions_line_ids",
         store=True,
         ondelete="cascade",
         index=True,
     )
 
     currency_id = fields.Many2one(
-        "res.currency", related="payslip_id.currency_id", store=True, related_sudo=False
+        comodel_name="res.currency", 
+        related="payslip_id.currency_id", 
+        store=True, 
+        related_sudo=False
     )
     company_currency_id = fields.Many2one(
-        "res.currency",
+        comodel_name="res.currency",
         related="payslip_id.company_currency_id",
         readonly=True,
         related_sudo=False,
@@ -42,13 +53,19 @@ class exhr_payslip_deductions(models.Model):
 
     # other fields for history
     personal_contri = fields.Float(
-        string="Amount Personal Share", help="HDMF/PHIC - Employee Share"
+        string="Amount Personal Share", 
+        help="HDMF/PHIC - Employee Share"
     )
     employer_contri = fields.Float(
-        string="Amount Employer Share", help="HDMF/PHIC - Employer Share"
+        string="Amount Employer Share", 
+        help="HDMF/PHIC - Employer Share"
     )
 
     total_ss_contri = fields.Float(
-        string="Total (SS Contri.)", help="SSS - Total (SS Contribution)"
+        string="Total (SS Contri.)", 
+        help="SSS - Total (SS Contribution)"
     )
-    er_ec_contri = fields.Float(string="EC Contri.", help="SSS - EC Contribtion (ER)")
+    er_ec_contri = fields.Float(
+        string="EC Contri.", 
+        help="SSS - EC Contribtion (ER)"
+    )

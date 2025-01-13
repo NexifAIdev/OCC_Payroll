@@ -139,6 +139,18 @@ class HRAttendanceSheet(models.Model):
     payslip_id = fields.Many2one(
         "exhr.payslip", string="Payslip", store=True, index=True
     )
+    currency_id = fields.Many2one(
+        comodel_name="res.currency", 
+        related="payslip_id.currency_id", 
+        store=True, 
+        related_sudo=False,
+    )
+    company_currency_id = fields.Many2one(
+        "res.currency",
+        related="payslip_id.company_currency_id",
+        readonly=True,
+        related_sudo=False,
+    )
 
     # overtime_amount_pay = fields.Float(string='Overtime Pay')
     # nightdiff_amount_pay = fields.Float(string='Night Diff. Pay')

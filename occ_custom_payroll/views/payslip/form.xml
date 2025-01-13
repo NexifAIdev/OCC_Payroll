@@ -132,6 +132,8 @@
 										<field name="no_day_hrs_disp" string="Hrs/Days"/>
 										<field name="amt_per_day_hrs" string="Amt. Per Hr" invisible="1"/>
 										<field name="amount_subtotal" string="Sub Total Amount" sum='Total Gross Earnings'/>
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="company_currency_id" column_invisible="True"/>
 									</tree>
 								</field>
 
@@ -141,6 +143,8 @@
 										<field name="name_id" string="Description" required="True"/>
 										<field name="no_day_hrs_disp" string="Hrs/Days"/>
 										<field name="amount_total" string="Amount" sum='Total Deductions'/>
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="company_currency_id" column_invisible="True"/>
 									</tree>
 								</field>	
 
@@ -191,6 +195,9 @@
                                             readonly="parent.state not in ['draft']"
                                         />
 
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="company_currency_id" column_invisible="True"/>
+
                                     </tree>
                                 </field>
 
@@ -235,6 +242,8 @@
 										<field name="tardiness_amount_ded" sum='Total Tardiness Deduction' invisible="1"/>
 										<field name="undertime_amount_ded" sum='Total Undertime Deduction' invisible="1"/>
 										<field name="leavewopay_amount_ded" sum='Total Leave w/o pay Deduction' invisible="1"/>
+                                        <field name="currency_id" column_invisible="True"/>
+                                        <field name="company_currency_id" column_invisible="True"/>
 
 									</tree>
 								</field>	

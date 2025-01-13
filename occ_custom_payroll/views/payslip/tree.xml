@@ -22,6 +22,8 @@
 					<field name="amount_nontaxable_signed" invisible="1"/>
 					<field name="new_amount_nontaxable"/>
 					<field name="amount_total"/>
+					<field name="currency_id" column_invisible="True"/>
+					<field name="company_currency_id" column_invisible="True"/>
 
 					<field name="state"/>
 
