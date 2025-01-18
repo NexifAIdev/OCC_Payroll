@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <record id="custom_sss_report" model="ir.ui.view">
-        <field name="name">SSS Summary Report</field>
-        <field name="model">sss.report</field>
+    <record id="custom_pagibig_report" model="ir.ui.view">
+        <field name="name">PAG-IBIG Summary Report</field>
+        <field name="model">pagibig.report</field>
         <field name="arch" type="xml">
             <form string="SSS Summary Report">
                 <group class="oe_title">
@@ -25,7 +25,7 @@
                 </group>
                 <hr/>
                 <footer>
-                    <button name="print_sss_report" string="Print XLS" type="object" class="oe_highlight" />
+                    <button name="print_pagibig_report" string="Print XLS" type="object" class="oe_highlight" />
                     <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>
             </form>
@@ -33,18 +33,18 @@
     </record>
 
         <!-- Define an action for the wizard -->
-        <record id="action_attendance_view_custom_wizard_sss_report" model="ir.actions.act_window">
-            <field name="name">SSS Summary Report</field>
+        <record id="action_attendance_view_custom_wizard_pagibig_report" model="ir.actions.act_window">
+            <field name="name">PAG-IBIG Summary Report</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">sss.report</field>
+            <field name="res_model">pagibig.report</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="view_id" ref="custom_sss_report"/>
+            <field name="view_id" ref="custom_pagibig_report"/>
         </record>
 
-        <menuitem action="action_attendance_view_custom_wizard_sss_report"
-              id="menu_attendance_view_custom_wizard_sss_report"
+        <menuitem action="action_attendance_view_custom_wizard_pagibig_report"
+              id="menu_attendance_view_custom_wizard_pagibig_report"
               parent="occ_custom_payroll.menu_exhr_reports"
-              sequence="2"
+              sequence="3"
               />
 </odoo>

@@ -12,10 +12,10 @@ import io
 import xlsxwriter, base64
 
 
-class SSSReport(models.TransientModel):
-    _name = 'sss.report'
+class PagIbigReport(models.TransientModel):
+    _name = 'pagibig.report'
     _inherit = ['paycut.mixin']
-    _description = 'SSS Summary Report'
+    _description = 'PAG-IBIG Summary Report'
 
     excel_file = fields.Binary("Excel File")
     select_date = fields.Selection(
@@ -149,7 +149,7 @@ class SSSReport(models.TransientModel):
             date_to = self.date_to.strftime("%B %-d, %Y")
             return f"{date_from} - {date_to}"
 
-    def print_sss_report(self):
+    def print_pagibig_report(self):
 
         output = io.BytesIO()
         row = 0
@@ -361,7 +361,7 @@ class SSSReport(models.TransientModel):
 
             # Header Main
             is_details.write('B1', "One Contact Center Inc.", headerformatbold)
-            is_details.write('B2', f"{emp_types.name} SSS Summary Report", headerformatbold)     
+            is_details.write('B2', f"{emp_types.name} PAG-IBIG Summary Report", headerformatbold)     
             is_details.write('B3', f"Attendance: {date_range}", headerformat) 
             is_details.write('B4', current_datetime, dateformat)            
             
@@ -370,49 +370,40 @@ class SSSReport(models.TransientModel):
                     (" ", headerdetailbold),
                     ("NAME", headerdetailbold),
                     ("CAMPAIGN", headerdetailbold),
-                    ("SSS NO.", headerdetailbold),
+                    ("HDMF NO.", headerdetailbold),
                     ("HIRE DATE", headerdetailbold),
-                    ("SSS", headerdetailbold),
-                    ("SSS WISP", headerdetailbold),
-                    ("SSS EC SHARE", headerdetailbold),
-                    ("SSS ER SHARE", headerdetailbold),
-                    ("SSS WISPER", headerdetailbold)
+                    ("HDMF", headerdetailbold),
+                    ("HDMF ER SHARE", headerdetailbold)
                 ]
             elif emp_types.name == "Consultant":
                 headers = [
                     (" ", headerdetailbold),
                     ("EMPLOYEE ID", headerdetailbold),
                     ("NAME", headerdetailbold),
-                    ("SSS NO.", headerdetailbold),
+                    ("HDMF NO.", headerdetailbold),
                     ("HIRE DATE", headerdetailbold),
-                    ("SSS", headerdetailbold),
-                    ("SSS WISP", headerdetailbold)
+                    ("HDMF", headerdetailbold),
+                    ("HDMF ER SHARE", headerdetailbold)
                 ]
             elif emp_types.name == "Probitionary":
                 headers = [
                     (" ", headerdetailbold),
                     ("NAME", headerdetailbold),
                     ("CAMPAIGN", headerdetailbold),
-                    ("SSS NO.", headerdetailbold),
+                    ("HDMF NO.", headerdetailbold),
                     ("HIRE DATE", headerdetailbold),
-                    ("SSS", headerdetailbold),
-                    ("SSS WISP", headerdetailbold),
-                    ("SSS EC SHARE", headerdetailbold),
-                    ("SSS ER SHARE", headerdetailbold),
-                    ("SSS WISPER", headerdetailbold)
+                    ("HDMF", headerdetailbold),
+                    ("HDMF ER SHARE", headerdetailbold)
                 ]            
             else:
                 headers = [
                     (" ", headerdetailbold),
                     ("NAME", headerdetailbold),
                     ("DEPARTMENT", headerdetailbold),
-                    ("SSS NO.", headerdetailbold),
+                    ("HDMF NO.", headerdetailbold),
                     ("HIRE DATE", headerdetailbold),
-                    ("SSS", headerdetailbold),
-                    ("SSS WISP", headerdetailbold),
-                    ("SSS EC SHARE", headerdetailbold),
-                    ("SSS ER SHARE", headerdetailbold),
-                    ("SSS WISPER", headerdetailbold)
+                    ("HDMF", headerdetailbold),
+                    ("HDMF ER SHARE", headerdetailbold)
                 ]
 
             # Write headers starting from B6
@@ -436,12 +427,12 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS sss,												   -- 6
-                    0.00 AS sss_wisp,											   -- 7
+                    0.00 AS hdmf,												   -- 6
+                    200.00 AS hdmf_er_share,									   -- 7
                     30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 8
+                    0.00 AS sss_er_share,										   -- 9
                     0.00 AS sss_whisper, 										   -- 10
-                    he.sss_no AS sss_no      									   -- 11
+                    he.hdmf_no AS hdmf_no      									   -- 11
 
                 FROM hr_payslip hp 
                 LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -480,12 +471,12 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    250.00 AS sss,												   -- 6
+                    250.00 AS hdmf,								    			   -- 6
                     0.00 AS sss_wisp,											   -- 7
                     30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 9
+                    200.00 AS hdmf_er_share,									   -- 9
                     0.00 AS sss_whisper, 										   -- 10
-                    he.sss_no AS sss_no,      									   -- 11
+                    he.hdmf_no AS hdmf_no,      								   -- 11
                     he.employee_id AS emp_id                                       -- 12
 
                 FROM hr_payslip hp 
@@ -525,12 +516,12 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS sss,												   -- 6
+                    0.00 AS hdmf,												   -- 6
                     0.00 AS sss_wisp,											   -- 7
                     30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 8
+                    200.00 AS hdmf_er_share,									   -- 9
                     0.00 AS sss_whisper, 										   -- 10
-                    he.sss_no AS sss_no      									   -- 11
+                    he.hdmf_no AS hdmf_no      									   -- 11
 
                 FROM hr_payslip hp 
                 LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -569,12 +560,12 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS sss,												   -- 6
+                    0.00 AS hdmf,												   -- 6
                     0.00 AS sss_wisp,											   -- 7
                     30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 8
+                    200.00 AS hdmf_er_share,									   -- 9
                     0.00 AS sss_whisper, 										   -- 10
-                    he.sss_no AS sss_no      									   -- 11
+                    he.hdmf_no AS hdmf_no      									   -- 11
 
                 FROM hr_payslip hp 
                 LEFT JOIN hr_employee he ON he.id = hp.employee_id
@@ -619,29 +610,19 @@ class SSSReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                     col += 1
-                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # HDMF No
                     col += 1
                     is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                     col += 1
-                    is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
+                    is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # HDFM
                     col += 1
-                    is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
-                    col += 1
-                    is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
-                    col += 1
-                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # SSS ER Share
-                    col += 1
-                    is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
+                    is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # HDMF ER Share
                     col += 1
                     
                     # Increment row for the next employee
                     row += 1
                     
                 # After the loop, write "TOTAL" in the cell below the last hire date row
-                is_details.write_blank(row, 0, None, bodydetailbold)  # Column A
-                is_details.write_blank(row, 1, None, bodydetailbold)  # Column B
-                is_details.write_blank(row, 2, None, bodydetailbold)  # Column C
-                is_details.write_blank(row, 3, None, bodydetailbold)  # Column C
                 is_details.write(row, 4, "TOTAL", bodydetailbold)  # Column D (index 3)
                 total_wages = sum(row[6] for row in detail_body_row)  # Sum of wages
                 is_details.write(row, 5, round(total_wages, 2), bodydetailboldnetcurrency)
@@ -662,8 +643,8 @@ class SSSReport(models.TransientModel):
                     row += 1  # Move to the next row after the department header
 
                     # Initialize department-specific totals
-                    total_sss = 0
-                    total_sss_wisp = 0
+                    total_pagibig = 0
+                    total_pagibig_er = 0
 
                     # Write employee details for this department
                     for detail_body in employees:
@@ -677,15 +658,15 @@ class SSSReport(models.TransientModel):
                         col += 1
                         is_details.write(row, col, detail_body[1].upper(), bodydetailnormalleft)  # Employee Name
                         col += 1
-                        is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                        is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # HDMF No
                         col += 1
                         is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                         col += 1
-                        is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
-                        total_sss += detail_body[6]  # Add to department-specific subtotal
+                        is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # HDFM
+                        total_pagibig += detail_body[6]  # Add to department-specific subtotal
                         col += 1
-                        is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
-                        total_sss_wisp += detail_body[7]  # Add to department-specific subtotal
+                        is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # HDMF ER
+                        total_pagibig_er += detail_body[9]  # Add to department-specific subtotal
                         col += 1
 
                         # Increment row for the next employee
@@ -693,16 +674,16 @@ class SSSReport(models.TransientModel):
 
                     # Write Sub Total inline after the employees for the department
                     is_details.write(row, 4, "Sub Total", bodydetailbold)  # Subtotal label in column D
-                    is_details.write(row, 5, round(total_sss, 2), subtotalboldcurrency)  # Total SSS in column F
-                    is_details.write(row, 6, round(total_sss_wisp, 2), subtotalboldcurrency)  # Total SSS WISP in column G
+                    is_details.write(row, 5, round(total_pagibig, 2), subtotalboldcurrency)  # Total SSS in column F
+                    is_details.write(row, 6, round(total_pagibig_er, 2), subtotalboldcurrency)  # Total SSS WISP in column G
                     row += 1  # Move to the next row for the next department
 
                 # After the loop, write "TOTAL" in the cell below the last hire date row
                 is_details.write(row, 4, "TOTAL", bodydetailbold)  # Label in column E
-                total_sss_all = sum(detail[6] for detail in detail_body_row)  # Sum of all SSS
-                total_sss_wisp_all = sum(detail[7] for detail in detail_body_row)  # Sum of all SSS WISP
-                is_details.write(row, 5, round(total_sss_all, 2), bodydetailboldnetcurrency)  # Write total SSS
-                is_details.write(row, 6, round(total_sss_wisp_all, 2), bodydetailboldnetcurrency)  # Write total SSS WISP
+                total_pagibig_all = sum(detail[6] for detail in detail_body_row)  # Sum of all SSS
+                total_pagibig_er_all = sum(detail[9] for detail in detail_body_row)  # Sum of all SSS WISP
+                is_details.write(row, 5, round(total_pagibig_all, 2), bodydetailboldnetcurrency)  # Write total SSS
+                is_details.write(row, 6, round(total_pagibig_er_all, 2), bodydetailboldnetcurrency)  # Write total SSS WISP
 
                 
             elif emp_types.name == "Probitionary":
@@ -717,7 +698,7 @@ class SSSReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                     col += 1
-                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # HDMF No
                     col += 1
                     is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                     col += 1
@@ -727,7 +708,7 @@ class SSSReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
                     col += 1
-                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # SSS ER Share
+                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # HDMF ER Share
                     col += 1
                     is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
                     col += 1
@@ -760,13 +741,13 @@ class SSSReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                     col += 1
-                    is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
+                    is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # HDMF
                     col += 1
                     is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
                     col += 1
                     is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
                     col += 1
-                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # SSS ER Share
+                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # HDMF ER Share
                     col += 1
                     is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
                     col += 1
@@ -793,10 +774,10 @@ class SSSReport(models.TransientModel):
         
         file = base64.encodebytes(xy)  
         self.write({"excel_file": file})
-        filename = 'sss_summary_report.xlsx'
+        filename = 'pagibig_summary_report.xlsx'
 
         return {
             "type": "ir.actions.act_url",
-            "url": f"/web/content/sss.report/{self.id}/excel_file/{filename}?download=true",
+            "url": f"/web/content/pagibig.report/{self.id}/excel_file/{filename}?download=true",
             "target": "self",
         }

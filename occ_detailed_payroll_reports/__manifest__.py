@@ -18,12 +18,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','ohrms_core','occ_payroll_config'],
+    'depends': ['base','occ_configurations','occ_custom_payroll', 'pentaho_reports_odoo'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'views/occ_detailed_payroll_view.xml',
         'views/sss_report.xml',
+        'views/pagibig_report.xml',
+        'views/philhealth_report.xml',
+        'report/report.xml',
     ],
 }
