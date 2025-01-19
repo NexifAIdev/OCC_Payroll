@@ -4,6 +4,7 @@ from datetime import datetime, date, timedelta
 from collections import OrderedDict
 import base64, calendar, io, re
 from tempfile import TemporaryFile
+from pprint import pprint
 
 # Local python modules
 
@@ -338,9 +339,7 @@ class exhr_payroll(models.Model):
             )
 
             self._cr.execute(query)
-            ic(query)
             data = self._cr.fetchall()
-            ic(data)
 
             for x in data:
                 vals = {
@@ -1035,6 +1034,8 @@ class exhr_payroll(models.Model):
         return percent * hourly_rate
 
     def generate_thirteenth(self):
+        ic("generate_thirteenth")
+        ic(self.payslip_line_ids)
         if not self.payslip_line_ids:
             payslip_obj = self.env["exhr.payslip"]
             nontax_type_id = self.env["nontaxable.type"].search(
@@ -1068,6 +1069,8 @@ class exhr_payroll(models.Model):
 
             self._cr.execute(employee_query)
             data = self._cr.fetchall()
+            print(employee_query)
+            ic(data)
 
             for person in data:
                 if person[0] != employee:
@@ -1105,6 +1108,9 @@ class exhr_payroll(models.Model):
 
                     self._cr.execute(earnings_query)
                     earnings = self._cr.fetchall()
+                    
+                    print(earnings_query)
+                    ic(earnings)
 
                     base_salary = 0
                     leave_pay = 0
@@ -1191,6 +1197,9 @@ class exhr_payroll(models.Model):
 
                     self._cr.execute(ded_query)
                     deduction = self._cr.fetchall()
+                    
+                    print(ded_query)
+                    ic(deduction)
 
                     tardy_ded = 0
                     under_ded = 0
