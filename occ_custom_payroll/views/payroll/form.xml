@@ -123,7 +123,7 @@
 										name="generate_payslips"
 										string="Generate"
 										class="btn-primary"
-										invisible="state not in ['draft'] or (_is_thirteenth_pay = True or for_13th_mo = True)"
+										invisible="state not in ['draft'] or (_is_thirteenth_pay == True or for_13th_mo == True)"
 										/>
 									<button name="generate_thirteenth"
 										type="object"
