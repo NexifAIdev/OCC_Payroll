@@ -1080,11 +1080,11 @@ class exhr_payroll(models.Model):
                     earnings_query = """
 					SELECT
 						he.name,
-						(CASE WHEN et.name='Base Salary' THEN tpe.amount_subtotal ELSE 0 END) as base_salary,
-						(CASE WHEN et.name='Leave Pay' THEN tpe.amount_subtotal ELSE 0 END) as leave_pay,
-						(CASE WHEN et.name='Holiday Pay' THEN tpe.amount_subtotal ELSE 0 END) as holi_pay,
-						(CASE WHEN et.name='Adjustment: Salary' THEN tpe.amount_subtotal ELSE 0 END) as adj_salary,
-						tp.cutoff_date
+						(CASE WHEN et.name='Base Salary' THEN epe.amount_subtotal ELSE 0 END) as base_salary,
+						(CASE WHEN et.name='Leave Pay' THEN epe.amount_subtotal ELSE 0 END) as leave_pay,
+						(CASE WHEN et.name='Holiday Pay' THEN epe.amount_subtotal ELSE 0 END) as holi_pay,
+						(CASE WHEN et.name='Adjustment: Salary' THEN epe.amount_subtotal ELSE 0 END) as adj_salary,
+						ep.cutoff_date
 
 					FROM exhr_payslip ep
 					LEFT JOIN hr_employee he ON he.id=ep.employee_id
@@ -1098,7 +1098,7 @@ class exhr_payroll(models.Model):
 					and rc.id = %s
 					and he.id = %s
 
-					ORDER BY he.name, tp.cutoff_date
+					ORDER BY he.name, ep.cutoff_date
 					""" % (
                         self.pay_period_from,
                         self.pay_period_to,
