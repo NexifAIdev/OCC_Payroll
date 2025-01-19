@@ -14,12 +14,19 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'hr', 'hr_attendance'],
+    'depends': ['base', 'hr', 'hr_attendance','occ_hr_employee'],
 
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/hr_attendance.xml',
     ],
     'installable': True,
     'application': False,
+    'assets': {
+        'web.assets_backend': [
+            'occ_break/static/src/components/attendance_menu/attendance_menu_view.xml',
+            'occ_break/static/src/components/attendance_menu/attendance_menu_action.js',
+        ]
+    }
+
 }

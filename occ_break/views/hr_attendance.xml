@@ -11,6 +11,17 @@
                 <field name="end_lunch"/>
                 <field name="is_break"/>
             </xpath>
+            <xpath expr="//sheet/group/group" position="after">
+                <field name="break_ids" nolabel="1">
+                    <tree editable="bottom">
+                        <!-- <field name="name" string="Break Name" /> -->
+                        <field name="break_start" string="Break Start" />
+                        <field name="break_end" string="Break End" />
+                        <field name="total_break_duration" string="Float Value"/>
+                        <field name="total_break_duration" string="Time Widget" widget="float_time"/>
+                    </tree>
+                </field>
+            </xpath>
         </field>
     </record>
 
@@ -21,20 +32,35 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='check_out']" position="after">
                 <field name="start_lunch"/>
-                <field name="end_lunch"/>
+                <field name="end_lunch"/>                
             </xpath>
         </field>
     </record>
 
-    <record id="employee_break_form" model="ir.ui.view">
-        <field name="name">break.employee.form</field>
+
+
+
+    <record id="employee_break_form1" model="ir.ui.view">
+        <field name="name">break.employee.form1</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='mobile_phone']" position="before">
                 <field name="is_break"/>
                 <field name="start_lunch"/>
-                <field name="end_lunch"/>
+                <field name="is_break_done"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="employee_break_form2" model="ir.ui.view">
+        <field name="name">break.employee.form2</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="occ_hr_employee.view_hr_employee_form_inherit2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='biometric_id']" position="after">
+                <field name="total_break_hours" widget="float_time"/>
             </xpath>
         </field>
     </record>

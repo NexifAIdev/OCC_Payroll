@@ -35,7 +35,7 @@ class HrEmployee(models.Model):
 
 
 	# TOTAL DURATION OF BREAK HOURS
-	total_break_hours = fields.Float(default=1.0)
+	total_break_hours = fields.Float()
 
 	@api.depends('attendance_ids.start_lunch', 'attendance_ids.end_lunch')
 	def _check_employee_break(self):
@@ -83,48 +83,31 @@ class HrEmployee(models.Model):
 		self.ensure_one()
 		break_date = fields.Datetime.now()
 		attendance = self.env['hr.attendance'].search([('employee_id', '=', self.id), ('check_out', '=', False)], limit=1)
+		# employee = self.env['hr.employee'].search([('id', '=', self.id)], limit=1)
 		
 		if attendance and not attendance.is_break :
-			break_values = {
-				'attendance_id': attendance.id,
-				'break_start': break_date,
-				
-			}
-
-			# UPDATE ATTENDANCE BREAK STATUS
-			attendance.is_break = True
-
-			self.env['break.time'].create(break_values)
+			attendance.write({
+				'start_lunch': break_date,
+				'is_break': True,
+			})
 
 			# Add 8 Hours
-			start_lunch = break_date + timedelta(hours=8)
+			start_lunch = attendance.start_lunch + timedelta(hours=8)
 			# Extract the time
 			time_value = start_lunch.time()
 			# Convert time to float hours (hours + minutes/60 + seconds/3600)
 			start_hours = time_value.hour + time_value.minute / 60 + time_value.second / 3600
 			print("Starting Hours for Employee: ",start_hours)
-			# FOR DISPLAY
 			self.start_lunch = start_hours
 
 
 			
 
-			
-
 		else:
-
-			existing_break = self.env['break.time'].search([('attendance_id', '=', attendance.id), ('break_end', '=', False)], limit=1)
-
-			
-			# duration = (break_date - existing_break.break_start).total_seconds() / 60.0
-			existing_break.write({
-				'break_end': break_date,
-				# 'total_break_duration': duration
+			attendance.write({
+				'end_lunch': break_date,
+				'is_break': False,
 			})
-
-			# UPDATE ATTENDANCE BREAK STATUS
-			attendance.is_break = False
-
 
 
 		return attendance

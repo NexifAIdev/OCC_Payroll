@@ -1,5 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_occ_schedule_management,access_occ_schedule_management,occ_schedule.model_schedule_management,base.group_user,1,1,1,1
-access_occ_set_schedule,access_occ_set_schedule,occ_schedule.model_set_schedule,base.group_user,1,1,1,1
+access_break_time,access_break_time,occ_break.model_break_time,base.group_user,1,1,1,1
 
 

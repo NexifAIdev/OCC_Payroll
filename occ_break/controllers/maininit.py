@@ -15,6 +15,14 @@ class HrAttendance(http.Controller):
         response = {}
         if employee:
 
+            # now = datetime.datetime.now()
+            # hours = now.hour
+            # minutes = now.minute
+            # seconds = now.second
+            # current_time = hours + minutes / 60 + seconds / 3600
+            # duration = current_time - employee.start_lunch
+    
+
             response = {
                 'id': employee.id,
                 'is_break': employee.is_break,
