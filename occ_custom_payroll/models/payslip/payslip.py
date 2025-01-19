@@ -368,10 +368,13 @@ class exhr_payslip(models.Model):
                 taxable_amt = base_taxable
 
             # writing of values to the fields
-            if rec.payroll_id.for_13th_mo == False:
+            rec.amount_tax_signed = 0
+            if (
+                rec.payroll_id.for_13th_mo == False
+                or rec.payroll_id._is_thirteenth_pay == False
+            ):
                 rec.amount_tax_signed = rec.compute_tax(taxable_amt) * -1
-            else:
-                rec.amount_tax_signed = 0
+
             rec.amount_untaxed = taxable_amt0
             rec.amount_nontaxable_signed = sum(
                 line.amount_total

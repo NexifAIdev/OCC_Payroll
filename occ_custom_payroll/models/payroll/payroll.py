@@ -1033,3 +1033,213 @@ class exhr_payroll(models.Model):
         )
 
         return percent * hourly_rate
+
+    def generate_thirteenth(self):
+        if not self.payslip_line_ids:
+            payslip_obj = self.env["exhr.payslip"]
+            nontax_type_id = self.env["nontaxable.type"].search(
+                [("name", "=", "Earned 13th Month"), ("active", "=", True)]
+            )
+            company_id = self.company_id
+
+            employee_query = """
+				SELECT DISTINCT
+					he.name,
+					rc.name,
+					he.id
+
+				FROM exhr_payslip ep
+				LEFT JOIN hr_employee he ON he.id = ep.employee_id
+				LEFT JOIN res_company rc ON rc.id = ep.company_id
+
+				WHERE ep.pay_period_from >= '%s'
+				and ep.pay_period_to <= '%s'
+				and ep.state = 'posted' AND rc.id = %s
+
+				ORDER BY he.name ASC
+			""" % (
+                self.pay_period_from,
+                self.pay_period_to,
+                self.company_id.id,
+            )
+
+            employee = ""
+            emp_id = 0
+
+            self._cr.execute(employee_query)
+            data = self._cr.fetchall()
+
+            for person in data:
+                if person[0] != employee:
+                    employee = person[0]
+                    emp_id = person[2]
+
+                    earnings_query = """
+					SELECT
+						he.name,
+						(CASE WHEN et.name='Base Salary' THEN tpe.amount_subtotal ELSE 0 END) as base_salary,
+						(CASE WHEN et.name='Leave Pay' THEN tpe.amount_subtotal ELSE 0 END) as leave_pay,
+						(CASE WHEN et.name='Holiday Pay' THEN tpe.amount_subtotal ELSE 0 END) as holi_pay,
+						(CASE WHEN et.name='Adjustment: Salary' THEN tpe.amount_subtotal ELSE 0 END) as adj_salary,
+						tp.cutoff_date
+
+					FROM exhr_payslip ep
+					LEFT JOIN hr_employee he ON he.id=ep.employee_id
+					LEFT JOIN exhr_payslip_earnings epe ON epe.payslip_id = ep.id
+					LEFT JOIN earnings_type et ON et.id = epe.name_id
+					LEFT JOIN res_company rc ON rc.id = ep.company_id
+
+					WHERE ep.pay_period_from >= '%s'
+					and ep.pay_period_to <= '%s'
+					and ep.state = 'posted'
+					and rc.id = %s
+					and he.id = %s
+
+					ORDER BY he.name, tp.cutoff_date
+					""" % (
+                        self.pay_period_from,
+                        self.pay_period_to,
+                        self.company_id.id,
+                        emp_id,
+                    )
+
+                    self._cr.execute(earnings_query)
+                    earnings = self._cr.fetchall()
+
+                    base_salary = 0
+                    leave_pay = 0
+                    holi_pay = 0
+                    adj_salary = 0
+                    tot_basic_pay = 0
+
+                    for earn in earnings:
+                        base_salary += earn[1]
+                        leave_pay += earn[2]
+                        holi_pay += earn[3]
+                        adj_salary += earn[4]
+
+                    journal_account = ""
+                    analytic_account_id = ""
+                    analytic_tag_ids = ""
+                    journal_account2 = ""
+                    analytic_account_id2 = ""
+                    analytic_tag_ids2 = ""
+
+                    jv_employee = self.env["hr.employee"].search(
+                        [("id", "=", emp_id)], limit=1
+                    )
+                    journal_account = (
+                        jv_employee.accounting_tag_id.default_13th_month_account_id
+                    )
+                    journal_payable = (
+                        jv_employee.accounting_tag_id.default_13th_payable_account_id.name
+                    )
+                    analytic_account_id = jv_employee.analytic_account_id.name
+                    analytic_tag_ids = jv_employee.analytic_account_id.analytic_tag_ids
+                    analytic_list = []
+                    for j in analytic_tag_ids:
+                        analytic_list.append(j.name)
+
+                    if not journal_account:
+                        jv_employee2 = self.env["hr.employee"].search(
+                            [("id", "=", emp_id), ("active", "=", False)], limit=1
+                        )
+                        journal_account2 = (
+                            jv_employee2.accounting_tag_id.default_13th_month_account_id
+                        )
+                        journal_payable2 = (
+                            jv_employee2.accounting_tag_id.default_13th_payable_account_id.name
+                        )
+                        analytic_account_id2 = jv_employee2.analytic_account_id.name
+                        analytic_tag_ids2 = (
+                            jv_employee2.analytic_account_id.analytic_tag_ids
+                        )
+                        analytic_list2 = []
+                        for k in analytic_tag_ids2:
+                            analytic_list2.append(k.name)
+
+                    # total basic pay
+                    tot_basic_pay = base_salary + leave_pay + holi_pay + adj_salary
+
+                    ded_query = """
+					SELECT
+						he.name,
+						(CASE WHEN dt.name='Tardiness' THEN epd.amount_total ELSE 0 END) as tardy_ded,
+						(CASE WHEN dt.name='Undertime' THEN epd.amount_total ELSE 0 END) as under_ded,
+						(CASE WHEN dt.name='Leave w/o pay' THEN epd.amount_total ELSE 0 END) as lwop_ded,
+						ep.cutoff_date
+
+					FROM exhr_payslip ep
+					LEFT JOIN hr_employee he ON he.id=ep.employee_id
+					LEFT JOIN exhr_payslip_deductions epd ON epd.payslip_id = ep.id
+					LEFT JOIN deduction_type dt ON dt.id = epd.name_id
+					LEFT JOIN res_company rc ON rc.id = ep.company_id
+
+					WHERE ep.pay_period_from >= '%s'
+					and ep.pay_period_to <= '%s'
+					and ep.state = 'posted'
+					and rc.id = %s
+					and he.id = %s
+
+					ORDER BY he.name, ep.cutoff_date
+					""" % (
+                        self.pay_period_from,
+                        self.pay_period_to,
+                        self.company_id.id,
+                        emp_id,
+                    )
+
+                    self._cr.execute(ded_query)
+                    deduction = self._cr.fetchall()
+
+                    tardy_ded = 0
+                    under_ded = 0
+                    lwop_ded = 0
+                    tot_deduction = 0
+                    net_basic_pay = 0
+                    pay_computation = 0
+
+                    for ded in deduction:
+                        tardy_ded += ded[1]
+                        under_ded += ded[2]
+                        lwop_ded += ded[3]
+
+                    # total deduction
+                    tot_deduction = tardy_ded + under_ded + lwop_ded
+
+                    # total 13th month
+                    net_basic_pay = tot_basic_pay - tot_deduction
+                    pay_computation = net_basic_pay / 12
+
+                    analytic_string = ",".join(map(str, analytic_list))
+
+                    if not analytic_account_id:
+                        analytic_string2 = ",".join(map(str, analytic_list2))
+
+                    vals = {
+                        "employee_id": emp_id,
+                        "id_number": jv_employee.employee_number,
+                        "payroll_id": self.id,
+                        "pay_period_from": self.pay_period_from,
+                        "pay_period_to": self.pay_period_to,
+                        "cutoff_date": self.cutoff_date,
+                        "company_id": company_id.id,
+                    }
+                    new_payslip_obj = payslip_obj.create(vals)
+
+                    nontax_obj = self.env["exhr.payslip.nontaxable"]
+                    new_nontax_obj = nontax_obj.create(
+                        {
+                            "pay_type": "earnings",
+                            "payslip_id": new_payslip_obj.id,
+                            "name_id": nontax_type_id.id,
+                            "ref": "Earned 13th month for %s - %s"
+                            % (self.pay_period_from, self.pay_period_to),
+                            "amount_total": pay_computation,
+                            "gl_account_id": journal_account.id or journal_account2.id,
+                        }
+                    )
+                    new_nontax_obj.onchange_amount_total()
+
+        else:
+            raise UserError("Payslips are already generated.")

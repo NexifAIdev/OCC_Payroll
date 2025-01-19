@@ -9,12 +9,12 @@
 			<field name="arch" type="xml">
 				<form string="Payroll">
 					<header>
-                        <button name="generate_payslips"
+                        <!-- <button name="generate_payslips"
                             string="Generate"
                             type="object"
                             class="btn-primary"
                             invisible="state not in ['draft']"
-                        />
+                        /> -->
 
                         <button name="set_to_validated"
                             string="Validate"
@@ -112,13 +112,25 @@
                                     readonly="state in ['validated','posted']"
                                     />
 								<field name="for_13th_mo"/>
+								<field name="_is_thirteenth_pay"/>
 							</group>		
 
 						</group>
 						<notebook>
 						<page string="Details">
 								<td padding="15px">
-									<button type="object"  name="generate_payslips" string="Generate" class="btn-primary" invisible="state not in ['draft']"/>
+									<button type="object"
+										name="generate_payslips"
+										string="Generate"
+										class="btn-primary"
+										invisible="state not in ['draft'] or (_is_thirteenth_pay = True or for_13th_mo = True)"
+										/>
+									<button name="generate_thirteenth"
+										type="object"
+										string="Generate 13th Month"
+										invisible="state != draft or _is_thirteenth_pay = False"
+										class="btn-primary"
+										/>
 								</td>
 								<td padding="15px">
 									<button type="object"  name="action_delete_all" string="Delete All" invisible="state not in ['draft']"/>
