@@ -128,7 +128,7 @@
 									<button name="generate_thirteenth"
 										type="object"
 										string="Generate 13th Month"
-										invisible="state != draft or _is_thirteenth_pay = False"
+										invisible="state not in ['draft'] or _is_thirteenth_pay == False"
 										class="btn-primary"
 										/>
 								</td>
