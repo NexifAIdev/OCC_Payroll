@@ -436,33 +436,26 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS sss,												   -- 6
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss,				   -- 6
                     0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 8
+                    ROUND(sss.er_ec_amount::NUMERIC,2) AS sss_ec_share,			   -- 8
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss_er_share,	   -- 9
                     0.00 AS sss_whisper, 										   -- 10
                     he.sss_no AS sss_no      									   -- 11
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
-
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN sss_contribution_line sss ON sss.payslip_id = ep.id
+                
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -480,34 +473,27 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    250.00 AS sss,												   -- 6
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss,				   -- 6
                     0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 9
+                    ROUND(sss.er_ec_amount::NUMERIC,2) AS sss_ec_share,			   -- 8
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss_er_share,	   -- 9
                     0.00 AS sss_whisper, 										   -- 10
                     he.sss_no AS sss_no,      									   -- 11
                     he.employee_id AS emp_id                                       -- 12
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
-
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN sss_contribution_line sss ON sss.payslip_id = ep.id
+                
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
                 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -525,33 +511,26 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS sss,												   -- 6
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss,				   -- 6
                     0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 8
+                    ROUND(sss.er_ec_amount::NUMERIC,2) AS sss_ec_share,			   -- 8
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss_er_share,	   -- 9
                     0.00 AS sss_whisper, 										   -- 10
                     he.sss_no AS sss_no      									   -- 11
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
-
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN sss_contribution_line sss ON sss.payslip_id = ep.id
+                
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -569,33 +548,26 @@ class SSSReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS sss,												   -- 6
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss,				   -- 6
                     0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 8
+                    ROUND(sss.er_ec_amount::NUMERIC,2) AS sss_ec_share,			   -- 8
+                    ROUND(sss.ee_regular_amount::NUMERIC,2) AS sss_er_share,	   -- 9
                     0.00 AS sss_whisper, 										   -- 10
                     he.sss_no AS sss_no      									   -- 11
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
-
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN sss_contribution_line sss ON sss.payslip_id = ep.id
+                
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)

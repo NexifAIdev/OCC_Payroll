@@ -427,33 +427,23 @@ class PagIbigReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS phic,												   -- 6
-                    200.00 AS phic_er_share,									   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    0.00 AS sss_er_share,										   -- 9
-                    0.00 AS sss_whisper, 										   -- 10
-                    he.philhealth_no AS philhealth_no      									   -- 11
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic,					   -- 6
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic_er_share,			   -- 7
+                    he.philhealth_no AS philhealth_no      						   -- 8
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN phic_contribution_line phic ON phic.payslip_id = ep.id
 
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -471,34 +461,24 @@ class PagIbigReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    250.00 AS phic,								    			   -- 6
-                    0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    200.00 AS phic_er_share,									   -- 9
-                    0.00 AS sss_whisper, 										   -- 10
-                    he.philhealth_no AS philhealth_no,      					   -- 11
-                    he.employee_id AS emp_id                                       -- 12
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic,					   -- 6
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic_er_share,			   -- 7
+                    he.philhealth_no AS philhealth_no      						   -- 8
+                    he.employee_id AS emp_id                                       -- 9
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN phic_contribution_line phic ON phic.payslip_id = ep.id
 
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
                 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -516,33 +496,23 @@ class PagIbigReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS phic,												   -- 6
-                    0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    200.00 AS phic_er_share,									   -- 9
-                    0.00 AS sss_whisper, 										   -- 10
-                    he.philhealth_no AS philhealth_no      									   -- 11
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic,					   -- 6
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic_er_share,			   -- 7
+                    he.philhealth_no AS philhealth_no      						   -- 8
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN phic_contribution_line phic ON phic.payslip_id = ep.id
 
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -560,33 +530,23 @@ class PagIbigReport(models.TransientModel):
                     TO_CHAR(he.joining_date, 'MM/DD/YYYY') AS hired_date,          -- 3
                     het.name AS emp_type,                                          -- 4
                     rc.name AS company,                                            -- 5
-                    0.00 AS phic,												   -- 6
-                    0.00 AS sss_wisp,											   -- 7
-                    30.00 AS sss_ec_share,										   -- 8
-                    200.00 AS phic_er_share,									   -- 9
-                    0.00 AS sss_whisper, 										   -- 10
-                    he.philhealth_no AS philhealth_no      									   -- 11
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic,					   -- 6
+                    ROUND(phic.er_amount::NUMERIC,2) AS phic_er_share,			   -- 7
+                    he.philhealth_no AS philhealth_no      						   -- 8
 
-                FROM hr_payslip hp 
-                LEFT JOIN hr_employee he ON he.id = hp.employee_id
+                FROM exhr_payslip ep
+                LEFT JOIN hr_employee he ON he.id = ep.employee_id
                 LEFT JOIN hr_department hd ON hd.id = he.department_id
                 LEFT JOIN res_company rc ON rc.id = he.company_id
                 LEFT JOIN hr_employee_types het ON het.id = he.employee_type_id
-                LEFT JOIN hr_contract hc ON hc.employee_id = he.id 
-                    AND hc.department_id = hd.id
-                LEFT JOIN (
-                    SELECT  
-                        (hc.wage / 2)::NUMERIC AS wages,
-                        hp.id AS payslip_id
-                    FROM hr_payslip hp
-                    LEFT JOIN hr_contract hc ON hc.employee_id = hp.employee_id
-                    WHERE hc.state = 'open'
-                ) hp_wages_cte ON hp_wages_cte.payslip_id = hp.id
+                LEFT JOIN hr_contract hc ON hc.employee_id = he.id AND hc.department_id = hd.id
+                LEFT JOIN phic_contribution_line phic ON phic.payslip_id = ep.id
 
                 WHERE hc.state = 'open'
                 AND rc.id = {self.multi_company_id.id}
                 AND he.employee_type_id = {emp_types.id}
-                AND hp.date_from::DATE BETWEEN '{self.date_from}' AND '{self.date_to}'
+                AND ep.pay_period_from::DATE >= '{self.date_from}'
+                AND ep.pay_period_to::DATE <= '{self.date_to}'
 
                 """
                 params = (self.multi_company_id.id, emp_types.id, self.date_from, self.date_to)
@@ -610,7 +570,7 @@ class PagIbigReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                     col += 1
-                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # HDMF No
+                    is_details.write(row, col, detail_body[8].upper(), bodydetailnormalleft)  # HDMF No
                     col += 1
                     is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                     col += 1
@@ -654,19 +614,19 @@ class PagIbigReport(models.TransientModel):
                         # Write the details to the columns
                         is_details.write(row, col, detail_body[0], bodydetailbold)  # Employee Count
                         col += 1
-                        is_details.write(row, col, detail_body[12].upper(), bodydetailnormalleft)  # Employee ID
+                        is_details.write(row, col, detail_body[9].upper(), bodydetailnormalleft)  # Employee ID
                         col += 1
                         is_details.write(row, col, detail_body[1].upper(), bodydetailnormalleft)  # Employee Name
                         col += 1
-                        is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # HDMF No
+                        is_details.write(row, col, detail_body[8].upper(), bodydetailnormalleft)  # HDMF No
                         col += 1
                         is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                         col += 1
                         is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # HDFM
-                        total_philhealth += detail_body[6]  # Add to department-specific subtotal
+                        total_philhealth += detail_body[6]
                         col += 1
-                        is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # HDMF ER
-                        total_philhealth_er += detail_body[9]  # Add to department-specific subtotal
+                        is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # HDMF ER
+                        total_philhealth_er += detail_body[7] 
                         col += 1
 
                         # Increment row for the next employee
@@ -681,7 +641,7 @@ class PagIbigReport(models.TransientModel):
                 # After the loop, write "TOTAL" in the cell below the last hire date row
                 is_details.write(row, 4, "TOTAL", bodydetailbold)  # Label in column E
                 total_philhealth_all = sum(detail[6] for detail in detail_body_row)  # Sum of all SSS
-                total_philhealth_er_all = sum(detail[9] for detail in detail_body_row)  # Sum of all SSS WISP
+                total_philhealth_er_all = sum(detail[7] for detail in detail_body_row)  # Sum of all SSS WISP
                 is_details.write(row, 5, round(total_philhealth_all, 2), bodydetailboldnetcurrency)  # Write total SSS
                 is_details.write(row, 6, round(total_philhealth_er_all, 2), bodydetailboldnetcurrency)  # Write total SSS WISP
 
@@ -698,19 +658,13 @@ class PagIbigReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                     col += 1
-                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # HDMF No
+                    is_details.write(row, col, detail_body[8].upper(), bodydetailnormalleft)  # HDMF No
                     col += 1
                     is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                     col += 1
-                    is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # SSS
+                    is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # HDMF
                     col += 1
-                    is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
-                    col += 1
-                    is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
-                    col += 1
-                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # HDMF ER Share
-                    col += 1
-                    is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
+                    is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # HDMF ER
                     col += 1
                     
                     # Increment row for the next employee
@@ -737,19 +691,13 @@ class PagIbigReport(models.TransientModel):
                     col += 1
                     is_details.write(row, col, detail_body[2].upper(), bodydetailnormalleft)  # Department
                     col += 1
-                    is_details.write(row, col, detail_body[11].upper(), bodydetailnormalleft)  # SSS No
+                    is_details.write(row, col, detail_body[8].upper(), bodydetailnormalleft)  # HDMF No
                     col += 1
                     is_details.write(row, col, detail_body[3], bodydetailbold)  # Hire Date
                     col += 1
                     is_details.write(row, col, detail_body[6], bodydetailnormalnetcurrency)  # HDMF
                     col += 1
-                    is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # SSS WISP
-                    col += 1
-                    is_details.write(row, col, detail_body[8], bodydetailnormalnetcurrency)  # SSS EC Share
-                    col += 1
-                    is_details.write(row, col, detail_body[9], bodydetailnormalnetcurrency)  # HDMF ER Share
-                    col += 1
-                    is_details.write(row, col, detail_body[10], bodydetailnormalnetcurrency)  # SSS Whisper
+                    is_details.write(row, col, detail_body[7], bodydetailnormalnetcurrency)  # HDMF ER Share
                     col += 1
                     
                     # Increment row for the next employee
