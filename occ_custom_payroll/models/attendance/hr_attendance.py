@@ -17,6 +17,9 @@ from odoo.exceptions import UserError, ValidationError
 class HRAttendance(models.Model):
     _inherit = "hr.attendance"
 
+    def get_attendance_sched(self, date_now, resource_calendar_id, work_location):
+        return self.env["occ.payroll.cfg"].get_attendance_sched(date_now, resource_calendar_id, work_location)
+
     check_in_date = fields.Date("Date", index=True, compute="_get_check_in", store=True)
     attendance_sheet_id = fields.Many2one(
         comodel_name="hr.attendance.sheet",

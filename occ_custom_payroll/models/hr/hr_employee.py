@@ -322,6 +322,12 @@ class HrEmployeePrivate(models.Model):
     color = fields.Integer(groups="base.group_user")
     accounting_tag_id = fields.Many2one("hr.accounting.config")
 
+    @api.onchange("company_id")
+    def onchange_company_id(self):
+        if self.company_id:
+            self.analytic_account_id = False
+            self.accounting_tag_id = False
+
     def write(self, vals):
 
         res = super(HrEmployeePrivate, self).write(vals)
@@ -333,3 +339,5 @@ class HrEmployeePrivate(models.Model):
             raise UserError(
                 _("The company in the running contract record does not match.")
             )
+
+        return res

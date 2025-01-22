@@ -65,6 +65,11 @@ class exhr_payslip(models.Model):
         "res.company", default=lambda self: self.env.company, required=True
     )
 
+    is_payslip_imported = fields.Boolean(
+        string="Is Payslip Imported?",
+        default=False,
+    )
+
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
@@ -111,6 +116,13 @@ class exhr_payslip(models.Model):
         string="Tax Withheld Amount",
         store=True,
         compute="_compute_amount",
+        readonly=True,
+        track_visibility="always",
+        currency_field="company_currency_id",
+    )
+    amount_tax_import_signed = fields.Monetary(
+        string="Tax Withheld Amount",
+        store=True,
         readonly=True,
         track_visibility="always",
         currency_field="company_currency_id",

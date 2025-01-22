@@ -13,34 +13,34 @@
                             string="Compute"
                             type="object"
                             class="btn-primary"
-                            invisible="state not in ['draft']"
+                            invisible="state not in ['draft'] or is_payslip_imported == True"
                         />
 
                         <button name="button_compute_total"
                             string="Compute Total"
                             type="object"
-                            invisible="state not in ['draft']"
+                            invisible="state not in ['draft'] or is_payslip_imported == True"
                         />
 
                         <button name="set_to_posted"
                             string="Post"
                             type="object"
                             class="btn-primary"
-                            invisible="state not in ['draft']"
+                            invisible="state not in ['draft'] or is_payslip_imported == True"
                             groups="occ_custom_payroll.group_payroll_manager"
                         />
 
                         <button name="set_to_cancel"
                             string="Cancel"
                             type="object"
-                            invisible="state not in ['draft']"
+                            invisible="state not in ['draft'] or is_payslip_imported == True"
                             groups="occ_custom_payroll.group_payroll_manager,occ_custom_payroll.group_payroll_officer,occ_custom_payroll.group_payroll_officer"
                         />
 
                         <button name="set_to_cancel_posted"
                             string="Cancel"
                             type="object"
-                            invisible="state not in ['posted']"
+                            invisible="state not in ['posted'] or is_payslip_imported == True"
                             groups="occ_custom_payroll.group_payroll_admin"
                         />
 
@@ -48,7 +48,7 @@
                             string="Set to Draft"
                             type="object"
                             class="btn-primary"
-                            invisible="state not in ['cancel']"
+                            invisible="state not in ['cancel'] or is_payslip_imported == True"
                         />
 						<field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
 					</header>
@@ -112,6 +112,11 @@
                                 <field name="payroll_id"
                                     readonly="state not in ['draft']"
                                     options="{'no_open': True, 'no_create': True}"
+                                    invisible="is_payslip_imported == True"
+                                />
+
+                                <field name="is_payslip_imported"
+                                    readonly="state not in ['draft']"
                                 />
 
                                 <field name="total_working_days"
@@ -151,6 +156,7 @@
 								<h2>OTHER EARNINGS/CHARGES</h2>
 								<field name="nontaxable_line_ids"
                                     widget="one2many_list"
+                                    readonly="state not in ['draft']"
                                     nolabel="1">
                                     <tree string="Non Taxable"
                                         editable="bottom"
@@ -364,7 +370,8 @@
 							<field name="amount_untaxed" string="Taxable Income"/>
 							<field name="amount_nontaxable_signed" string="Non-taxable Income" invisible="1"/>
 							<field name="new_amount_nontaxable" string="Non-taxable Income"/>
-							<field name="amount_tax_signed" string="Withholding Tax"/>
+							<field name="amount_tax_signed" string="Withholding Tax" invisible="is_payslip_imported == True" />
+                            <field name="amount_tax_import_signed" string="Withholding Tax" invisible="is_payslip_imported == False" />
 							<field name="amount_total" string="Net Pay"/>
 						</group>						
 

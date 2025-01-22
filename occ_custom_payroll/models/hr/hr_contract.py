@@ -346,8 +346,8 @@ class HrContract(models.Model):
     @api.onchange("company_id")
     def onchange_company_id(self):
         if self.company_id:
-            self.analytic_account_id = False
-            self.accounting_tag_id = False
+            # self.analytic_account_id = False
+            # self.accounting_tag_id = False
             self.payroll_type_id = False
             self.payment_type_id = False
             self.employee_type = False
