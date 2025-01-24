@@ -30,6 +30,11 @@ class earnings_type(models.Model):
                 {"sequence": 4, "name": "Holiday Pay", "active": True},
                 {"sequence": 5, "name": "Leave Pay", "active": True},
                 {"sequence": 6, "name": "Adjustment: Salary", "active": True},
+                {"sequence": 7, "name": "Other Taxable Income", "active": True},
+                {"sequence": 8, "name": "Other Non-Taxable Income", "active": True},
+                {"sequence": 9, "name": "De Minimis", "active": True},
+                {"sequence": 10, "name": "Retention Bonus", "active": True},
+                {"sequence": 11, "name": "Daily Allowance", "active": True},
             ]
 
             for x in vals:

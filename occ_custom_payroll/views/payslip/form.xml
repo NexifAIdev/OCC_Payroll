@@ -371,7 +371,7 @@
 							<field name="amount_nontaxable_signed" string="Non-taxable Income" invisible="1"/>
 							<field name="new_amount_nontaxable" string="Non-taxable Income"/>
 							<field name="amount_tax_signed" string="Withholding Tax" invisible="is_payslip_imported == True" />
-                            <field name="amount_tax_import_signed" string="Withholding Tax" invisible="is_payslip_imported == False" />
+                            <field name="amount_tax_import_signed" readonly="1" string="Withholding Tax" invisible="is_payslip_imported == False" />
 							<field name="amount_total" string="Net Pay"/>
 						</group>						
 

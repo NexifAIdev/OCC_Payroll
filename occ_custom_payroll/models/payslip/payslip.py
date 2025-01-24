@@ -122,10 +122,7 @@ class exhr_payslip(models.Model):
     )
     amount_tax_import_signed = fields.Monetary(
         string="Tax Withheld Amount",
-        store=True,
-        readonly=True,
-        track_visibility="always",
-        currency_field="company_currency_id",
+        currency_field="company_currency_id"
     )
     amount_total = fields.Monetary(
         string="Net Pay",
