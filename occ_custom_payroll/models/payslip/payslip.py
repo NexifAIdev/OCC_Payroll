@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Native Python modules
 from datetime import datetime, date, timedelta
+import math
 
 # Local python modules
 
@@ -122,6 +123,8 @@ class exhr_payslip(models.Model):
     )
     amount_tax_import_signed = fields.Monetary(
         string="Tax Withheld Amount",
+        store=True,
+        compute="_compute_amount",
         currency_field="company_currency_id"
     )
     amount_total = fields.Monetary(
@@ -384,15 +387,26 @@ class exhr_payslip(models.Model):
             ):
                 rec.amount_tax_signed = rec.compute_tax(taxable_amt) * -1
 
+                if rec.is_payslip_imported and rec.amount_tax_import_signed > 0:
+                    rec.amount_tax_import_signed = rec.amount_tax_import_signed * -1
+
+
             rec.amount_untaxed = taxable_amt0
             rec.amount_nontaxable_signed = sum(
                 line.amount_total
                 for line in rec.nontaxable_line_ids
                 if not line.taxable
             )
+
+
+
             rec.amount_total = (
+                # Reassure amount_tax_import_signed to be negative
+                taxable_amt0 + (-1 * math.abs(rec.amount_tax_import_signed)) + rec.amount_nontaxable_signed
+            ) if rec.is_payslip_imported else (
                 taxable_amt0 + rec.amount_tax_signed + rec.amount_nontaxable_signed
-            )  # Net Pay
+            )
+            # Net Pay
             rec.new_amount_nontaxable = sum(
                 line.amount_total
                 for line in rec.nontaxable_line_ids
