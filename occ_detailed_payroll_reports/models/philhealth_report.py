@@ -36,7 +36,7 @@ class PagIbigReport(models.TransientModel):
     )
     
     month = fields.Selection(
-        selection=lambda self: [(i, f"{i:02}") for i in range(1,13,1)],
+        selection=[(str(i), datetime(1900, i, 1).strftime('%B')) for i in range(1, 13)],
         string="Month",
     )
     
@@ -463,7 +463,7 @@ class PagIbigReport(models.TransientModel):
                     rc.name AS company,                                            -- 5
                     ROUND(phic.er_amount::NUMERIC,2) AS phic,					   -- 6
                     ROUND(phic.er_amount::NUMERIC,2) AS phic_er_share,			   -- 7
-                    he.philhealth_no AS philhealth_no      						   -- 8
+                    he.philhealth_no AS philhealth_no,      					   -- 8 
                     he.employee_id AS emp_id                                       -- 9
 
                 FROM exhr_payslip ep

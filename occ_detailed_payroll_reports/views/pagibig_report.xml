@@ -9,7 +9,7 @@
                     <field name="multi_company_id" options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"/>
                     <field name="paysched_compute" invisible="True"/>
                     <field name="dates_compute" invisible="True"/>
-                    <field name="year" required="True" readonly="False" />
+                    <field name="year" required="True" readonly="False" widget="text"/>
                     <field name="month" required="True" readonly="False" />
                     <field name="paycut_period_domain" 
                         options="{'no_create_edit': True,'no_quick_create': True,'no_create': True}"

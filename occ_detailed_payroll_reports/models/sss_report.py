@@ -36,7 +36,7 @@ class SSSReport(models.TransientModel):
     )
     
     month = fields.Selection(
-        selection=lambda self: [(i, f"{i:02}") for i in range(1,13,1)],
+        selection=[(str(i), datetime(1900, i, 1).strftime('%B')) for i in range(1, 13)],
         string="Month",
     )
     

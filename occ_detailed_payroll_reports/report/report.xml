@@ -2,12 +2,12 @@
 
 <odoo>
     <data>
-        <record id="pentaho_occ_payroll_report" model="ir.actions.report">
-            <field name="name">OCC Payroll Report</field>
-            <field name="model">exhr.payroll</field>
+        <record id="pentaho_occ_payslip_report" model="ir.actions.report">
+            <field name="name">OCC Payslip Report</field>
+            <field name="model">exhr.payslip</field>
             <field name="report_name">occ_payroll_report</field>
             <field name="pentaho_report_model_id" ref="model_hr_payslip"/> 
-            <field name="pentaho_filename">occ_detailed_payroll_reports/report/occ_payroll_report.prpt</field>
+            <field name="pentaho_filename">occ_detailed_payroll_reports/report/occ_payslip_report.prpt</field>
             <field name="pentaho_report_output_type">pdf</field>
             <field name="report_type">pentaho</field>
             <field name="pentaho_load_file" eval="True"/>
