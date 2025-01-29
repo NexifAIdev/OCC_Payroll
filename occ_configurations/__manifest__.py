@@ -31,6 +31,7 @@ OCC Configurations
             "icecream==2.1.3",
             "httpagentparser==1.9.5",
             "user-agents==2.2.0",
+            "pylightxl==1.61",
         ],
     },
     "depends": [

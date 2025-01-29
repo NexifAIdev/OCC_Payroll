@@ -161,7 +161,7 @@ class OccPayrollCfg(models.AbstractModel):
         hour_to = 0
         break_hours = 1
 
-        if date_now and resource_calendar_id:
+        if date_now and isinstance(date_now, date) and resource_calendar_id:
             dow_int = date_now.weekday()
             if dow_int == -1:
                 dow_int = 6

@@ -1,0 +1,93 @@
+# Dictionary, JSON, Dataframe
+python-benedict
+dict-zip
+# fuzz-dict
+dict-toolbox
+orjson
+dict2dict
+sheet2dict
+dict2dataframe
+# Data Classes
+# pydantic
+# orjson-pydantic2
+# pydantic-discriminator
+# pydantic-xml
+# attrs
+# attrs_mate
+# cattrs
+# Cerberus
+# Data Manipulation
+polars[pandas,numpy,pyarrow,pydantic,excel,adbc,connectorx,sqlalchemy,database,deltalake,iceberg,async,cloudpickle,graph,plot,style,timezone]
+polars-lts-cpu
+getdaft[ray]
+modin[dask]
+# Data Visualization
+matplotlib
+bokeh
+seaborn[stats]
+plotly
+altair
+# File Inputs/Outputs
+weasyprint
+pylightxl
+xlsx-dict-reader
+# Web Scraping
+httpx
+beautifulsoup4
+# Mathematics and Statistics
+mpmath
+sympy
+scipy
+# statsmodels
+# formula
+# Logging
+icecream
+tqdm
+# Automation
+fabric
+# Data Generator
+# faker
+# mimesis
+# Date Handlers
+pendulum
+arrow
+moment
+maya
+pytz
+# Image Manipulation
+# scikit-image
+# imutils
+# opencv-python
+# Functionality
+returns
+xmldataset
+cytoolz
+funcy
+result
+# Matching
+puremagic
+pampy
+regex
+RapidFuzz
+# levenshtein
+# Cryptography
+pycryptodomex
+paramiko
+# Utilities
+psutil
+# Quantities
+# Pint
+# iso-4217
+# ucumvert
+# quantulum3[classifier]
+# pinttrs
+# iam-units
+# ansys-units
+# quantities
+# quantiphy
+# Excel
+xlcalculator
+formulas[all]
+pycel
+# SQL
+sqlparse
