@@ -34,6 +34,7 @@ def import_csv_data(cr, directory: str, manual_exclusions: List[str] = None):
     module_path = os.path.abspath(module_path)
 
     for filename in os.listdir(module_path):
+        ic.disable()
         ic(filename)
         cond = all(
             [

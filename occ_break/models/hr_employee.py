@@ -36,6 +36,16 @@ class HrEmployee(models.Model):
 
 	# TOTAL DURATION OF BREAK HOURS
 	total_break_hours = fields.Float(default=1.0)
+	is_field_visible_on_manager = fields.Boolean(compute="_is_field_visible_on_manager")
+
+	@api.depends('parent_id','approver2_id')
+	def _is_field_visible_on_manager(self):
+		for rec in self:
+			if self.env.user.id == rec.parent_id.user_id.id or self.env.user.id == rec.approver2_id.user_id.id:
+				rec.is_field_visible_on_manager = True
+			else:
+				rec.is_field_visible_on_manager = False
+
 
 	@api.depends('attendance_ids.start_lunch', 'attendance_ids.end_lunch')
 	def _check_employee_break(self):
@@ -52,6 +62,7 @@ class HrEmployee(models.Model):
 				rec.is_break_done = False
 
 
+	# IF EMPLOYEE CHECK OUT WITHOUT ENDING LUNCH
 	def _attendance_action_change(self, geo_information=None):
 
 		res = super(HrEmployee, self)._attendance_action_change(geo_information=geo_information)
@@ -63,12 +74,19 @@ class HrEmployee(models.Model):
 		print(attendance.start_lunch)
 		print(attendance.end_lunch)
 
-		if not attendance.end_lunch and attendance.start_lunch:
-			attendance.write({
-				'end_lunch': break_date,
-				'is_break': False,
+		if attendance.check_in and attendance.check_out and attendance.is_break:
+			
+			print("break time exist")
+			existing_break = self.env['break.time'].search([('attendance_id', '=', attendance.id), ('break_end', '=', False)], limit=1)
+			print(existing_break)
+			existing_break.write({
+				'break_end': break_date,
 			})
 
+			# UPDATE ATTENDANCE BREAK STATUS
+			attendance.is_break = False
+
+			# UPDATE ON EMPLOYEE RECORD
 			self.is_break = False
 			self.start_lunch = 0
 			

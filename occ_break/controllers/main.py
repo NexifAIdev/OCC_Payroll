@@ -37,8 +37,8 @@ class HrAttendance(http.Controller):
 
             # ADD THIS TO RESTART BREAK START DISPLAY
             employee.start_lunch = 0
+     
 
-        
 
 
         # # UPDATE ATTENDANCE TIME IN 

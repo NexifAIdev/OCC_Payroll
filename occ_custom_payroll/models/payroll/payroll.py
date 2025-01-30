@@ -319,6 +319,7 @@ class exhr_payroll(models.Model):
             line.set_to_draft()
 
     def generate_payslips_old(self):
+        ic.disable()
         ic(self.payslip_line_ids)
         if not self.payslip_line_ids:
             payslip_obj = self.env["exhr.payslip"]

@@ -19,7 +19,7 @@
                                     <div t-if="this.isFirstAttendance" class="att_container d-flex flex-column p-2 bg-100 rounded 1">
                                         <div t-if="this.state.checkedIn" class="att_container d-flex flex-column bg-100 rounded">
                                             <button t-on-click="() => this.onClickTakeABreak()" class="flex-basis-100" t-attf-class="btn btn-warning">
-                                                <span>Start Lunch</span>
+                                                <span>Go on Break</span>
                                                 <i t-attf-class="fa-solid fa-coffee-pot"/>
                                             </button>
                                         </div>
@@ -35,7 +35,7 @@
                                 <div t-if="this.isFirstAttendance" class="att_container d-flex flex-column p-2 bg-100 rounded 2">
                                     <div t-if="this.state.checkedIn" class="att_container d-flex flex-column bg-100 rounded">
                                         <button t-on-click="() => this.onClickEndBreak()" class="flex-basis-100" t-attf-class="btn btn-warning">
-                                            <span>End Lunch</span>
+                                            <span>End Break</span>
                                             <i t-attf-class="fa-solid fa-coffee-pot"/>
                                         </button>
                                     </div>
@@ -53,7 +53,7 @@
                                             <div class="att_container d-flex flex-column p-2 bg-100 rounded 3">
                                                 <div class="att_container d-flex flex-column bg-100 rounded">
                                                     <button t-on-click="() => this.onClickTakeABreak()" class="flex-basis-100" t-attf-class="btn btn-warning">
-                                                        <span>Start Lunch</span>
+                                                        <span>Go on Break</span>
                                                         <i t-attf-class="fa-solid fa-coffee-pot"/>
                                                     </button>
                                                 </div>
@@ -71,7 +71,7 @@
                                 <div t-if="!this.isFirstAttendance" class="att_container d-flex flex-column p-2 bg-100 rounded 4">
                                     <div t-if="this.state.checkedIn" class="att_container d-flex flex-column bg-100 rounded">
                                         <button t-on-click="() => this.onClickEndBreak()" class="flex-basis-100" t-attf-class="btn btn-warning">
-                                            <span>End Lunch</span>
+                                            <span>End Break</span>
                                             <i t-attf-class="fa-solid fa-coffee-pot"/>
                                         </button>
                                     </div>
@@ -100,15 +100,15 @@
                                     <h2 t-esc="this.hoursToday" class="mb-0 fs-2"/>
                                 </div>
                                 <button t-on-click="() => this.onClickSignInOut()" class="flex-basis-100 mt-3" t-attf-class="btn btn-{{ this.state.checkedIn ? 'danger' : 'success' }}">
-                                    <span t-if="!this.state.checkedIn">Check in</span>
-                                    <span t-else="">Check out</span>
+                                    <span t-if="!this.state.checkedIn">Check In</span>
+                                    <span t-else="">Check Out</span>
                                     <i t-attf-class="fa fa-sign-{{ this.state.checkedIn ? 'out' : 'in' }} ms-1"/>
                                 </button>
                             </div>
                         </div>
                         <button t-if="this.isFirstAttendance" t-on-click="() => this.onClickSignInOut()" t-attf-class="btn btn-{{ this.state.checkedIn ? 'danger' : 'success' }}">
                             <span t-if="!this.state.checkedIn">Check in</span>
-                            <span t-else="">CheckHey out</span>
+                            <span t-else="">Check out</span>
                             <i t-attf-class="fa fa-sign-{{ this.state.checkedIn ? 'out' : 'in' }} ms-1"/>
                         </button>
                     </div>

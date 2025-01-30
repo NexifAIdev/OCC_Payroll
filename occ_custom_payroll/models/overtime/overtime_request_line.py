@@ -23,7 +23,8 @@ class OvertimeRequestLine(models.Model):
             odoo_dow_list = self.odoo_dow_list
         except AttributeError as ae:
             odoo_dow_list = self.env["occ.payroll.cfg"].odoo_dow_list
-
+        
+        ic.disable()        
         ic(odoo_dow_list)
         if not len(odoo_dow_list) > 0:
             raise ValidationError(f"occ.payroll.cfg was not loaded properly")

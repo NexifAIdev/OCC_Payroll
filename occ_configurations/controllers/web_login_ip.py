@@ -12,6 +12,8 @@ from user_agents import parse
 from datetime import datetime, timezone as tzone
 from zoneinfo import ZoneInfo
 
+ic.disable()
+
 # Odoo modules
 import odoo
 from odoo import http

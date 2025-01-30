@@ -259,6 +259,7 @@ class exhr_payslip(models.Model):
                 ("employee_id", "=", self.employee_id.id),
             ]
         )
+        ic.disable()
         ic(days_present)
 
         # days_present_daily_wage - used for daily wage earner - computes all days present , NOT including holidays
