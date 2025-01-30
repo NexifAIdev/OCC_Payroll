@@ -42,13 +42,22 @@
             <field name="arch" type="xml">
                 <xpath expr="//label[@for='wage']" position="before">
                     <group name="occ_wages">
-                        <field name="daily_wage"/>
-                        <field name="minimum_wage"/>    
+                        <field name="daily_wage" invisible="True"/>
+                        <field name="minimum_wage" invisible="True"/>
                     </group>
                 </xpath>
+
+                <xpath expr="//notebook//page[@name='information']//group[@name='salary_info']//group[@name='salary']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
                 <xpath expr="//sheet/notebook/page[@name='information']/group[@name='salary_info']/group[@name='yearly_benefits']"
                     position="after">
                     <group name="salary_details" string="Salary Details">
+                        <field name="monthly_rate"
+                            required="True"
+                            groups="hr.group_hr_manager"
+                        />
                         <field name="daily_rate"
                             required="True"
                             groups="hr.group_hr_manager"
