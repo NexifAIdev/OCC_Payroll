@@ -1691,12 +1691,12 @@ class exhr_payslip(models.Model):
 
             if (
                 self.env["deduction.type"].search_count(
-                    [("name", "=", "Undertime"), ("active", "=", True)]
+                    [("name", "=", "Absences / Late / Undertime"), ("active", "=", True)]
                 )
                 > 0
             ):
                 deduction_id = self.env["deduction.type"].search(
-                    [("name", "=", "Undertime"), ("active", "=", True)], limit=1
+                    [("name", "=", "Absences / Late / Undertime"), ("active", "=", True)], limit=1
                 )
 
                 count = self.env["exhr.payslip.deductions"].search_count(
