@@ -435,6 +435,7 @@ class exhr_payroll(models.Model):
                 )
                 # Update the payroll_id and reset to draft
                 existing_payslip.write({"payroll_id": self.id, "state": "draft"})
+                existing_payslip.compute_payslip()
             else:
                 print(
                     f"Creating new payslip for Employee ID: {employee_id}, ID Number: {id_number}"
