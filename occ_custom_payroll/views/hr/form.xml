@@ -87,7 +87,7 @@
                     <group string="Monthly Allowance">
                         <field name="allowance_ids"
                             widget="one2many_list"
-                            nolabel="1">
+                            nolabel="0">
                             <tree string="Allowance"
                                 editable="bottom"
                                 create="true"
