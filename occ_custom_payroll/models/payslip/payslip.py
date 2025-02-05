@@ -1478,6 +1478,7 @@ class exhr_payslip(models.Model):
                     # 	days_leave_wo_pay += 1
                     if rec.rate_type in ["1"] and rec.actual_in and rec.actual_out:
                         days_leave_wo_pay += 1
+                        rest_days_count += 1
                     # print('lwop : ', days_leave_wo_pay)
 
                 if att_list[0].work_schedule_type == "fixed":
