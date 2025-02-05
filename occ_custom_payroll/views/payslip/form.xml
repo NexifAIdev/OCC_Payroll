@@ -16,10 +16,15 @@
                             invisible="state not in ['draft'] or is_payslip_imported == True"
                         />
 
-                        <button name="button_compute_total"
+                        <!-- <button name="button_compute_total"
                             string="Compute Total"
                             type="object"
                             invisible="state not in ['draft'] or is_payslip_imported == True"
+                        /> -->
+                        <button name="button_compute_total"
+                            string="Compute Total"
+                            type="object"
+                            invisible="1"
                         />
 
                         <button name="set_to_posted"
@@ -209,7 +214,7 @@
 
 							</page>
 							<page string="Attendance Sheet">
-								<button name="update_attendance_sheet" string="System Compute" type="object" invisible="0" groups="base.group_no_one"/>
+								<button name="update_attendance_sheet" string="System Compute" type="object" invisible="1" groups="base.group_no_one"/>
 								<button name="apply_changes" string="Apply Changes" type="object" invisible="1"/>
 
 
