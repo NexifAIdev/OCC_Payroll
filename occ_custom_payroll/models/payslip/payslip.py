@@ -1432,6 +1432,7 @@ class exhr_payslip(models.Model):
         """
         if vals:
             days_leave_wo_pay = self.total_working_days - self.no_days_present
+            rest_days_count = 0
             att_list = self.env["hr.attendance.sheet"].search(
                 [
                     ("employee_id", "=", self.employee_id.id),
@@ -1522,9 +1523,11 @@ class exhr_payslip(models.Model):
             # print('reg_count : ', reg_count)
 
             amount = days_leave_wo_pay * vals.daily_rate
-            no_day_hrs_disp = (
-                str(days_leave_wo_pay) + " Days" if days_leave_wo_pay else ""
-            )
+            # no_day_hrs_disp = (
+            #     str(days_leave_wo_pay) + " Days" if days_leave_wo_pay else ""
+            # )
+
+            no_day_hrs_disp = f"{days_leave_wo_pay - rest_days_count} Days" if days_leave_wo_pay else ""
 
             # with contract
             # will update the payslip base on the found contract
@@ -1692,12 +1695,23 @@ class exhr_payslip(models.Model):
 
             if (
                 self.env["deduction.type"].search_count(
-                    [("name", "=", "Absences / Late / Undertime"), ("active", "=", True)]
+                    [
+                        "|",
+                        ("name", "=", "Absences / Late / Undertime"),
+                        ("name", "=", "Undertime"),
+                        ("active", "=", True),
+                    ]
                 )
                 > 0
             ):
                 deduction_id = self.env["deduction.type"].search(
-                    [("name", "=", "Absences / Late / Undertime"), ("active", "=", True)], limit=1
+                    domain = [
+                        "|",
+                        ("name", "=", "Absences / Late / Undertime"),
+                        ("name", "=", "Undertime"),
+                        ("active", "=", True),
+                    ],
+                    limit=1
                 )
 
                 count = self.env["exhr.payslip.deductions"].search_count(
