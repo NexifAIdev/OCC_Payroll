@@ -21,6 +21,19 @@ class HRAttendance(models.Model):
         return self.env["occ.payroll.cfg"].get_attendance_sched(date_now, resource_calendar_id, work_location)
 
     check_in_date = fields.Date("Date", index=True, compute="_get_check_in", store=True)
+
+    check_in_ph = fields.Datetime(
+        string="Check In Date (PH)",
+        index=True,
+        store=True,
+    )
+
+    check_out_ph = fields.Datetime(
+        string="Check Out Date (PH)",
+        index=True,
+        store=True,
+    )
+
     attendance_sheet_id = fields.Many2one(
         comodel_name="hr.attendance.sheet",
         string="Attendance Sheet",
@@ -220,19 +233,32 @@ class HRAttendance(models.Model):
         check_out_manila = False
         next_day_checkout = False
         
+        vals_attendance_sheet:dict = {
+            "actual_in": 0,
+            "actual_out": 0,
+        }
+
         if vals.get("check_in", False):
             check_in = fields.Datetime.from_string(vals["check_in"]).replace(
                 tzinfo=timezone("UTC")
             )
             check_in_manila = check_in.astimezone(manila_tz).replace(tzinfo=None)
-            vals["check_in"] = fields.Datetime.to_string(check_in_manila)
+            check_in_ph = fields.Datetime.to_string(check_in_manila)
+            actual_in_ph = check_in_manila.hour + check_in_manila.minute / 60.0
+            vals_attendance_sheet["check_in"] = check_in_ph
+            vals_attendance_sheet["actual_in"] = actual_in_ph
+            vals["check_in_ph"] = check_in_ph
 
         if vals.get("check_out", False):
             check_out = fields.Datetime.from_string(vals["check_out"]).replace(
                 tzinfo=timezone("UTC")
             )
             check_out_manila = check_out.astimezone(manila_tz).replace(tzinfo=None)
-            vals["check_out"] = fields.Datetime.to_string(check_out_manila)
+            check_out_ph = fields.Datetime.to_string(check_out_manila)
+            actual_out_ph = check_out_manila.hour + check_out_manila.minute / 60.0
+            vals_attendance_sheet["check_out"] = check_out_ph
+            vals_attendance_sheet["actual_out"] = actual_out_ph
+            vals["check_out_ph"] = check_out_ph
             
         if (
             check_in_manila 
@@ -243,6 +269,7 @@ class HRAttendance(models.Model):
             
         return {
             "vals": vals,
+            "vals_attendance_sheet": vals_attendance_sheet,
             "next_day_checkout": next_day_checkout
         }
 
@@ -253,6 +280,13 @@ class HRAttendance(models.Model):
         
         check_in_out_vals = self._get_check_in_out_date(vals)
         vals = check_in_out_vals.get("vals", vals)
+        vals_attendance_sheet = check_in_out_vals.get(
+            "vals_attendance_sheet",
+            {
+                "actual_in": 0,
+                "actual_out": 0,
+            }
+        )
 
         attendance = super(HRAttendance, self).create(vals)
 
@@ -272,14 +306,9 @@ class HRAttendance(models.Model):
         attendance_sheet_id = self.env["hr.attendance.sheet"].create(
             {
                 "employee_id": attendance.employee_id.id,
-                "date": attendance.check_in.date(),
-                "actual_in": attendance.check_in.hour
-                + attendance.check_in.minute / 60.0,
-                "actual_out": (
-                    attendance.check_out.hour + attendance.check_out.minute / 60.0
-                    if attendance.check_out
-                    else 0
-                ),
+                "date": attendance.check_in_ph.date(),
+                "actual_in": vals_attendance_sheet.get("actual_in", 0),
+                "actual_out": vals_attendance_sheet.get("actual_out", 0),
                 "attendance_id": attendance.id,
             }
         )

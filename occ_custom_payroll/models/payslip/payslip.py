@@ -62,6 +62,12 @@ class exhr_payslip(models.Model):
     phic_ids = fields.One2many("phic.contribution.line", "payslip_id")
     hdmf_ids = fields.One2many("hdmf.contribution.line", "payslip_id")
 
+    deduction_by_mins_late = fields.Boolean(
+        string="Is late/undertime dedcution by minutes?",
+        related="payroll_id.deduction_by_mins_late",
+        store=True,
+    )
+
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
     )
@@ -1431,6 +1437,8 @@ class exhr_payslip(models.Model):
 
         """
         if vals:
+            print(self.total_working_days)
+            print(self.no_days_present)
             days_leave_wo_pay = self.total_working_days - self.no_days_present
             rest_days_count = 0
             att_list = self.env["hr.attendance.sheet"].search(
@@ -1442,10 +1450,16 @@ class exhr_payslip(models.Model):
             reg_count = 0
 
             for rec in att_list:
+                print(f"{att_list[0].work_schedule_type=}")
                 if att_list[0].work_schedule_type == "regular":
                     # if '1' in rec.schedule_type_ids.ids: #absent
                     # 	reg_count += 1
                     # 	print('date : ', rec.date)
+                    print(f"{rec.schedule_type_ids.ids=}")
+                    print(f"{rec.rate_type=}")
+                    print(f"{4 in rec.schedule_type_ids.ids=}")
+                    print(f"{2 in rec.schedule_type_ids.ids=}")
+                    print(f"""{rec.rate_type in ["1"]=}""")
                     if (
                         4 in rec.schedule_type_ids.ids
                         and rec.actual_in
@@ -1464,22 +1478,29 @@ class exhr_payslip(models.Model):
                                 ]
                             )
                         )
+                        print(f"{added}")
                         for leave in leaves:
                             if leave.holiday_status_id.name == "Undertime":
                                 added = 0
                         days_leave_wo_pay += added
+                        print(f"{days_leave_wo_pay=}")
                     if (
                         2 in rec.schedule_type_ids.ids
                         and rec.actual_in
                         and rec.actual_out
                     ):  # on half-day leave, with attendance
                         days_leave_wo_pay += 0.5
+                        print(f"{days_leave_wo_pay=}")
                     # if 7 in rec.schedule_type_ids.ids and rec.actual_in and rec.actual_out: #holiday working day, with attendance
                     # 	days_leave_wo_pay += 1
                     if rec.rate_type in ["1"] and rec.actual_in and rec.actual_out:
                         days_leave_wo_pay += 1
                         rest_days_count += 1
+
+                        print(f"{days_leave_wo_pay=}")
                     # print('lwop : ', days_leave_wo_pay)
+
+                    print(f"{days_leave_wo_pay=}")
 
                 if att_list[0].work_schedule_type == "fixed":
                     # print('schedule_id: ',rec.schedule_type_ids.ids)
@@ -1489,12 +1510,14 @@ class exhr_payslip(models.Model):
                         and rec.actual_out
                     ):  # on leave, with attendance
                         days_leave_wo_pay += 1
+                        print(f"{days_leave_wo_pay=}")
                     if (
                         2 in rec.schedule_type_ids.ids
                         and rec.actual_in
                         and rec.actual_out
                     ):  # on half-day leave, with attendance
                         days_leave_wo_pay += 0.5
+                        print(f"{days_leave_wo_pay=}")
                         # print('half day')
                     if (
                         7 in rec.schedule_type_ids.ids
@@ -1506,12 +1529,17 @@ class exhr_payslip(models.Model):
                         days_leave_wo_pay += 1
                         rest_days_count += 1
 
+                    print(f"{days_leave_wo_pay}")
 
                 if att_list[0].work_schedule_type == "na":
                     days_leave_wo_pay = 0
 
+                    print(f"{days_leave_wo_pay}")
+
                 if att_list[0].work_schedule_type == "ww":
                     days_leave_wo_pay = 0
+
+                    print(f"{days_leave_wo_pay}")
 
             # if att_list[0].work_schedule_type == 'regular' and not vals.daily_wage:
             # 	days_leave_wo_pay = reg_count
@@ -1520,17 +1548,25 @@ class exhr_payslip(models.Model):
             if vals.daily_wage:
                 days_leave_wo_pay = 0
 
+                print(f"{days_leave_wo_pay}")
+
             if days_leave_wo_pay < 0:
                 days_leave_wo_pay = 0
 
+                print(f"{days_leave_wo_pay}")
+
             # print('reg_count : ', reg_count)
 
+            print(f"{days_leave_wo_pay=}")
+
             amount = days_leave_wo_pay * vals.daily_rate
+            print(f"{amount=}")
             # no_day_hrs_disp = (
             #     str(days_leave_wo_pay) + " Days" if days_leave_wo_pay else ""
             # )
 
             no_day_hrs_disp = f"{days_leave_wo_pay - rest_days_count} Days" if days_leave_wo_pay else ""
+            print(f"{no_day_hrs_disp=}")
 
             # with contract
             # will update the payslip base on the found contract
@@ -1544,9 +1580,13 @@ class exhr_payslip(models.Model):
                     [("name", "=", "Leave w/o pay"), ("active", "=", True)], limit=1
                 )
 
+                print(f"{deduction_id}")
+
                 count = self.env["exhr.payslip.deductions"].search_count(
                     [("payslip_id", "=", self.id), ("name_id", "=", deduction_id.id)]
                 )
+
+                print(f"{count}")
 
                 if count == 0:
                     # nothing found
@@ -1640,6 +1680,72 @@ class exhr_payslip(models.Model):
 
         else:
             raise UserError("No Running/To Renew Contract found!")
+
+    def compute_undertime_by_mins(self, vals):
+        """Computes undertime deduction based on minutes late:
+        
+        Formula: (Minutes Late) * (Contract Hourly Rate / 60)
+        """
+
+        if not vals:
+            raise UserError("No Running/To Renew Contract found!")
+
+        print(f"compute_undertime_by_mins")
+
+        att_list = self.env["hr.attendance.sheet"].search(
+            [
+                ("employee_id", "=", self.employee_id.id),
+                ("payslip_id", "=", self.id),
+            ]
+        )
+
+        total_minutes_late = sum([a.mins_for_undertime for a in att_list])
+        print(f"{total_minutes_late=}")
+        hourly_rate = vals.hourly_rate if vals else 0
+        print(f"{hourly_rate=}")
+        amount = (total_minutes_late * hourly_rate) / 60 if hourly_rate else 0
+        print(f"{amount=}")
+
+        no_day_hrs_disp = f"{round(total_minutes_late, 2)} mins" if total_minutes_late else ""
+        print(f"{no_day_hrs_disp}")
+
+        # Fetch deduction type for undertime
+        deduction_id = self.env["deduction.type"].search(
+            domain=[
+                "|",
+                ("name", "=", "Absences / Late / Undertime"),
+                ("name", "=", "Undertime"),
+                ("active", "=", True),
+            ],
+            limit=1
+        )
+
+        if not deduction_id:
+            raise UserError("No Undertime found on deduction configuration.")
+
+        # Check if a deduction record already exists
+        count = self.env["exhr.payslip.deductions"].search_count(
+            [("payslip_id", "=", self.id), ("name_id", "=", deduction_id.id)]
+        )
+
+        if count == 0:
+            # Create a new deduction record
+            self.env["exhr.payslip.deductions"].create(
+                {
+                    "payslip_id": self.id,
+                    "name_id": deduction_id.id,
+                    "amount_total": amount,
+                    "no_day_hrs_disp": no_day_hrs_disp,
+                }
+            )
+        else:
+            # Update the existing deduction record
+            self.env["exhr.payslip.deductions"].search(
+                [("payslip_id", "=", self.id), ("name_id", "=", deduction_id.id)]
+            ).write(
+                {"amount_total": amount, "no_day_hrs_disp": no_day_hrs_disp}
+            )
+
 
     def compute_undertime(self, vals):
         """Computes Undertime Deduction in Deduction table:
@@ -2514,7 +2620,11 @@ class exhr_payslip(models.Model):
                 #     print("1")
                 # deductions
                 rec.compute_tardiness(vals)
-                rec.compute_undertime(vals)
+                if not rec.deduction_by_mins_late:
+                    rec.compute_undertime(vals)
+                else:
+                    rec.compute_undertime_by_mins(vals)
+
                 rec.compute_leave_wo_pay(vals)
                 # if self.employee_id.id == 1474:
                 #     print("1")
@@ -2577,7 +2687,10 @@ class exhr_payslip(models.Model):
 
                 # deductions
                 rec.compute_tardiness(vals)
-                rec.compute_undertime(vals)
+                if not rec.deduction_by_mins_late:
+                    rec.compute_undertime(vals)
+                else:
+                    rec.compute_undertime_by_mins(vals)
                 rec.compute_leave_wo_pay(vals)
 
                 for line in self.sss_ids:

@@ -53,6 +53,11 @@ class exhr_payroll(models.Model):
         track_visibility="onchange",
     )
 
+    deduction_by_mins_late = fields.Boolean(
+        string="Is late/undertime dedcution by minutes?",
+        default=True,
+    )
+
     pay_period_from = fields.Date(
         string="Pay period from", index=True, track_visibility="onchange"
     )
