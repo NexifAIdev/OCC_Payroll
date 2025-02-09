@@ -374,11 +374,12 @@ class exhr_payroll(models.Model):
 
     def generate_payslips(self):
         # Reset all payslips connected to this payroll to draft status
-        self.payslip_line_ids.write({"state": "draft"})
-        print("All connected payslips reset to draft status.")
+        for rec in self:
+            rec.payslip_line_ids.write({"state": "draft"})
+            print("All connected payslips reset to draft status.")
 
-        # Execute query to fetch employees with active contracts matching the criteria
-        query = """
+            # Execute query to fetch employees with active contracts matching the criteria
+            query = """
             SELECT DISTINCT hc.employee_id, he.employee_number
             FROM hr_contract hc
             LEFT JOIN hr_employee he ON he.id = hc.employee_id
@@ -386,81 +387,90 @@ class exhr_payroll(models.Model):
                 hc.payroll_type_id = %s AND 
                 hc.payment_type_id = %s AND 
                 hc.state IN ('open') AND 
-                hc.date_start <= '%s' AND 
+                hc.date_start <= %s AND 
                 he.active = 't' AND 
                 hc.company_id = %s AND 
                 hc.active = 't'
-        """ % (
-            self.payroll_type_id.id,
-            self.payment_type_id.id,
-            self.cutoff_date,
-            self.company_id.id,
-        )
+            """
 
-        print(f"Executing Query:\n{query}")
-        self._cr.execute(query)
-        query_results = self._cr.fetchall()
-        print(f"Query Results: {query_results}")
+            print(f"Executing Query:\n{query}")
 
-        # Convert query results into a set of tuples for easy comparison
-        query_employee_set = {(row[0], row[1]) for row in query_results}
-        print(f"Query Employee Set: {query_employee_set}")
-
-        # Get current payslip lines
-        current_lines = self.payslip_line_ids
-        current_employee_set = {
-            (line.employee_id.id, line.id_number) for line in current_lines
-        }
-        print(f"Current Employee Set: {current_employee_set}")
-
-        # Determine which employees need to be added or updated
-        to_add_or_update = query_employee_set - current_employee_set
-        to_remove = current_employee_set - query_employee_set
-        print(f"Employees to Add/Update: {to_add_or_update}")
-        print(f"Employees to Remove: {to_remove}")
-
-        # Process the records to remove
-        for line in current_lines:
-            if (line.employee_id.id, line.id_number) in to_remove:
-                print(f"Removing payroll association for line: {line.id}")
-                line.write({"payroll_id": False})  # Unlink the payroll association
-
-        # Create or update payslip lines as needed
-        payslip_obj = self.env["exhr.payslip"]
-        for employee_id, id_number in to_add_or_update:
-            # Search for existing record
-            existing_payslip = payslip_obj.search(
-                [("employee_id", "=", employee_id), ("id_number", "=", id_number)],
-                limit=1,
+            self._cr.execute(
+                query, 
+                (
+                    rec.payroll_type_id.id, 
+                    rec.payment_type_id.id, 
+                    rec.cutoff_date, 
+                    rec.company_id.id
+                )
             )
+            
+            query_results = self._cr.fetchall()
+            print(f"Query Results: {query_results}")
 
-            if existing_payslip:
-                print(
-                    f"Updating existing payslip for Employee ID: {employee_id}, ID Number: {id_number}"
-                )
-                # Update the payroll_id and reset to draft
-                existing_payslip.write({"payroll_id": self.id, "state": "draft"})
-                existing_payslip.compute_payslip()
-            else:
-                print(
-                    f"Creating new payslip for Employee ID: {employee_id}, ID Number: {id_number}"
-                )
-                # Create a new payslip record
-                vals = {
-                    "employee_id": employee_id,
-                    "id_number": id_number,
-                    "payroll_id": self.id,
-                    "pay_period_from": self.pay_period_from,
-                    "pay_period_to": self.pay_period_to,
-                    "cutoff_date": self.cutoff_date,
-                }
-                new_payslip_obj = payslip_obj.create(vals)
-                print(f"New Payslip Created: {new_payslip_obj.id}")
-                new_payslip_obj.payroll_id = self.id
-                new_payslip_obj.state = "draft"
-                new_payslip_obj.compute_payslip()
+            # Convert query results into a set of tuples for easy comparison
+            query_employee_set = {(row[0], row[1]) for row in query_results}
+            print(f"Query Employee Set: {query_employee_set}")
 
-        print("Payslip generation completed.")
+            # Get current payslip lines
+            current_lines = rec.payslip_line_ids
+            current_employee_set = {
+                (line.employee_id.id, line.id_number) for line in current_lines
+            }
+            print(f"Current Employee Set: {current_employee_set}")
+
+            # Determine which employees need to be added or updated
+            to_add_or_update = query_employee_set - current_employee_set
+            to_remove = current_employee_set - query_employee_set
+            print(f"Employees to Add/Update: {to_add_or_update}")
+            print(f"Employees to Remove: {to_remove}")
+
+            # Process the records to remove
+            for line in current_lines:
+                if (line.employee_id.id, line.id_number) in to_remove:
+                    print(f"Removing payroll association for line: {line.id}")
+                    line.write({"payroll_id": False})  # Unlink the payroll association
+
+            # Create or update payslip lines as needed
+            payslip_obj = self.env["exhr.payslip"]
+            for employee_id, id_number in to_add_or_update:
+                # Search for existing record
+                existing_payslip = payslip_obj.filtered(
+                    lambda p: p.employee_id.id == employee_id and
+                    p.id_number == id_number and
+                    p.pay_period_from == rec.pay_period_from and
+                    p.pay_period_to == rec.pay_period_to and
+                    p.cutoff_date == rec.cutoff_date
+                )
+
+
+                if existing_payslip:
+                    print(
+                        f"Updating existing payslip for Employee ID: {employee_id}, ID Number: {id_number}"
+                    )
+                    # Update the payroll_id and reset to draft
+                    existing_payslip.write({"payroll_id": rec.id, "state": "draft"})
+                    existing_payslip.compute_payslip()
+                else:
+                    print(
+                        f"Creating new payslip for Employee ID: {employee_id}, ID Number: {id_number}"
+                    )
+                    # Create a new payslip record
+                    vals = {
+                        "employee_id": employee_id,
+                        "id_number": id_number,
+                        "payroll_id": rec.id,
+                        "pay_period_from": rec.pay_period_from,
+                        "pay_period_to": rec.pay_period_to,
+                        "cutoff_date": rec.cutoff_date,
+                    }
+                    new_payslip_obj = payslip_obj.create(vals)
+                    print(f"New Payslip Created: {new_payslip_obj.id}")
+                    new_payslip_obj.payroll_id = rec.id
+                    new_payslip_obj.state = "draft"
+                    new_payslip_obj.compute_payslip()
+
+            print("Payslip generation completed.")
 
     # - - - - - - PRINT PAYROLL SLIP - - - - - - - - -
 
