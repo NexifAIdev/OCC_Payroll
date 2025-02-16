@@ -387,7 +387,7 @@ class exhr_payroll(models.Model):
                 hc.payroll_type_id = %s AND 
                 hc.payment_type_id = %s AND 
                 hc.state IN ('open') AND 
-                hc.date_start <= %s AND 
+                hc.date_start <= %s AND
                 he.active = 't' AND 
                 hc.company_id = %s AND 
                 hc.active = 't'
@@ -396,15 +396,15 @@ class exhr_payroll(models.Model):
             print(f"Executing Query:\n{query}")
 
             self._cr.execute(
-                query, 
+                query,
                 (
-                    rec.payroll_type_id.id, 
-                    rec.payment_type_id.id, 
-                    rec.cutoff_date, 
+                    rec.payroll_type_id.id,
+                    rec.payment_type_id.id,
+                    rec.cutoff_date,
                     rec.company_id.id
                 )
             )
-            
+
             query_results = self._cr.fetchall()
             print(f"Query Results: {query_results}")
 

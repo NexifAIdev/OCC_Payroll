@@ -2725,7 +2725,7 @@ class exhr_payslip(models.Model):
                     ("date", ">=", self.pay_period_from),
                     ("date", "<=", self.pay_period_to),
                     ("active", "=", True),
-                    ("original", "!=", "excess"),
+                    # ("original", "!=", "excess"),
                 ]
             )
         )
