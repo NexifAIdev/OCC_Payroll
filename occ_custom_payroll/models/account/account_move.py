@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Native Python modules
+from contextlib import contextmanager
 
 # Local python modules
 
@@ -14,12 +15,14 @@ from odoo.exceptions import UserError, ValidationError
 class account_move(models.Model):
     _inherit = "account.move"
 
+    @contextmanager
     def _check_balanced(self, container):
         """Assert the move is fully balanced debit = credit.
         An error is raised if it's not the case.
         """
         moves = self.filtered(lambda move: move.line_ids)
         if not moves:
+            yield
             return
 
         # /!\ As this method is called in create / write, we can't make the assumption the computed stored fields
@@ -53,3 +56,4 @@ class account_move(models.Model):
                     )
                     % (ids, sums)
                 )
+        yield
