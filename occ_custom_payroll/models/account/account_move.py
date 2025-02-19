@@ -14,7 +14,7 @@ from odoo.exceptions import UserError, ValidationError
 class account_move(models.Model):
     _inherit = "account.move"
 
-    def _check_balanced(self):
+    def _check_balanced(self, container):
         """Assert the move is fully balanced debit = credit.
         An error is raised if it's not the case.
         """
