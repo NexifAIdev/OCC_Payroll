@@ -340,9 +340,10 @@ class OccDetailedPayrollReport(models.TransientModel):
             ]
             )
         is_details = False
+        # print(f"EMP TYPE HERE: {emp_type}")
         for emp_types in emp_type:
             # Create a worksheet for each employee type
-            print(emp_type)
+            print(f"EMP TYPE HERE: {emp_type}")
             is_details = workbook.add_worksheet(emp_types.name)
         
             # Set the worksheet tab color based on emp_type
@@ -1216,7 +1217,7 @@ class OccDetailedPayrollReport(models.TransientModel):
                 is_details.write(row, 3, "TOTAL", bodydetailbold)  # Column D (index 3)
                 total_wages = sum(row[6] for row in detail_body_row)  # Sum of wages
                 is_details.write(row, 4, round(total_wages, 2), bodydetailboldnetcurrency)
-                total_absent_late = sum(row[8] for row in detail_body_row)  # Sum of absent/late
+                total_absent_late = sum(row[8] if row[8] is not None else 0 for row in detail_body_row)  # Sum of absent/late
                 is_details.write(row, 5, round(total_absent_late, 2), bodydetailboldnetcurrency)  # Grand total absent/late
                 total_overtime = sum(row[9] for row in detail_body_row)  # Sum of overtime
                 is_details.write(row, 6, round(total_overtime, 2), bodydetailboldnetcurrency)  # Grand total overtime
@@ -1242,7 +1243,7 @@ class OccDetailedPayrollReport(models.TransientModel):
                 is_details.write(row, 16, round(total_add_hdmf, 2), bodydetailboldnetcurrency)  # Grand total HDMF
                 total_wtx = sum(row[20] for row in detail_body_row)  # Sum of WTX
                 is_details.write(row, 17, round(total_wtx, 2), bodydetailboldnetcurrency)  # Grand total WTX
-                total_deduction = sum(row[21] for row in detail_body_row)  # Sum of Deduction
+                total_deduction = sum(row[21] if row[21] is not None else 0 for row in detail_body_row)  # Sum of Deduction
                 is_details.write(row, 18, round(total_deduction, 2), bodydetailboldnetcurrency)  # Grand total Deduction
                 total_net_pay = sum(row[22] for row in detail_body_row)  # Sum of net pay
                 is_details.write(row, 19, round(total_net_pay, 2), bodydetailboldnetcurrency)  # Grand total net pay
