@@ -22,6 +22,11 @@ class EmployeeTypes(models.Model):
         default=False,
         required=True,
     )
+    
+    for_payroll = fields.Boolean(
+        string="For Payroll",
+        default=True,
+    )
 
     description = fields.Char(
         string="Description",
