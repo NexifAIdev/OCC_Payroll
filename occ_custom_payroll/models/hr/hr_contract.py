@@ -32,9 +32,23 @@ class HrContract(models.Model):
 	</table>
 	"""
     # EEMR Computation
+    use_eemr = fields.Selection(
+        string="EEMR", 
+        selection=[
+            ("default", "Default"), 
+            ("custom", "Custom"),
+        ], 
+        default="custom",
+    )
+    
     eemr_hours = fields.Float("Hours", default=8)
     eemr_days = fields.Float("Days", default=313)
     eemr_months = fields.Float("Month", default=12)
+    
+    eemr_hours_per_week = fields.Float("Hours per Week", default=40)
+    eemr_days_per_week = fields.Float("Days per Week", default=5)
+    eemr_weeks_per_year = fields.Float("Weeks per Year", default=52)
+    
     payment_type = fields.Selection(
         [("monthly", "Monthly"), ("daily", "Daily")],
         string="Payment Type",
@@ -285,8 +299,15 @@ class HrContract(models.Model):
     hdmf_contri_amount = fields.Float(
         string="HDMF Contribution Amount", track_visibility="onchange"
     )
+    
+    annual_salary = fields.Float(
+        string="Annual Salary", help="Annual Salary", track_visibility="onchange"
+    )
     monthly_rate = fields.Float(
         string="Monthly Rate", help="Hourly Rate", track_visibility="onchange"
+    )
+    weekly_rate = fields.Float(
+        string="Weekly Rate", help="Weekly Rate", track_visibility="onchange"
     )
     hourly_rate = fields.Float(
         string="Hourly Rate", help="Hourly Rate", track_visibility="onchange"
@@ -325,20 +346,24 @@ class HrContract(models.Model):
 
     loan_ids = fields.One2many("loan.monitoring", "contract_id", copy=True)
 
-    @api.onchange("wage", "monthly_rate")
+    @api.onchange("monthly_rate")
     def onchange_wage_monthly_rate(self):
         """
         Update daily_rate, hourly_rate, and ensure wage and monthly_rate remain in sync.
         """
-        if self.wage:
-            self.monthly_rate = self.wage  # Sync wage with monthly_rate
-            self.daily_rate = (self.wage * self.eemr_months) / self.eemr_days
-            self.hourly_rate = self.daily_rate / self.eemr_hours
-
-        elif self.monthly_rate:
+        if self.monthly_rate:
             self.wage = self.monthly_rate  # Sync monthly_rate with wage
-            self.daily_rate = (self.monthly_rate * self.eemr_months) / self.eemr_days
-            self.hourly_rate = self.daily_rate / self.eemr_hours
+            
+            if self.use_eemr == "default":
+                self.daily_rate = (self.monthly_rate * self.eemr_months) / self.eemr_days
+                self.hourly_rate = (self.monthly_rate * 12) / (52 * self.eemr_hours_per_week)
+            else:  # Custom Calculation
+                self.hourly_rate = (self.monthly_rate * 12) / (self.eemr_weeks_per_year * self.eemr_hours_per_week)
+                self.daily_rate = self.hourly_rate * self.eemr_hours
+            
+            self.weekly_rate = self.hourly_rate * self.eemr_hours_per_week
+            self.annual_salary = self.weekly_rate * self.eemr_weeks_per_year
+
 
     @api.onchange("daily_rate")
     def onchange_daily_rate(self):
@@ -346,9 +371,16 @@ class HrContract(models.Model):
         Update wage, monthly_rate, and hourly_rate when daily_rate changes.
         """
         if self.daily_rate:
-            self.wage = (self.daily_rate * self.eemr_days) / self.eemr_months
+            if self.use_eemr == "default":
+                self.wage = (self.daily_rate * self.eemr_days) / self.eemr_months
+                self.hourly_rate = self.daily_rate / self.eemr_hours
+            else:  # Custom Calculation
+                self.hourly_rate = self.daily_rate / self.eemr_hours
+
             self.monthly_rate = self.wage  # Sync monthly_rate with wage
-            self.hourly_rate = self.daily_rate / self.eemr_hours
+            self.weekly_rate = self.hourly_rate * self.eemr_hours_per_week
+            self.annual_salary = self.weekly_rate * self.eemr_weeks_per_year
+
 
     @api.onchange("hourly_rate")
     def onchange_hourly_rate(self):
@@ -357,8 +389,53 @@ class HrContract(models.Model):
         """
         if self.hourly_rate:
             self.daily_rate = self.hourly_rate * self.eemr_hours
-            self.wage = (self.daily_rate * self.eemr_days) / self.eemr_months
+
+            if self.use_eemr == "default":
+                self.wage = (self.daily_rate * self.eemr_days) / self.eemr_months
+            else:  # Custom Calculation
+                self.wage = self.hourly_rate * self.eemr_hours_per_week * self.eemr_weeks_per_year / self.eemr_months
+
             self.monthly_rate = self.wage  # Sync monthly_rate with wage
+            self.weekly_rate = self.hourly_rate * self.eemr_hours_per_week
+            self.annual_salary = self.weekly_rate * self.eemr_weeks_per_year
+
+
+    @api.onchange("annual_salary")
+    def onchange_annual_salary(self):
+        """
+        Update wage, monthly_rate, weekly_rate, daily_rate, and hourly_rate when annual_salary changes.
+        """
+        if self.annual_salary:
+            self.weekly_rate = self.annual_salary / self.eemr_weeks_per_year
+            self.hourly_rate = self.weekly_rate / self.eemr_hours_per_week
+            self.daily_rate = self.hourly_rate * self.eemr_hours
+
+            if self.use_eemr == "default":
+                self.wage = (self.daily_rate * self.eemr_days) / self.eemr_months
+            else:  # Custom Calculation
+                self.wage = self.annual_salary / self.eemr_months
+
+            self.monthly_rate = self.wage  # Sync monthly_rate with wage
+
+
+    @api.onchange("weekly_rate")
+    def onchange_weekly_rate(self):
+        """
+        Update wage, monthly_rate, annual_salary, daily_rate, and hourly_rate when weekly_rate changes.
+        """
+        if self.weekly_rate:
+            self.hourly_rate = self.weekly_rate / self.eemr_hours_per_week
+            self.daily_rate = self.hourly_rate * self.eemr_hours
+
+            if self.use_eemr == "default":
+                self.wage = (self.daily_rate * self.eemr_days) / self.eemr_months
+            else:  # Custom Calculation
+                self.wage = self.weekly_rate * self.eemr_weeks_per_year / self.eemr_months
+
+            self.monthly_rate = self.wage  # Sync monthly_rate with wage
+            self.annual_salary = self.weekly_rate * self.eemr_weeks_per_year
+
+
 
     @api.onchange("date_start")
     def _onchange_contract_start(self):
