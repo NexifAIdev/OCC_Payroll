@@ -205,6 +205,15 @@ class HrContract(models.Model):
     )
 
     # HDMF Contribution
+    enforce_custom_hdmf_pay = fields.Boolean(
+        string="Use Custom HDMF Pay",
+        default=True,
+    )
+    custom_hdmf_pay_amt = fields.Float(
+        string="HDMF Amount",
+        default=200.00,
+    )
+
     hdmf_1st_co_date = fields.Selection(
         [
             ("1", "1st"),

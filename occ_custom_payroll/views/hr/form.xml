@@ -431,6 +431,11 @@
                             />
                         </group>
                         <group string="HDMF Contribution">
+                            <field name="enforce_custom_hdmf_pay"/>
+                            <field name="custom_hdmf_pay_amt"
+                                required="enforce_custom_hdmf_pay == True"
+                                invisible="enforce_custom_hdmf_pay != True"
+                            />
                             <field name="hdmf_1st_co_date"
                                 string="1st cut-off Day"
                                 required="True"
