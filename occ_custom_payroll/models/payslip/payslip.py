@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Native Python modules
 from datetime import datetime, date, timedelta
-import math
+# import math
 
 # Local python modules
 
@@ -459,7 +459,7 @@ class exhr_payslip(models.Model):
 
             rec.amount_total = (
                 # Reassure amount_tax_import_signed to be negative
-                taxable_amt0 + (-1 * math.abs(rec.amount_tax_import_signed)) + rec.amount_nontaxable_signed
+                taxable_amt0 + (-1 * abs(rec.amount_tax_import_signed)) + rec.amount_nontaxable_signed
             ) if rec.is_payslip_imported else (
                 taxable_amt0 + rec.amount_tax_signed + rec.amount_nontaxable_signed
             )
