@@ -173,7 +173,7 @@ class exhr_payslip(models.Model):
         "exhr.payroll", string="Reference", store=True, ondelete="cascade", index=True
     )
 
-    def _compute_total_working_days(self):
+    def _compute_total_working_days_old(self):
         # Computes the total_working_days, total_holidays
         for rec in self:
             count_work_days = 0
@@ -207,6 +207,56 @@ class exhr_payslip(models.Model):
 
             rec.total_holidays = count_holidays
             rec.total_working_days = count_work_days
+
+    def _compute_total_working_days(self):
+        """
+        Computes the total_working_days and total_holidays while excluding weekends unless explicitly defined in the contract.
+        """
+        for rec in self:
+            count_work_days = 0
+            count_holidays = 0
+
+            contract = self.env["hr.contract"].search(
+                [
+                    ("employee_id", "=", rec.employee_id.id),
+                    ("state", "=", "open"),
+                    ("date_start", "<=", rec.cutoff_date),
+                ],
+                limit=1,
+            )
+
+            if contract and contract.resource_calendar_id:
+                for i in range((rec.pay_period_to - rec.pay_period_from).days + 1):
+                    date = rec.pay_period_from + timedelta(days=i)
+                    weekday = date.weekday()  # Monday=0, Sunday=6
+
+                    # ✅ Convert date to datetime (adds 00:00:00 time)
+                    datetime_date = fields.Datetime.to_datetime(date)
+
+                    # 🛑 **Exclude weekends unless the contract explicitly allows weekend work**
+                    work_hours = contract.resource_calendar_id.get_work_hours_count(
+                        datetime_date, datetime_date  # Now using datetime, not date
+                    )
+                    if weekday in [5, 6] and work_hours == 0:  # If it's a weekend and no work hours are defined
+                        continue  # Skip this day
+
+                    # ✅ Count actual workdays
+                    count_work_days += rec.get_count_work_days(
+                        date, weekday, rec.employee_id.exhr_work_location
+                    )
+
+                    # ✅ Count holidays correctly
+                    count_holidays += self.get_holiday_pay(
+                        date,
+                        weekday,
+                        rec.employee_id.exhr_work_location,
+                        contract,
+                    )
+
+            # 🔄 Update the computed fields
+            rec.total_holidays = count_holidays
+            rec.total_working_days = count_work_days
+
 
     def _compute_hrs_for_prorate(self):
         # Computes the hrs_for_prorate for REGULAR and 48H WW
@@ -1426,7 +1476,7 @@ class exhr_payslip(models.Model):
         else:
             raise UserError("No Running/To Renew Contract found!")
 
-    def compute_leave_wo_pay(self, vals):
+    def compute_leave_wo_pay_old(self, vals):
         """Computes Leave w/o Pay in Deduction table:
         - Consider:
                 - Working Schedule - Regular and Fixed
@@ -1616,6 +1666,152 @@ class exhr_payslip(models.Model):
 
         else:
             raise UserError("No Running/To Renew Contract found!")
+
+    def compute_leave_wo_pay(self, vals):
+        """Computes Leave w/o Pay in Deduction table:
+        - Consider:
+                - Working Schedule - Regular and Fixed
+                - Scenarios where Leave w/o pay = 0:
+                        - Daily wage earner
+                        - 48H WW working schedule
+                        - N/A working schedule
+        """
+        if vals:
+            print(self.total_working_days)
+            print(self.no_days_present)
+
+            # Compute initial leave without pay
+            days_leave_wo_pay = self.total_working_days - self.no_days_present
+            rest_days_count = 0
+
+            # Get attendance records for the payslip
+            att_list = self.env["hr.attendance.sheet"].search(
+                [
+                    ("employee_id", "=", self.employee_id.id),
+                    ("payslip_id", "=", self.id),
+                ]
+            )
+
+            # Track regular schedule days
+            reg_count = 0
+
+            for rec in att_list:
+                weekday = rec.date.weekday()  # Monday=0, Sunday=6
+
+                # Skip weekends (Saturday=5, Sunday=6) unless the employee is scheduled to work
+                if weekday in [5, 6]:
+                    continue  
+
+                print(f"{att_list[0].work_schedule_type=}")
+
+                if att_list[0].work_schedule_type == "regular":
+                    print(f"{rec.schedule_type_ids.ids=}")
+                    print(f"{rec.rate_type=}")
+
+                    # If the employee was on leave but attended work, count it as leave
+                    if (
+                        4 in rec.schedule_type_ids.ids
+                        and rec.actual_in
+                        and rec.actual_out
+                    ):
+                        added = 1
+                        leaves = (
+                            self.env["hr.leave"]
+                            .sudo()
+                            .search(
+                                [
+                                    ("employee_id", "=", self.employee_id.id),
+                                    ("request_date_from", "<=", rec.date),
+                                    ("request_date_to", ">=", rec.date),
+                                    ("state", "=", "validate"),
+                                ]
+                            )
+                        )
+                        for leave in leaves:
+                            if leave.holiday_status_id.name == "Undertime":
+                                added = 0
+                        days_leave_wo_pay += added
+
+                    # Half-day leave calculation
+                    if (
+                        2 in rec.schedule_type_ids.ids
+                        and rec.actual_in
+                        and rec.actual_out
+                    ):
+                        days_leave_wo_pay += 0.5
+
+                    # Full-day absence
+                    if rec.rate_type in ["1"] and rec.actual_in and rec.actual_out:
+                        days_leave_wo_pay += 1
+                        rest_days_count += 1
+
+                elif att_list[0].work_schedule_type == "fixed":
+                    if (
+                        4 in rec.schedule_type_ids.ids
+                        and rec.actual_in
+                        and rec.actual_out
+                    ):
+                        days_leave_wo_pay += 1
+
+                    if (
+                        2 in rec.schedule_type_ids.ids
+                        and rec.actual_in
+                        and rec.actual_out
+                    ):
+                        days_leave_wo_pay += 0.5
+
+                    if rec.rate_type in ["1"] and rec.actual_in and rec.actual_out:
+                        days_leave_wo_pay += 1
+                        rest_days_count += 1
+
+                elif att_list[0].work_schedule_type in ["na", "ww"]:
+                    days_leave_wo_pay = 0  # No LWOP for non-applicable or 48H WW schedule
+
+            if vals.daily_wage:
+                days_leave_wo_pay = 0
+
+            if days_leave_wo_pay < 0:
+                days_leave_wo_pay = 0
+
+            print(f"{days_leave_wo_pay=}")
+
+            # Compute deduction amount
+            amount = days_leave_wo_pay * vals.daily_rate
+            print(f"{amount=}")
+
+            no_day_hrs_disp = f"{days_leave_wo_pay - rest_days_count} Days" if days_leave_wo_pay else ""
+            print(f"{no_day_hrs_disp=}")
+
+            # Find deduction type
+            deduction_type = self.env["deduction.type"].search(
+                [("name", "=", "Leave w/o pay"), ("active", "=", True)], limit=1
+            )
+
+            if deduction_type:
+                # Check if deduction record already exists
+                deduction_record = self.env["exhr.payslip.deductions"].search(
+                    [("payslip_id", "=", self.id), ("name_id", "=", deduction_type.id)]
+                )
+
+                if not deduction_record:
+                    self.env["exhr.payslip.deductions"].create(
+                        {
+                            "payslip_id": self.id,
+                            "name_id": deduction_type.id,
+                            "amount_total": amount,
+                            "no_day_hrs_disp": no_day_hrs_disp,
+                        }
+                    )
+                else:
+                    deduction_record.write(
+                        {"amount_total": amount, "no_day_hrs_disp": no_day_hrs_disp}
+                    )
+            else:
+                raise UserError("No Leave w/o pay found in deductions configuration.")
+
+        else:
+            raise UserError("No Running/To Renew Contract found!")
+
 
     def compute_tardiness(self, vals):
         """Computes Tardiness Deduction in DEDUCTION table:
