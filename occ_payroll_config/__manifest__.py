@@ -24,7 +24,7 @@ OCC Payroll Configurations
         ]
     },
     "depends": [
-        "occ_configurations",
+        "occ_configurations", "hr",
     ],
     "data": [
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾

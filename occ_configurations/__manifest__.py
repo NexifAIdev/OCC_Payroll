@@ -39,6 +39,7 @@ OCC Configurations
         "web",
         "website",
         "ohrms_core",
+        "hr",
     ],
     "data": [
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾

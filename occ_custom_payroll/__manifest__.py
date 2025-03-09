@@ -27,6 +27,7 @@ OCC Payroll Configurations
         "oh_appraisal",
         "occ_configurations",
         "analytic",
+        "hr",
     ],
     "data": [
 		#‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾

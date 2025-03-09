@@ -17,7 +17,7 @@ class EmployeeTypes(models.Model):
     _model_path_name = "occ_payroll.model_hr_employee_types"
     _description = "Employee Types"
 
-    name = fields.Char(
+    name = fields.Char( 
         string="Types",
         default=False,
         required=True,
