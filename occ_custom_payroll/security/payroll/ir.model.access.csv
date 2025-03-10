@@ -50,4 +50,4 @@ access_all_sss_contribution_config,all.overtime.rate.config,model_sss_contributi
 access_payroll_manager_sss_contribution_config,payroll.manager.overtime.rate.config,model_sss_contribution_config,group_payroll_manager,1,1,1,1
 access_payroll_officer_sss_contribution_config,payroll.officer.overtime.rate.config,model_sss_contribution_config,group_payroll_officer,1,1,1,1
 ,,,,,,,
-access_hr_employee_types,access_hr_employee_types,model_hr_employee_types,base.group_user,1,1,1,1
+access_hr_employee_types,access_hr_employee_types,model_hr_employee_types,base.group_user,1,0,0,0

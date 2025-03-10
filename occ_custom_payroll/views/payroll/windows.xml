@@ -175,6 +175,12 @@
                 'tree_view_ref':'occ_custom_payroll.tree_loan_type',
 }</field>
         </record>
+
+        <record id="actwindow_employee_types" model="ir.actions.act_window">
+            <field name="name">Employee Types</field>
+            <field name="res_model">hr.employee.types</field>
+            <field name="view_mode">tree</field>
+        </record>
     
     </data>
     

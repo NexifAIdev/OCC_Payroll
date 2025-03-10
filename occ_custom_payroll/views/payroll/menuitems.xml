@@ -80,6 +80,12 @@
             parent="menu_exhr_configurations"
             />
 
+        <menuitem id="menu_employee_types"
+            action="actwindow_employee_types"
+            name="Employee Types"
+            parent="menu_exhr_configurations"
+            />
+
         <!-- Action Window - Loan Type -->
         <menuitem id="menu_action_loan_type" 
             action="action_loan_type"
