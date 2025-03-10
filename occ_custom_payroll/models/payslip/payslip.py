@@ -3242,7 +3242,7 @@ class exhr_payslip(models.Model):
 
         # Auto-posts the created JV if auto_post = True in Settings
         if self.payroll_id.auto_post:
-            am_id.post()
+            am_id.action_post()
 
     # UNSUSED FUNCTION
     def compute_ot_night_diff(self, ot_st, ot_end, att_date):
