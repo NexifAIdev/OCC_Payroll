@@ -75,6 +75,7 @@ class exhr_payslip(models.Model):
     is_payslip_imported = fields.Boolean(
         string="Is Payslip Imported?",
         default=False,
+        store=True,
     )
 
     currency_id = fields.Many2one(
