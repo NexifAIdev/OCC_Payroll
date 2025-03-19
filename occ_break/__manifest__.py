@@ -14,7 +14,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'hr', 'hr_attendance','occ_hr_employee'],
+    'depends': ['base', 'hr', 'hr_attendance','occ_hr_employee','occ_custom_payroll'],
 
     'data': [
         'security/ir.model.access.csv',

@@ -3,16 +3,249 @@
 
     <data>
     
-        <!-- <record id="payroll_tk_view_employee_form" model="ir.ui.view">
-			<field name="name">payroll.tk.view.employee.form</field>
+        <record id="payroll_hr_view_employee_form" model="ir.ui.view">
+			<field name="name">payroll.hr.view.employee.form</field>
 			<field name="model">hr.employee</field>
-			<field name="inherit_id" ref="tk_hr.tk_view_employee_form"/>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
 			<field name="arch" type="xml">
-				<field name="job_description" position="after">
-					<field name="accounting_tag_id" domain="[('company_id','=',company_id)]" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}" required="1"/>
+
+                <field name="job_title" position="replace">
+					<group col="4">
+						<field name="job_title" placeholder="Job Position" nolabel="1"/>
+						<field name="employee_number" placeholder="Employee ID" nolabel="1"/>
+					</group>
 				</field>
+
+                <field name="parent_id" position="after">
+					<field name="analytic_account_id" domain="[('company_id','=',company_id),('active','=',True)]" options="{'no_open': 0,'no_create': 1, 'no_create_edit': 0}"/>
+					<field name="job_description"/>
+                    <field name="accounting_tag_id" domain="[('company_id','=',company_id)]" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}" required="1"/>
+				</field>
+
+                <field name="category_ids" position="attributes">
+                    <attribute name="groups">base.group_user</attribute>
+                </field>
+
+                <field name="birthday" position="after">
+					<field name="age_today"/>
+                    <!-- <field name="private_address"/> -->
+				</field>
+
+                <field name="bank_account_id" position="after">
+					<field name="bank_account"/>
+				</field>
+
+                <field name="bank_account_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+
+                <!-- <field name="private_phone"/> -->
+
+                <field name="private_email" position="after">
+					<field name="email_private"/>
+				</field>
+
+                <field name="private_email" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+
+                <field name="user_id" position="after">
+					<field name='partner_id'/>
+				</field>
+
+                <xpath expr="//sheet/notebook/page[@name='public']//group[1]" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']/group[1]" position="before">
+					<group>
+						<field name="lname" />
+						<field name="fname" />
+						<field name="mname" />
+						<field name="suffix" />
+					</group>
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']/group/group[3]" position="replace">
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']/group/group[3][1]" position="replace">
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']/group/group[3]" position="replace">
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']/group/group[4][1]" position="replace">
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']/group/group[3]" position="after">
+					<group string="Goverment Information">
+						<field name="sss_number" />
+						<field name="philhealth_number" />
+						<field name="hdmf_id_number" />
+						<field name="hmo_policy_number" />
+						<field name="tin" placeholder="e.g. 000-000-000-0000" />
+						<field name="prc_license_number" />
+						<field name="prc_date_issued" />
+						<field name="prc_valid_until" />
+						<field name="permanent_appointment" />
+					</group>
+				</xpath>
+
+                <xpath expr="//page[@name='personal_information']" position="after">
+					<page name="education_data" string="Education Data">
+						<group string="Education History">
+							<field name="employee_education_ids" nolabel="0">
+								<tree editable="bottom" class="tree_no_open">
+									<field name="acad_level"/>
+									<field name="school_id" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}" required="1"/>
+									<field name="degree_id" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}"/>
+									<field name="honors"/>
+									<field name="started_date"/>
+									<field name="ended_date"/>
+									<field name="units"/>
+									<field name="major"/>
+									<field name="minor"/>
+									<field name="degree_type_id" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}"/>
+								</tree>
+							</field>
+						</group>
+						<group string="Seminars and Trainings">
+							<field name="employee_seminar_ids" nolabel="0">
+								<tree editable="bottom" class="tree_no_open">
+									<field name="seminar_title" required="1"/>
+									<field name="venue"/>
+									<field name="speaker"/>
+									<field name="seminar_start"/>
+									<field name="seminar_end"/>
+								</tree>
+							</field>
+						</group>
+					</page>
+					<page name="employment_data" string="Employment Data">
+						<group>
+							<group string="Employment Information">
+								<field name="date_hired"/>
+								<field name="tenure_today" invisible="1"/>
+							</group>
+
+							<group name="departure" string="Departure">
+								<field name="notice_of_resignation"/>
+								<field name="departure_date"/>
+								<field name="departure_reason"/>
+								<field name="departure_description"/>
+							</group>
+							
+						</group>
+						<br/>
+						<group string="Position History">
+							<field name="employee_position_ids" nolabel="0">
+								<tree editable="bottom" class="tree_no_open">
+									<field name="position" required="1"/>
+									<field name="company" required="1"/>
+									<field name="level"/>
+									<field name="started_date"/>
+									<field name="ended_date"/>
+								</tree>
+							</field>
+						</group>
+					</page>
+
+					<page name="family_data" string="Family Data">
+						<group>
+							<group string="Marital Status">
+								<field name="marital"/>
+							</group>
+							<group string="Emergency Contact">
+								<field name="emergency_contact"/>
+								<field name="emergency_phone" widget="phone"/>
+								<field name="emergency_contact_relation"/>
+
+							</group>
+							<br/>
+							<group string="Marriage Information" 
+                                invisible="marital not in ['married', 'cohabitant']"
+                                colspan="4"
+                                >
+								<group>
+									<field name="maiden_name"/>
+									<field name="spouse_complete_name"/>
+									<field name="spouse_occupation"/>
+									<field name="spouse_birthdate"/>
+									<field name="spouse_employer"/>
+									<field name="spouse_work_location"/>
+								</group>
+								<group>
+									<field name="spouse_cell" widget="phone"/>
+									<field name="spouse_tele" widget="phone"/>
+									<br/>
+									<field name="marriage_date"/>
+									<field name="marriage_place"/>
+									<br/>
+									<field name="children"/>
+								</group>
+							</group>
+							<br/>
+							<group string="Mother Information">
+								<field name="mother_name"/>
+								<field name="mother_citizenship"/>
+								<field name="mother_occupation"/>
+								<field name="mother_address"/>
+							</group>
+							<group string="Father Information">
+								<field name="father_name"/>
+								<field name="father_citizenship"/>
+								<field name="father_occupation"/>
+								<field name="father_address"/>
+							</group>
+						</group>
+
+						<group string="Immediate Family">
+							<field name="employee_dependents_ids" nolabel="0">
+								<tree editable="bottom" class="tree_no_open">
+									<field name="lname" required="1"/>
+									<field name="fname" required="1"/>
+									<field name="mname"/>
+									<field name="relationship_id" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}"/>
+									<field name="birthdate"/>
+									<field name="school_level"/>
+								</tree>
+							</field>
+						</group>
+						<br/>
+						<group string="Relationship Between the Company">
+							<field name="employee_relationship_ids" nolabel="0">
+								<tree editable="bottom" class="tree_no_open">
+									<field name="name"/>
+									<field name="relationship_id" options="{'no_create_edit': True, 'no_create': False, 'no_open': True}"/>
+								</tree>
+							</field>
+						</group>
+					</page>
+
+					<page name="incident_data" string="Incident Report">
+						<group string="Incident History">
+							<field name="employee_incident_ids" nolabel="0">
+								<tree editable="bottom" class="tree_no_open">
+									<field name="date" required="1"/>
+									<field name="disciple_id" required="1"/>
+									<field name="details" required="1"/>
+									<field name="penalty_id" required="1"/>
+								</tree>
+							</field>
+						</group>
+					</page>					
+
+				</xpath>
+
+                <xpath expr="//field[@name='job_id']" position="attributes">
+					<attribute name="options">{'no_create_edit': 1, 'no_quick_create': 1, 'no_create': 1}</attribute>
+				</xpath>
+
+
+
 			</field>
-		</record> -->
+		</record>
 
         <!-- HR Holiday -->
         <record id="ex_hr_edit_holiday_status_form" model="ir.ui.view">
@@ -54,7 +287,15 @@
                 <xpath expr="//sheet/notebook/page[@name='information']/group[@name='salary_info']/group[@name='yearly_benefits']"
                     position="after">
                     <group name="salary_details" string="Salary Details">
+                        <field name="annual_salary"
+                            required="True"
+                            groups="hr.group_hr_manager"
+                        />
                         <field name="monthly_rate"
+                            required="True"
+                            groups="hr.group_hr_manager"
+                        />
+                        <field name="weekly_rate"
                             required="True"
                             groups="hr.group_hr_manager"
                         />
@@ -132,19 +373,40 @@
                                 required="False"
                                 invisible="True"
                             />
-                            <field name="eemr_hours"
+                            <field name="use_eemr"
                                 required="True"
+                            />
+
+                            <field name="eemr_hours"
+                                required="use_eemr in ['default', 'custom']"
+                                invisible="use_eemr not in ['default', 'custom']"
                             />
                             <field name="eemr_days"
-                                required="True"
+                                required="use_eemr in ['default']"
+                                invisible="use_eemr not in ['default']"
                             />
                             <field name="eemr_months"
-                                required="True"
+                                required="use_eemr in ['default']"
+                                invisible="use_eemr not in ['default', 'custom']"
+                            />
+                            
+                            <field name="eemr_hours_per_week"
+                                required="use_eemr in ['custom']"
+                                invisible="use_eemr not in ['custom']"
+                            />
+                            <field name="eemr_days_per_week"
+                                required="use_eemr in ['custom']"
+                                invisible="use_eemr not in ['custom']"
+                            />
+                            <field name="eemr_weeks_per_year"
+                                required="use_eemr in ['custom']"
+                                invisible="use_eemr not in ['custom']"
                             />
                         </group>
                         <field name="html_formula"
                             widget="html"
                             readonly="True"
+                            invisible="use_eemr not in ['default']"
                         />
                         <br
                         />
@@ -169,6 +431,11 @@
                             />
                         </group>
                         <group string="HDMF Contribution">
+                            <field name="enforce_custom_hdmf_pay"/>
+                            <field name="custom_hdmf_pay_amt"
+                                required="enforce_custom_hdmf_pay == True"
+                                invisible="enforce_custom_hdmf_pay != True"
+                            />
                             <field name="hdmf_1st_co_date"
                                 string="1st cut-off Day"
                                 required="True"
@@ -191,7 +458,7 @@
                         string="Loan Monitoring">
                         <field name="loan_ids"
                             widget="one2many_list"
-                            nolabel="1">
+                            nolabel="0">
                             <tree string="Loan Monitoring"
                                 editable="bottom"
                                 create="true"
