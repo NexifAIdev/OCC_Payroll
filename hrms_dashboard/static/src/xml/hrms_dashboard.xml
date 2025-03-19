@@ -327,6 +327,19 @@
                                 </h4>
                                 <div class="oh-ribbon"><span>Departments</span></div>
                             </div>
+                            <style>
+                                .emp_graph svg {
+                                    margin-right: 70px;
+                                }
+                                .graph_view .legend {
+                                    margin-left: 0px;
+                                }
+                                table.legend tbody {
+                                    height: 200px; 
+                                    display: block;
+                                    overflow-y: auto;
+                                }
+                            </style>
                             <div class="emp_graph" style="padding-bottom: 137px;" t-ref="emp_graph">
 
                             </div>
