@@ -27,6 +27,7 @@
         'views/sss_report.xml',
         'views/pagibig_report.xml',
         'views/philhealth_report.xml',
+        'views/occ_detailed_loan_view.xml',
         'report/report.xml',
     ],
 }
