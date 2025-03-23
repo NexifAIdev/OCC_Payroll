@@ -54,5 +54,35 @@
         </field>
     </record>
 
+    <record id="view_attendance_sheet_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.sheet.tree</field>
+        <field name="model">hr.attendance.sheet</field>
+        <field name="arch" type="xml">
+            <tree string="Employee attendances Sheet">
+                <field name="employee_id" widget="many2one_avatar_user"/>
+                <field name="attendance_id"/>
+                <field name="date"/>
+                <field name="actual_in"/>
+                <field name="actual_out"/>
+                <field name="break_hours"/>
+                <field name="actual_time_diff"/>
+            </tree>
+        </field>
+    </record>
 
+    <record id="hr_attendance_sheet_action" model="ir.actions.act_window">
+        <field name="name">Attendances Sheet</field>
+        <field name="res_model">hr.attendance.sheet</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No attendance records found
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_hr_attendance_sheet_view_attendances" name="Attendance Sheet" parent="hr_attendance.menu_hr_attendance_root" sequence="5" groups="hr_attendance.group_hr_attendance_officer" action="hr_attendance_sheet_action"/>
 </odoo>

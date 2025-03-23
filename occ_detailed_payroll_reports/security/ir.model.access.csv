@@ -1,6 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 ,,,,,,,
 access_occ_detailed_payroll_report,access_occ_detailed_payroll_report,occ_detailed_payroll_reports.model_occ_detailed_payroll_report,base.group_user,1,1,1,1
+access_occ_detailed_loan_report,access_occ_detailed_loan_report,occ_detailed_payroll_reports.model_occ_loan_report,base.group_user,1,1,1,1
 access_sss_report,access_sss_report,occ_detailed_payroll_reports.model_sss_report,base.group_user,1,1,1,1
 access_pagibig_report,access_pagibig_report,occ_detailed_payroll_reports.model_pagibig_report,base.group_user,1,1,1,1
 access_philhealth_report,access_philhealth_report,occ_detailed_payroll_reports.model_philhealth_report,base.group_user,1,1,1,1
